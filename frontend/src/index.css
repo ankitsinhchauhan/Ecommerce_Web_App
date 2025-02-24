@@ -1,0 +1,477 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Poppins:wght@200;300;400;500;600;700&display=swap"); */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* font-family: "Poppins", serif; */
+/* font-family: "Outfit", serif; */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Outfit", serif;
+  font-optical-sizing: auto;
+  background-color: #f5f0f1;
+  overflow-x: hidden;
+  color: #3e3e3e;
+}
+/* paragraph tag */
+
+p {
+  font-size: 14px;
+  line-height: 25px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+/* h1 to h6 tag */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+}
+
+::-webkit-scrollbar {
+  width: 10px !important;
+  height: 8px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6c6cff;
+}
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+.container {
+  width: 95%;
+  margin: auto;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #ccc;
+}
+
+/* button code */
+
+.btn-org {
+  background: #6c6cff !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  padding: 7px 20px !important;
+}
+.btn-org:hover {
+  background: #000 !important;
+}
+
+.btn-lg {
+  font-size: 16px !important;
+  padding: 8px 20px !important;
+}
+
+.btn-sm {
+  font-size: 12px !important;
+  padding: 5px 20px !important;
+}
+
+.btn-org2 {
+  background: black !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  padding: 7px 30px !important;
+  border-radius: 25px !important;
+}
+
+.btn-org.btn-border {
+  background: none !important;
+  color: #6c6cff !important;
+  border: 1px solid #6c6cff !important;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 7px 20px !important;
+}
+
+.btn-org.btn-border:hover {
+  background: #171717 !important;
+  color: #fff !important;
+  border: 1px solid #171717 !important;
+}
+
+.link:hover {
+  color: #6c6cff;
+}
+
+.MuiBadge-badge {
+  background-color: #6c6cff !important;
+}
+
+nav ul button {
+  text-transform: capitalize !important;
+}
+
+nav ul button:hover {
+  background: none !important;
+}
+
+@layer components {
+  .searchBox {
+    @apply w-0 group-hover:w-[300px] transition-all duration-300 rounded-full group-hover:border group-hover:border-gray-500 px-3 py-2 focus:outline-none dark:border-gray-800 dark:bg-gray-900 group-hover:dark:bg-gray-800;
+  }
+}
+
+.sliderHome {
+  overflow: inherit !important;
+}
+
+/* chckout  */
+.scroll::-webkit-scrollbar {
+  width: 5px !important;
+}
+.scroll::-webkit-scrollbar-thumb {
+  background: #ccc !important;
+}
+
+.sliderHome .swiper-button-prev,
+.swiper-button-next {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  top: 55% !important;
+}
+
+.sliderHome .swiper-button-prev::after,
+.sliderHome .swiper-button-next::after {
+  font-size: 18px !important;
+  color: #000;
+}
+
+.sliderHome .swiper-button-prev:hover,
+.sliderHome .swiper-button-next:hover {
+  background: #6c6cff !important;
+}
+.sliderHome .swiper-button-prev:hover::after,
+.sliderHome .swiper-button-next:hover::after {
+  color: white !important;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 100%;
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  box-shadow: 0 1px 3px #0000001f, 0 1px 2px #0000003d !important;
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 24px !important;
+  color: #000;
+}
+
+.smallBtn .swiper-button-prev,
+.swiper-button-next {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  top: 55% !important;
+}
+
+.smallBtn .swiper-button-prev::after,
+.smallBtn .swiper-button-next::after {
+  font-size: 18px !important;
+  color: #000;
+}
+
+.smallBtn .swiper-button-prev:hover,
+.smallBtn .swiper-button-next:hover {
+  background: #6c6cff !important;
+}
+.smallBtn .swiper-button-prev:hover::after,
+.smallBtn .swiper-button-next:hover::after {
+  color: white !important;
+}
+
+.homeCatSlider .item {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.homeCatSlider .swiper-button-prev,
+.homeCatSlider .swiper-button-next {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+}
+
+.homeCatSlider .swiper-button-prev:after,
+.homeCatSlider .swiper-button-next:after {
+  font-size: 16px !important;
+}
+
+.homeCatSlider .swiper-button-prev {
+  left: -8px !important;
+}
+
+.homeCatSlider .swiper-button-next {
+  right: -8px !important;
+}
+
+.homeCatSlider .swiper-button-prev:hover,
+.homeCatSlider .swiper-button-next:hover {
+  background: #6c6cff !important;
+}
+.homeCatSlider .swiper-button-prev:hover::after,
+.homeCatSlider .swiper-button-next:hover::after {
+  color: white !important;
+}
+
+.homeCatSlider .item:hover img {
+  transform: scale(1.1);
+}
+
+.MuiTabs-indicator {
+  background-color: #6c6cff !important;
+}
+
+.MuiTab-textColorPrimary.Mui-selected {
+  color: #6c6cff !important;
+}
+
+.productSlider .swiper-wrapper {
+  padding: 15px;
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+footer form input::placeholder {
+  font-size: 14px !important;
+}
+
+/* check box style */
+.css-imrjgg-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
+.css-imrjgg-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
+  color: #6c6cff !important;
+}
+
+.MuiFormControlLabel-label {
+  font-size: 12px !important;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.swiper-pagination-bullet-active {
+  background: #6c6cff !important;
+}
+
+/* HomeSliderV2 */
+
+.homeSliderV2 .swiper-slide-active .info {
+  right: 0px !important;
+  opacity: 1;
+}
+
+.homeSliderV2 .info h4 {
+  transition-duration: 1.2s;
+}
+.homeSliderV2 .info h2 {
+  transition-duration: 1.5s;
+}
+.homeSliderV2 .info h3 {
+  transition-duration: 1.8s;
+}
+.homeSliderV2 .info .btn_ {
+  transition-duration: 2.1s;
+}
+
+.homeSliderV2 .swiper-slide-active .info h4 {
+  right: 0px !important;
+  opacity: 1;
+}
+.homeSliderV2 .swiper-slide-active .info h3 {
+  right: 0px !important;
+  opacity: 1;
+}
+.homeSliderV2 .swiper-slide-active .info h2 {
+  right: 0px !important;
+  opacity: 1;
+}
+.homeSliderV2 .swiper-slide-active .info .btn_ {
+  right: 0px !important;
+  opacity: 1;
+}
+
+.homeSliderV2 .swiper-button-prev:hover,
+.homeSliderV2 .swiper-button-next:hover {
+  background: #6c6cff !important;
+}
+.homeSliderV2 .swiper-button-prev:hover::after,
+.homeSliderV2 .swiper-button-next:hover::after {
+  color: white !important;
+}
+
+.homeSliderV2 .swiper-button-prev,
+.homeSliderV2 .swiper-button-next {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  border-radius: 20px;
+}
+
+.homeSliderV2 .swiper-button-prev:after,
+.homeSliderV2 .swiper-button-next:after {
+  font-size: 16px !important;
+  font-weight: 700;
+}
+.homeSliderV2 .swiper-button-prev {
+  margin-left: 8px;
+}
+.homeSliderV2 .swiper-button-next {
+  margin-right: 8px;
+}
+
+/*  Check Box */
+
+.MuiCheckbox-root {
+  padding: 6px !important;
+}
+
+.ReactCollapse--collapse {
+  transition: height 500ms;
+}
+
+/* Porduct Listng */
+
+.itemViewAction button.active svg {
+  color: #6c6cff !important;
+  opacity: 1 !important;
+}
+
+/* paging */
+
+.Mui-selected.MuiPaginationItem-page {
+  background: #6c6cff !important;
+  color: white !important;
+}
+
+/* Product Zoom */
+
+.zoomProductSlideThumb .swiper-wrapper {
+  padding-top: 38px !important;
+}
+
+.zoomProductSlideThumb .swiper-button-next {
+  bottom: 0px !important;
+  right: inherit !important;
+  top: inherit !important;
+  width: 100% !important;
+  height: 30px !important;
+  border-radius: 0px !important;
+}
+.zoomProductSlideThumb .swiper-button-next::after {
+  transform: rotate(90deg);
+}
+.zoomProductSlideThumb .swiper-button-prev {
+  top: 20px !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 30px !important;
+  border-radius: 0px !important;
+}
+.zoomProductSlideThumb .swiper-button-prev::after {
+  transform: rotate(90deg);
+}
+
+.zoomProductSlideThumb .swiper-button-prev:hover,
+.zoomProductSlideThumb .swiper-button-next:hover {
+  background: #6c6cff !important;
+}
+.zoomProductSlideThumb .swiper-button-prev:hover::after,
+.zoomProductSlideThumb .swiper-button-next:hover::after {
+  color: white !important;
+}
+
+/* Qty Box */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* prodct/:id Reviews */
+.reviewScroll::-webkit-scrollbar-thumb {
+  background: #ccc !important;
+}
+.reviewScroll::-webkit-scrollbar {
+  width: 5px !important;
+}
+
+/* Cart Panel */
+.cartPanel .MuiPaper-root {
+  width: 400px;
+}
+
+.otpBox input {
+  border: 1px solid rgba(0, 0, 0, 0.7) !important;
+  outline: none !important;
+  border-radius: 4px;
+}
+.otpBox input:focus {
+  border: 1px solid rgba(0, 0, 0, 0.7) !important;
+}
+
+.otpPage .container {
+  height: 90vh;
+  display: flex;
+}
+
+/* Profile */
+#account-menu .MuiPaper-root {
+  width: 200px;
+}
+
+.myAccountTabs li a {
+  position: relative;
+  display: block;
+}
+.myAccountTabs li a::before {
+  content: "";
+  width: 3px;
+  height: 50%;
+  position: absolute;
+  top: 50%;
+  left: 0px;
+  background: #6c6cff;
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
+}
+
+.myAccountTabs li a.active::before {
+  height: 100%;
+  opacity: 1;
+  top: 0px;
+}
+
+.myAccountTabs li a.active button svg {
+  color: #6c6cff !important;
+  opacity: 1 !important;
+}
+
+/* Loading button */
+
+button .MuiCircularProgress-root {
+  width: 25px !important;
+  height: 25px !important;
+}

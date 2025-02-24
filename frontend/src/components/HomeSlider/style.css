@@ -1,0 +1,19 @@
+.productItem .title {
+  line-height: 18px;
+}
+
+.productItem .actions button:hover svg {
+  color: #fff !important;
+}
+
+.productItem .actions svg {
+  pointer-events: none !important;
+}
+
+.bannerBoxV2 {
+  height: 238px;
+}
+
+.bannerBoxV2 a {
+  text-decoration: underline !important;
+}

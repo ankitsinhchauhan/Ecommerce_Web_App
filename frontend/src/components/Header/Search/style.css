@@ -1,0 +1,16 @@
+.searchBox input::placeholder,
+.searchBox input::-moz-placeholder {
+  color: #373737 !important;
+}
+
+/* Navbar  Categoroy Menu */
+
+nav li .subMenu {
+  visibility: hidden;
+  z-index: 1000;
+}
+nav li:hover .subMenu {
+  opacity: 1 !important;
+  visibility: inherit;
+  top: 100%;
+}
