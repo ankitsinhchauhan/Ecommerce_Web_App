@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   changePassowrd,
   forgotPasswordController,
+  imageUploadController,
   loginUserController,
   logoutController,
   refreshToken,
@@ -10,7 +11,6 @@ import {
   resetPassword,
   updateUserDetailsController,
   userDetails,
-  userImageController,
   verifyEmailController,
   verifyForgotPasswordOtp,
 } from "../controllers/userController.js";
@@ -27,7 +27,7 @@ userRouter.put(
   "/user-avatar",
   auth,
   upload.array("avatar"),
-  userImageController
+  imageUploadController
 );
 userRouter.delete("/deleteImg", auth, removeImageFromCloudinary);
 userRouter.put("/:id", auth, updateUserDetailsController);

@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-import CategoryModel from "../models/CategoryModel.js";
+import CategoryModel from "../models/categoryModel.js";
 
 // cloudinary
 cloudinary.config({
@@ -37,6 +37,8 @@ export async function uploadImages(req, res) {
 
     return res.status(200).json({
       images: imagesArr,
+      success: true,
+      error: false,
     });
   } catch (error) {
     return res.status(500).json({

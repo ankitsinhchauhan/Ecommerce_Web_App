@@ -24,6 +24,7 @@ import MyAccount from "./pages/MyAccount";
 import MyList from "./pages/MyList";
 import Orders from "./pages/Orders";
 import { fetchDataFromApi } from "./api";
+import Address from "./pages/Address";
 
 const MyContext = createContext();
 
@@ -57,8 +58,11 @@ const App = () => {
           if (res?.response?.data?.message === "You have not login") {
             localStorage.removeItem("accesstoken");
             localStorage.removeItem("refreshtoken");
-            context.openAlertBox("error", "Your session is closed login again");
-            context.setIsLogin(false);
+            openAlertBox("error", "Your session is closed login again");
+
+            window.location.href = "/login";
+
+            setIsLogin(false);
           }
         }
       });
@@ -106,6 +110,7 @@ const App = () => {
             <Route path={"/my-account"} element={<MyAccount />} />
             <Route path={"/my-list"} element={<MyList />} />
             <Route path={"/my-orders"} element={<Orders />} />
+            <Route path={"/address"} element={<Address />} />
           </Routes>
           <Footer />
         </MyContext.Provider>

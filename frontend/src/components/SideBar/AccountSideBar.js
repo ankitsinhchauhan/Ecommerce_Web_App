@@ -4,6 +4,8 @@ import { GoPerson } from "react-icons/go";
 import { MdLogout } from "react-icons/md";
 import { BsBagCheck } from "react-icons/bs";
 import { FaRegHeart } from "react-icons/fa6";
+import { LuMapPinPlus } from "react-icons/lu";
+
 import { NavLink } from "react-router";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -123,8 +125,17 @@ const AccountSideBar = () => {
         <li className="w-full">
           <NavLink to="/my-account" exact={true} activeClassName="isActive">
             <Button className="w-full !justify-start !text-left !py-2 !px-5 !text-[rgba(0,0,0,0.8)] !capitalize !rounded-none flex items-center gap-2">
-              <GoPerson className="text-[18px]" />
+              <GoPerson className="text-[20px]" />
               My Profile
+            </Button>
+          </NavLink>
+        </li>
+
+        <li className="w-full">
+          <NavLink to="/address" exact={true} activeClassName="isActive">
+            <Button className="w-full !justify-start !text-left !py-2 !px-5 !text-[rgba(0,0,0,0.8)] !capitalize !rounded-none flex items-center gap-2">
+              <LuMapPinPlus className="text-[20px]" />
+              Address
             </Button>
           </NavLink>
         </li>
@@ -132,7 +143,7 @@ const AccountSideBar = () => {
         <li className="w-full">
           <NavLink to="/my-list" exact={true} activeClassName="isActive">
             <Button className="w-full !justify-start !text-left !py-2 !px-5 !text-[rgba(0,0,0,0.8)] !capitalize !rounded-none flex items-center gap-2">
-              <FaRegHeart className="text-[18px]" />
+              <FaRegHeart className="text-[20px]" />
               My List
             </Button>
           </NavLink>
@@ -140,7 +151,7 @@ const AccountSideBar = () => {
         <li className="w-full">
           <NavLink to="/my-orders" exact={true} activeClassName="isActive">
             <Button className="w-full !justify-start !text-left !py-2 !px-5 !text-[rgba(0,0,0,0.8)] !capitalize !rounded-none flex items-center gap-2">
-              <BsBagCheck className="text-[18px]" />
+              <BsBagCheck className="text-[20px]" />
               My Orders
             </Button>
           </NavLink>
@@ -148,7 +159,7 @@ const AccountSideBar = () => {
         <li className="w-full">
           <NavLink to="/logout" exact={true} activeClassName="isActive">
             <Button className="w-full !justify-start !text-left !py-2 !px-5 !text-[rgba(0,0,0,0.8)] !capitalize !rounded-none flex items-center gap-2">
-              <MdLogout className="text-[18px]" />
+              <MdLogout className="text-[20px]" />
               Logout
             </Button>
           </NavLink>

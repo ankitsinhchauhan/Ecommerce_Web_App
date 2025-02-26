@@ -26,6 +26,7 @@ const auth = async (req, res, next) => {
     }
 
     req.userId = decode.id;
+
     next();
   } catch (error) {
     return res.status(500).json({

@@ -245,17 +245,18 @@ export async function logoutController(req, res) {
   }
 }
 
-// Image Upload
+//Image Upload
+
 var imagesArr = [];
-export async function userImageController(req, res) {
+export async function imageUploadController(req, res) {
   try {
     imagesArr = [];
 
-    const userid = req.userId; // auth middleware
+    const userId = req.userId; // auth middleware
     const image = req.files;
 
     // Get & Check user
-    const user = await UserModel.findOne({ _id: userid });
+    const user = await UserModel.findOne({ _id: userId });
 
     if (!user) {
       return res.status(500).json({
@@ -301,7 +302,7 @@ export async function userImageController(req, res) {
     await user.save();
 
     return res.status(200).json({
-      _id: userid,
+      _id: userId,
       avtar: imagesArr[0],
     });
   } catch (error) {

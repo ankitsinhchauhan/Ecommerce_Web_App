@@ -29,6 +29,7 @@ import ChangePassword from "./Pages/ChangePassword";
 import toast, { Toaster } from "react-hot-toast";
 import { fetchDataFromApi } from "./Apis";
 import Profile from "./Pages/Profile";
+import AddAddress from "./Pages/AddAddress";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -316,8 +317,19 @@ const App = () => {
       setIsLogin(true);
 
       fetchDataFromApi(`/api/user/userDetails?token=${token}`).then((res) => {
-        console.log(res);
-        setUserData(res.data);
+        setUserData(res?.data);
+
+        if (res?.response?.data?.error === true) {
+          if (res?.response?.data?.message === "You have not login") {
+            localStorage.removeItem("accesstoken");
+            localStorage.removeItem("refreshtoken");
+            openAlertBox("error", "Your session is closed login again");
+
+            window.location.href = "/login";
+
+            setIsLogin(false);
+          }
+        }
       });
     } else {
       setIsLogin(false);
@@ -394,6 +406,7 @@ const App = () => {
           {isOpenFullScreenPanle?.model === "Add Sub Category" && (
             <AddSubCategory />
           )}
+          {isOpenFullScreenPanle?.model === "Add Address" && <AddAddress />}
         </Dialog>
         <Toaster />
       </MyContext.Provider>

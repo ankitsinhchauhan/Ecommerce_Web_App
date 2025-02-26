@@ -80,7 +80,7 @@ const Header = () => {
 
         {/* Login side */}
         {context.isLogin === false ? (
-          <li className="list-none">
+          <li className="list-none ">
             <Link to="/login">
               <Button className="btn-blue btn-sm !rounded-full">Sign In</Button>
             </Link>
@@ -97,7 +97,7 @@ const Header = () => {
                 onClick={handleClickMyAcc}
               >
                 <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzydHNX7dWwYr96l37dDK8ywjw31E7HNygmw&s"
+                  src="/profile.jpg"
                   alt=""
                   className="w-full h-full object-cover"
                 />
@@ -146,7 +146,7 @@ const Header = () => {
                 <div className="flex items-center gap-3">
                   <div className="rounded-full w-[35px] h-[35px]   overflow-hidden cursor-pointer">
                     <img
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzydHNX7dWwYr96l37dDK8ywjw31E7HNygmw&s"
+                      src="/profile.jpg"
                       alt=""
                       className="w-full h-full object-cover"
                     />

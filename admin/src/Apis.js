@@ -1,7 +1,8 @@
 import axios from "axios";
+
 const backendURL = `http://localhost:8000`;
 
-// POST
+// POST Method
 export const postData = async (url, formData) => {
   try {
     const res = await fetch(backendURL + url, {
@@ -24,14 +25,53 @@ export const postData = async (url, formData) => {
   }
 };
 
-// GET
+// GET Method
 export const fetchDataFromApi = async (url) => {
   try {
     const { data } = await axios.get(backendURL + url, {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
       "Content-Type": "application/json",
     });
     return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Put Method
+export const uploadImage = async (url, updateImg) => {
+  try {
+    const { res } = await axios.put(backendURL + url, updateImg, {
+      Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+      "Content-Type": "multipart/form-data",
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Put Method
+export const editData = async (url, updateData) => {
+  try {
+    const { res } = await axios.put(backendURL + url, updateData, {
+      Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+      "Content-Type": "application/json",
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Put Method
+export const uploadImages = async (url, formData) => {
+  try {
+    const { res } = await axios.post(backendURL + url, formData, {
+      Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+      "Content-Type": "multipart/form-data",
+    });
+    return res;
   } catch (error) {
     console.log(error);
   }
