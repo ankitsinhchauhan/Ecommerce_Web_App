@@ -27,17 +27,16 @@ const UploadBox = (props) => {
           (files[i].type === "image/jpeg" ||
             files[i].type === "image/jpg" ||
             files[i].type === "image/png" ||
-            files[i].type === "image/webp")
+            files[i].type === "image/webp" ||
+            files[i].type === "image/avif")
         ) {
           const file = files[i];
-
           SelectedImages.push(file);
-
           formData.append(props?.name, file);
         } else {
           context.openAlertBox(
             "error",
-            "Please select a valid JPG, PNG or webp image file."
+            "Please select a valid JPG, PNG , avif or webp image file."
           );
           setIsLoading(false);
           return false;
@@ -48,11 +47,11 @@ const UploadBox = (props) => {
         `/api/category/uploadImages?token=${localStorage.getItem(
           "accesstoken"
         )}`,
-        formData,
-        { withCredentials: true }
+        formData
       ).then((res) => {
         console.log(res);
         setIsLoading(false);
+
         // props.setPreviews(res?.data?.images);
         props.setPreviewsFun(res?.data?.images);
       });

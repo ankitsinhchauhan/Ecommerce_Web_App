@@ -17,23 +17,23 @@ export async function addAddressController(req, res) {
 
     console.log(address_line1, city, state, pincode, country, mobile, status);
 
-    // const userId = req.userId;
+    console.log(userId);
 
-    // if (
-    //   !address_line1 ||
-    //   !city ||
-    //   !state ||
-    //   !pincode ||
-    //   !country ||
-    //   !mobile ||
-    //   !userId
-    // ) {
-    //   return res.status(404).json({
-    //     message: "Please provide all the fields",
-    //     error: true,
-    //     success: false,
-    //   });
-    // }
+    if (
+      !address_line1 ||
+      city ||
+      state ||
+      pincode ||
+      country ||
+      mobile ||
+      userId
+    ) {
+      return res.status(500).json({
+        message: "Please provide all the fields",
+        error: true,
+        success: false,
+      });
+    }
 
     const address = new AddressModel({
       address_line1,

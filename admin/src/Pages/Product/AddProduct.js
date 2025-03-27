@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import { IoMdClose } from "react-icons/io";
 import Button from "@mui/material/Button";
@@ -9,26 +9,101 @@ import UploadBox from "../../Components/UploadBox";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { MyContext } from "../../App";
+import { deleteImages } from "../../Apis";
 
 const AddProduct = () => {
+  const [formFields, setFormFields] = useState({
+    name: "",
+    description: "",
+    images: [],
+    brand: "",
+    price: "",
+    oldPrice: "",
+    catName: "",
+    catId: "",
+    countInStock: "",
+    rating: "",
+    isFeatured: false,
+    discount: "",
+    productWeight: [],
+  });
+
   const [productCat, setProductCat] = useState("");
-  const [productSubCat, setProductSubCat] = useState("");
   const [productFeatured, setProductFeatured] = useState("");
+  const [productWeight, setProductWeight] = useState([]);
+  const [previews, setPreviews] = useState([]);
+
+  const context = useContext(MyContext);
 
   const handleChangeProductCat = (event) => {
     setProductCat(event.target.value);
+    formFields.catId = event.target.value;
   };
 
-  const handleChangeProductSubCat = (event) => {
-    setProductSubCat(event.target.value);
+  const selectCatName = (name) => {
+    alert(name);
+    formFields.catName = name;
   };
+
   const handleChangeProductFeatured = (event) => {
     setProductFeatured(event.target.value);
+    formFields.isFeatured = event.target.value;
+  };
+
+  const handleChangeProductWeight = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setProductWeight(typeof value === "string" ? value.split(",") : value);
+    formFields.productWeight = value;
+  };
+
+  const onChangeInput = (e) => {
+    const { name, value } = e.target;
+    setFormFields(() => {
+      return {
+        ...formFields,
+        [name]: value,
+      };
+    });
+  };
+
+  const onChangeRating = (e) => {
+    setFormFields(() => ({
+      ...formFields,
+      rating: e.target.value,
+    }));
+  };
+
+  const setPreviewsFun = (previewsArr) => {
+    setPreviews(previewsArr);
+    formFields.images = previewsArr;
+  };
+
+  const removeImg = (image, index) => {
+    var imageArr = [];
+    imageArr = previews;
+
+    deleteImages(`/api/category/deleteImage?img=${image}`).then((res) => {
+      imageArr.splice(index, 1);
+      setPreviews([]);
+
+      setTimeout(() => {
+        setPreviews(imageArr);
+        // formFields.images = previewsArr;
+      }, 100);
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault(0);
+    console.log(formFields);
   };
 
   return (
     <section className="p-5 bg-gray-50">
-      <form className="form py-3 p-8 ">
+      <form className="form py-3 p-8 " onSubmit={handleSubmit}>
         <div className="scroll max-h-[71vh] overflow-y-scroll pr-4">
           <div className="grid grid-cols-1 mb-3">
             <div className="col">
@@ -38,6 +113,9 @@ const AddProduct = () => {
               <input
                 type="text"
                 className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
+                name="name"
+                value={formFields.name}
+                onChange={onChangeInput}
               />
             </div>
           </div>
@@ -50,6 +128,9 @@ const AddProduct = () => {
               <textarea
                 type="text"
                 className="w-full h-[140px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
+                name="description"
+                value={formFields.description}
+                onChange={onChangeInput}
               />
             </div>
           </div>
@@ -60,41 +141,28 @@ const AddProduct = () => {
               <h3 className="text-[16px] font-[500] mb-1 text-black">
                 Product Category
               </h3>
-              <Select
-                labelId="demo-simple-select-label"
-                id="productCatDrop"
-                size="small"
-                value={productCat}
-                label="Category"
-                className="w-full"
-                onChange={handleChangeProductCat}
-              >
-                <MenuItem value={null}>None</MenuItem>
-                <MenuItem value={10}>Appliances</MenuItem>
-                <MenuItem value={20}>Home & Kichen</MenuItem>
-              </Select>
-            </div>
-            {/* Sub category */}
-            <div className="col">
-              <h3 className="text-[16px] font-[500] mb-1 text-black">
-                Product Sub Category
-              </h3>
-              <Select
-                labelId="demo-simple-select-label"
-                id="productCatDrop"
-                size="small"
-                value={productSubCat}
-                label="Category"
-                className="w-full"
-                onChange={handleChangeProductSubCat}
-              >
-                <MenuItem value={null}>None</MenuItem>
-                <MenuItem value={10}>Air Conditioners</MenuItem>
-                <MenuItem value={20}>Refrigerators</MenuItem>
-                <MenuItem value={30}>Washing Machines</MenuItem>
-                <MenuItem value={40}> Dishwashers</MenuItem>
-                <MenuItem value={50}> Home & Kichen</MenuItem>
-              </Select>
+              {context?.catData?.length !== 0 && (
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="productCatDrop"
+                  size="small"
+                  value={productCat}
+                  label="Category"
+                  className="w-full"
+                  onChange={handleChangeProductCat}
+                >
+                  {context?.catData?.map((cat, index) => {
+                    return (
+                      <MenuItem
+                        value={cat?._id}
+                        onClick={() => selectCatName(cat?.name)}
+                      >
+                        {cat?.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              )}
             </div>
 
             <div className="col">
@@ -104,6 +172,9 @@ const AddProduct = () => {
               <input
                 type="number"
                 className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
+                name="price"
+                value={formFields.price}
+                onChange={onChangeInput}
               />
             </div>
             <div className="col">
@@ -113,6 +184,48 @@ const AddProduct = () => {
               <input
                 type="number"
                 className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
+                name="oldPrice"
+                value={formFields.oldPrice}
+                onChange={onChangeInput}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 mb-3 gap-5">
+            <div className="col">
+              <h3 className="text-[16px] font-[500] mb-1 text-black">
+                Product Stock
+              </h3>
+              <input
+                type="number"
+                className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
+                name="countInStock"
+                value={formFields.countInStock}
+                onChange={onChangeInput}
+              />
+            </div>
+            <div className="col">
+              <h3 className="text-[16px] font-[500] mb-1 text-black">
+                Product Brand
+              </h3>
+              <input
+                type="text"
+                className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
+                name="brand"
+                value={formFields.brand}
+                onChange={onChangeInput}
+              />
+            </div>
+            <div className="col">
+              <h3 className="text-[16px] font-[500] mb-1 text-black">
+                Product Discount
+              </h3>
+              <input
+                type="number"
+                className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
+                name="discount"
+                value={formFields.discount}
+                onChange={onChangeInput}
               />
             </div>
           </div>
@@ -132,54 +245,40 @@ const AddProduct = () => {
                 className="w-full"
                 onChange={handleChangeProductFeatured}
               >
-                <MenuItem value={10}>True</MenuItem>
-                <MenuItem value={20}>False</MenuItem>
+                <MenuItem value={true}>True</MenuItem>
+                <MenuItem value={false}>False</MenuItem>
               </Select>
             </div>
             <div className="col">
               <h3 className="text-[16px] font-[500] mb-1 text-black">
-                Product Stock
+                Product Weight
               </h3>
-              <input
-                type="number"
-                className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
-              />
-            </div>
-            <div className="col">
-              <h3 className="text-[16px] font-[500] mb-1 text-black">
-                Product Brand
-              </h3>
-              <input
-                type="text"
-                className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
-              />
-            </div>
-            <div className="col">
-              <h3 className="text-[16px] font-[500] mb-1 text-black">
-                Product Discount
-              </h3>
-              <input
-                type="number"
-                className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-4 mb-3 gap-5">
-            <div className="col">
-              <h3 className="text-[16px] font-[500] mb-1 text-black">
-                Product Capacity
-              </h3>
-              <input
-                type="text"
-                className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
-              />
+              <Select
+                multiple
+                labelId="demo-simple-select-label"
+                id="productCatDrop"
+                size="small"
+                value={productWeight}
+                label="Category"
+                className="w-full"
+                onChange={handleChangeProductWeight}
+              >
+                <MenuItem value={""}>None</MenuItem>
+                <MenuItem value={10}>1.0</MenuItem>
+                <MenuItem value={20}>1.5</MenuItem>
+                <MenuItem value={30}>2.0</MenuItem>
+              </Select>
             </div>
             <div className="col">
               <h3 className="text-[16px] font-[500] mb-1 text-black">
                 Product Rating
               </h3>
-              <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
+              <Rating
+                name="half-rating"
+                defaultValue={1}
+                precision={0.5}
+                onChange={onChangeRating}
+              />
             </div>
           </div>
 
@@ -187,65 +286,37 @@ const AddProduct = () => {
             <h3 className="font-[700] text-[18px] mb-3">Media & Images</h3>
 
             <div className="grid grid-cols-8 gap-4">
-              <div className="uploadBoxWrapper relative">
-                {/* close icon */}
-                <span className="absolute -top-[6px] -right-[6px] flex items-center justify-center w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 z-50 cursor-pointer">
-                  <IoMdClose className="text-white text-[17px]" />
-                </span>
-                <div className="uploadBox p-3 rounded-md overflow-hidden border border-dashed border-[rgba(0,0,0,0.2)] h-[150px] w-[100%] bg-gray-100 cursor-pointer hover:bg-gray-200 flex items-center justify-center flex-col relative">
-                  <LazyLoadImage
-                    className="w-full h-full object-cover"
-                    alt={"image"}
-                    src={"/asserts/Air Conditioners/Sm41.avif"}
-                    effect="blur"
-                    wrapperProps={{
-                      style: { transitionDelay: "1s" },
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="uploadBoxWrapper relative">
-                {/* close icon */}
-                <span className="absolute -top-[6px] -right-[6px] flex items-center justify-center w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 z-50 cursor-pointer">
-                  <IoMdClose className="text-white text-[17px]" />
-                </span>
-                <div className="uploadBox p-3 rounded-md overflow-hidden border border-dashed border-[rgba(0,0,0,0.2)] h-[150px] w-[100%] bg-gray-100 cursor-pointer hover:bg-gray-200 flex items-center justify-center flex-col relative">
-                  <LazyLoadImage
-                    className="w-full h-full object-cover"
-                    alt={"image"}
-                    src={"/asserts/Air Conditioners/Sm41.avif"}
-                    effect="blur"
-                    wrapperProps={{
-                      style: { transitionDelay: "1s" },
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="uploadBoxWrapper relative">
-                {/* close icon */}
-                <span className="absolute -top-[6px] -right-[6px] flex items-center justify-center w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 z-50 cursor-pointer">
-                  <IoMdClose className="text-white text-[17px]" />
-                </span>
-                <div className="uploadBox p-3 rounded-md overflow-hidden border border-dashed border-[rgba(0,0,0,0.2)] h-[150px] w-[100%] bg-gray-100 cursor-pointer hover:bg-gray-200 flex items-center justify-center flex-col relative">
-                  <LazyLoadImage
-                    className="w-full h-full object-cover"
-                    alt={"image"}
-                    src={"/asserts/Air Conditioners/Sm41.avif"}
-                    effect="blur"
-                    wrapperProps={{
-                      style: { transitionDelay: "1s" },
-                    }}
-                  />
-                </div>
-              </div>
-              <UploadBox multiple={true} />
+              {previews?.length !== 0 &&
+                previews?.map((image, index) => {
+                  return (
+                    <div className="uploadBoxWrapper relative" key={index}>
+                      {/* close icon */}
+                      <span
+                        className="absolute -top-[6px] -right-[6px] flex items-center justify-center w-[20px] h-[20px] rounded-full overflow-hidden bg-red-700 z-50 cursor-pointer"
+                        onClick={() => removeImg(image, index)}
+                      >
+                        <IoMdClose className="text-white text-[17px]" />
+                      </span>
+
+                      <div className="uploadBox p-3 rounded-md overflow-hidden border border-dashed border-[rgba(0,0,0,0.2)] h-[150px] w-[100%] bg-gray-100 cursor-pointer hover:bg-gray-200 flex items-center justify-center flex-col relative">
+                        <img src={image} alt="" className="w-full" />
+                      </div>
+                    </div>
+                  );
+                })}
+              <UploadBox
+                multiple={true}
+                name="images"
+                url="/api/product/uploadImage"
+                setPreviewsFun={setPreviewsFun}
+              />
             </div>
           </div>
         </div>
 
         <hr />
         <br />
-        <Button type="button" className="btn-blue btn-lg w-full flex gap-2">
+        <Button type="submit" className="btn-blue btn-lg w-full flex gap-2">
           <FaCloudUploadAlt className="text-[25px] text-white" />
           Publish and View
         </Button>

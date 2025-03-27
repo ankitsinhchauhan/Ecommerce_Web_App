@@ -151,6 +151,7 @@ const Header = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
+                  
                 </div>
                 <div className="info flex-col font-outfit mx-2">
                   <h4 className=" leading-3 text-[14px] text-[rgba(0,0,0,0.7)] mb-0 capitalize text-left justify-start ">

@@ -44,14 +44,14 @@ const productSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    thirdsubCat: {
-      type: String,
-      default: "",
-    },
-    thirdsubCatId: {
-      type: String,
-      default: "",
-    },
+    // thirdsubCat: {
+    //   type: String,
+    //   default: "",
+    // },
+    // thirdsubCatId: {
+    //   type: String,
+    //   default: "",
+    // },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",

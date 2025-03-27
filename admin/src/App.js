@@ -84,15 +84,7 @@ const App = () => {
         </>
       ),
     },
-    // // Forgot Password page
-    // {
-    //   path: "/forgot-password",
-    //   element: (
-    //     <>
-    //       <ForgotPassowrd />
-    //     </>
-    //   ),
-    // },
+
     // Verify Account
     {
       path: "/verify-account",
@@ -311,31 +303,6 @@ const App = () => {
     },
   ]);
 
-  useEffect(() => {
-    const token = localStorage.getItem("accesstoken");
-    if (token !== undefined && token !== null && token !== "") {
-      setIsLogin(true);
-
-      fetchDataFromApi(`/api/user/userDetails?token=${token}`).then((res) => {
-        setUserData(res?.data);
-
-        if (res?.response?.data?.error === true) {
-          if (res?.response?.data?.message === "You have not login") {
-            localStorage.removeItem("accesstoken");
-            localStorage.removeItem("refreshtoken");
-            openAlertBox("error", "Your session is closed login again");
-
-            window.location.href = "/login";
-
-            setIsLogin(false);
-          }
-        }
-      });
-    } else {
-      setIsLogin(false);
-    }
-  }, [isLogin]);
-
   const openAlertBox = (status, msg) => {
     if (status === "success") {
       toast.success(msg);
@@ -344,6 +311,27 @@ const App = () => {
       toast.error(msg);
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("accesstoken");
+    if (token !== undefined && token !== null && token !== "") {
+      setIsLogin(true);
+
+      fetchDataFromApi(`/api/user/userDetails?token=${token}`).then((res) => {
+        setUserData(res?.data);
+
+        if (res?.response?.data?.message === "You have not login") {
+          localStorage.removeItem("accesstoken");
+          localStorage.removeItem("refreshtoken");
+          openAlertBox("error", "Your session is closed login again");
+
+          window.location.href = "/login";
+        }
+      });
+    } else {
+      setIsLogin(false);
+    }
+  }, [isLogin]);
 
   const values = {
     isSidebarOpen,

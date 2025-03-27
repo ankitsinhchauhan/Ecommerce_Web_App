@@ -80,7 +80,7 @@ const Profile = () => {
           return false;
         }
       }
-      console.log(formData);
+
       uploadImage(
         `/api/user/user-avatar?token=${localStorage.getItem("accesstoken")}`,
         formData,

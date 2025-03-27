@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { MyContext } from "../App";
-import { fetchDataFromApi, postData } from "../Apis";
+import { postData } from "../Apis";
 
 const AddAddress = () => {
   const [phone, setPhone] = useState("");
@@ -29,7 +29,7 @@ const AddAddress = () => {
   useEffect(() => {
     setFormFields((preveState) => ({
       ...preveState,
-      userId: formFields.userId,
+      userId: formFields?.userId,
     }));
   }, [context?.userData]);
 

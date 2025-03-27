@@ -68,7 +68,7 @@ export async function createCategory(req, res) {
     await category.save();
 
     imagesArr = [];
-    return res.status(400).json({
+    return res.status(200).json({
       message: "Category created",
       error: false,
       success: true,

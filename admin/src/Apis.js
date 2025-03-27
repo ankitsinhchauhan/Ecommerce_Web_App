@@ -64,12 +64,26 @@ export const editData = async (url, updateData) => {
   }
 };
 
-// Put Method
+// post Method
 export const uploadImages = async (url, formData) => {
   try {
     const { res } = await axios.post(backendURL + url, formData, {
       Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
       "Content-Type": "multipart/form-data",
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// DELETE Image
+
+export const deleteImages = async (url, image) => {
+  try {
+    const { res } = await axios.delete(backendURL + url, image, {
+      Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+      "Content-Type": "application/json",
     });
     return res;
   } catch (error) {
