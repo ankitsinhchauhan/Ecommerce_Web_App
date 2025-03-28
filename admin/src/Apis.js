@@ -90,3 +90,28 @@ export const deleteImages = async (url, image) => {
     console.log(error);
   }
 };
+
+// POST Method
+export const addData = async (url, formData) => {
+  try {
+    const { res } = await axios.post(backendURL + url, formData, {
+      Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+      "Content-Type": "application/json",
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteData = async (url) => {
+  try {
+    const { res } = await axios.delete(backendURL + url, {
+      Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+      "Content-Type": "application/json",
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -6,7 +6,7 @@ import { MyContext } from "../App";
 
 const UploadBox = (props) => {
   const [previews, setPreviews] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setUploading] = useState(false);
 
   const context = useContext(MyContext);
 
@@ -19,7 +19,7 @@ const UploadBox = (props) => {
       setPreviews([]);
 
       const files = e.target.files;
-      setIsLoading(true);
+      setUploading(true);
 
       for (var i = 0; i < files.length; i++) {
         if (
@@ -38,7 +38,7 @@ const UploadBox = (props) => {
             "error",
             "Please select a valid JPG, PNG , avif or webp image file."
           );
-          setIsLoading(false);
+          setUploading(false);
           return false;
         }
       }
@@ -50,7 +50,7 @@ const UploadBox = (props) => {
         formData
       ).then((res) => {
         console.log(res);
-        setIsLoading(false);
+        setUploading(false);
 
         // props.setPreviews(res?.data?.images);
         props.setPreviewsFun(res?.data?.images);

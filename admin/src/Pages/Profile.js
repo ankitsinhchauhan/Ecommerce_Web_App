@@ -3,7 +3,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MyContext } from "../App";
 import { editData, postData, uploadImage } from "../Apis";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Collapse } from "react-collapse";
@@ -36,7 +36,7 @@ const Profile = () => {
   });
 
   const context = useContext(MyContext);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const userAvatar = [];
@@ -101,7 +101,7 @@ const Profile = () => {
   useEffect(() => {
     const token = localStorage.getItem("accesstoken");
     if (token === null) {
-      navigate("/login");
+      // navigate("/login");
     }
   }, [context?.isLogin]);
 

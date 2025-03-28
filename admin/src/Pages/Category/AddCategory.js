@@ -2,12 +2,12 @@ import React, { useContext } from "react";
 import UploadBox from "../../Components/UploadBox";
 import Button from "@mui/material/Button";
 // import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
+// import "react-lazy-load-image-component/src/effects/blur.css";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useState } from "react";
-import { deleteImages, postData } from "../../Apis";
+import { addData, deleteImages } from "../../Apis";
 import { MyContext } from "../../App";
 
 const AddCategory = () => {
@@ -69,7 +69,7 @@ const AddCategory = () => {
 
     console.log(formFields);
 
-    postData(
+    addData(
       `/api/category/create?token=${localStorage.getItem("accesstoken")}`,
       formFields,
       {
@@ -77,7 +77,13 @@ const AddCategory = () => {
       }
     ).then((res) => {
       console.log(res);
-      setIsLoading(false);
+
+      setTimeout(() => {
+        setIsLoading(false);
+        context.setIsOpenFullScreenPanle({
+          open: false,
+        });
+      }, 2500);
     });
   };
 

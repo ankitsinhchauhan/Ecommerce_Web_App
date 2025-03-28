@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
 import { RiEdit2Line } from "react-icons/ri";
-import { FaRegEye } from "react-icons/fa";
 import { GoTrash } from "react-icons/go";
 
 // Table
@@ -18,6 +17,9 @@ import TableRow from "@mui/material/TableRow";
 import Checkbox from "@mui/material/Checkbox";
 
 import { MyContext } from "../../App";
+import { deleteData, fetchDataFromApi } from "../../Apis";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const columns = [
@@ -31,7 +33,17 @@ const CategoryList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const [catData, setCatData] = useState([]);
+
   const context = useContext(MyContext);
+
+  useEffect(() => {
+    fetchDataFromApi(
+      `/api/category/get?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      setCatData(res?.data);
+    });
+  }, [context?.isOpenFullScreenPanle]);
 
   const handleChangeCateFilter = (event) => {
     setCategoryFilterVal(event.target.value);
@@ -44,6 +56,18 @@ const CategoryList = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const delelteCat = (id) => {
+    deleteData(
+      `/api/category/${id}?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      fetchDataFromApi(
+        `/api/category/get?token=${localStorage.getItem("accesstoken")}`
+      ).then((res) => {
+        setCatData(res?.data);
+      });
+    });
   };
 
   return (
@@ -88,40 +112,54 @@ const CategoryList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell width={100}>
-                  <div className="flex items-center gap-4 w-[80px]">
-                    <div className="img w-full rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/ariConditioner.svg"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell width={100}>Air Conditioner</TableCell>
-                <TableCell width={100}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
+              {catData?.length !== 0 &&
+                catData?.map((item, index) => {
+                  return (
+                    <TableRow>
+                      <TableCell>
+                        <Checkbox {...label} size="small" />
+                      </TableCell>
+                      <TableCell width={100}>
+                        <div className="flex items-center gap-4 w-[80px]">
+                          <div className="img w-full rounded-md overflow-hidden group">
+                            <Link to="/product/799574" data-discover="true">
+                              <LazyLoadImage
+                                src={item.images[0]}
+                                alt={"image"}
+                                effect="blur"
+                                className="w-full group-hover:scale-105 transition-all"
+                              />
+                            </Link>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell width={100}>{item?.name}</TableCell>
+                      <TableCell width={100}>
+                        <div className="flex items-center gap-4">
+                          <Button
+                            className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]"
+                            onClick={() =>
+                              context.setIsOpenFullScreenPanle({
+                                open: true,
+                                model: "Edit Category",
+                                id: item?._id,
+                              })
+                            }
+                          >
+                            <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                          </Button>
 
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
+                          <Button
+                            className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]"
+                            onClick={() => delelteCat(item?._id)}
+                          >
+                            <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -133,6 +171,7 @@ const CategoryList = () => {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          onChangeCateFilter={handleChangeCateFilter}
         />
       </div>
     </>

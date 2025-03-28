@@ -22,6 +22,7 @@ import AddCategory from "./Pages/Category/AddCategory";
 import CategoryList from "./Pages/Category/CategoryList";
 import SubCategoryList from "./Pages/Category/SubCategoryList";
 import AddSubCategory from "./Pages/Category/AddSubCategory";
+import EditCategory from "./Pages/Category/editCategory";
 import Users from "./Pages/Users";
 import Orders from "./Pages/Orders";
 import VerifyAccount from "./Pages/VerifyAccount";
@@ -46,6 +47,7 @@ const App = () => {
   const [isOpenFullScreenPanle, setIsOpenFullScreenPanle] = useState({
     open: false,
     model: "",
+    id: "",
   });
 
   const router = createBrowserRouter([
@@ -395,6 +397,7 @@ const App = () => {
             <AddSubCategory />
           )}
           {isOpenFullScreenPanle?.model === "Add Address" && <AddAddress />}
+          {isOpenFullScreenPanle?.model === "Edit Category" && <EditCategory />}
         </Dialog>
         <Toaster />
       </MyContext.Provider>

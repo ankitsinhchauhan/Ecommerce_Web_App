@@ -17,6 +17,7 @@ export async function uploadImages(req, res) {
     imagesArr = [];
 
     const image = req.files;
+    console.log(image);
 
     const options = {
       use_filename: true,
