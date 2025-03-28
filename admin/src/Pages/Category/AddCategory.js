@@ -9,6 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useState } from "react";
 import { addData, deleteImages } from "../../Apis";
 import { MyContext } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 const AddCategory = () => {
   const [formFields, setFormFields] = useState({
@@ -19,6 +20,7 @@ const AddCategory = () => {
   const [previews, setPreviews] = useState([]);
 
   const context = useContext(MyContext);
+  const navigate = useNavigate();
 
   const onChangeInput = (e) => {
     const { name, value } = e.target;
@@ -83,6 +85,8 @@ const AddCategory = () => {
         context.setIsOpenFullScreenPanle({
           open: false,
         });
+        // context?.getCat();
+        navigate("/category/list");
       }, 2500);
     });
   };

@@ -6,11 +6,14 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Rating from "@mui/material/Rating";
 import UploadBox from "../../Components/UploadBox";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+// import { LazyLoadImage } from "react-lazy-load-image-component";
+
 import "react-lazy-load-image-component/src/effects/blur.css";
+import CircularProgress from "@mui/material/CircularProgress";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MyContext } from "../../App";
-import { deleteImages } from "../../Apis";
+import { addData, deleteImages } from "../../Apis";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
   const [formFields, setFormFields] = useState({
@@ -33,18 +36,20 @@ const AddProduct = () => {
   const [productFeatured, setProductFeatured] = useState("");
   const [productWeight, setProductWeight] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const context = useContext(MyContext);
+  const navigate = useNavigate();
 
   const handleChangeProductCat = (event) => {
     setProductCat(event.target.value);
     formFields.catId = event.target.value;
   };
 
-  const selectCatName = (name) => {
-    alert(name);
-    formFields.catName = name;
-  };
+  // const selectCatName = (name) => {
+  //   alert(name);
+  //   formFields.catName = name;
+  // };
 
   const handleChangeProductFeatured = (event) => {
     setProductFeatured(event.target.value);
@@ -91,14 +96,35 @@ const AddProduct = () => {
 
       setTimeout(() => {
         setPreviews(imageArr);
-        // formFields.images = previewsArr;
+        formFields.images = imageArr;
       }, 100);
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault(0);
-    console.log(formFields);
+    setIsLoading(true);
+
+    addData(
+      `/api/product/create?token=${localStorage.getItem("accesstoken")}`,
+      formFields,
+      {
+        withCredentials: true,
+      }
+    ).then((res) => {
+      console.log(res);
+      if (res?.error === false) {
+        context.openAlertBox("error", res?.message);
+
+        setTimeout(() => {
+          setIsLoading(false);
+          context.setIsOpenFullScreenPanle({
+            open: false,
+          });
+          navigate("/products");
+        }, 2500);
+      }
+    });
   };
 
   return (
@@ -151,16 +177,14 @@ const AddProduct = () => {
                   className="w-full"
                   onChange={handleChangeProductCat}
                 >
-                  {context?.catData?.map((cat, index) => {
-                    return (
-                      <MenuItem
-                        value={cat?._id}
-                        onClick={() => selectCatName(cat?.name)}
-                      >
-                        {cat?.name}
-                      </MenuItem>
-                    );
-                  })}
+                  {/* {context?.catData?.map((cat, index) => {
+                    return <MenuItem value={cat?._id} onClick={selectCatName(cat?.name)}>{cat?.name}</MenuItem>;
+                  })} */}
+                  <MenuItem value={10}>Air Conditioner</MenuItem>
+                  <MenuItem value={20}>Dishwasher</MenuItem>
+                  <MenuItem value={30}>Geyser</MenuItem>
+                  <MenuItem value={40}>Refrigerators</MenuItem>
+                  <MenuItem value={50}> Washing Machines</MenuItem>
                 </Select>
               )}
             </div>
@@ -317,8 +341,14 @@ const AddProduct = () => {
         <hr />
         <br />
         <Button type="submit" className="btn-blue btn-lg w-full flex gap-2">
-          <FaCloudUploadAlt className="text-[25px] text-white" />
-          Publish and View
+          {isLoading === true ? (
+            <CircularProgress color="inherit" />
+          ) : (
+            <>
+              <FaCloudUploadAlt className="text-[25px] text-white" />
+              Publish and View
+            </>
+          )}
         </Button>
       </form>
     </section>

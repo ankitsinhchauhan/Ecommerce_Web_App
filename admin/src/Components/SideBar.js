@@ -186,7 +186,7 @@ const SideBar = () => {
                     Add a Category
                   </Button>
                 </li>
-                <li className="w-full">
+                {/* <li className="w-full">
                   <Link to="/subCategory/list">
                     <Button className="!text-[rgba(0,0,0,0.7)] !text-[13px] !font-[500] !capitalize !justify-start !w-full !pl-9 flex gap-3">
                       <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
@@ -207,7 +207,7 @@ const SideBar = () => {
                     <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
                     Add a Sub Category
                   </Button>
-                </li>
+                </li> */}
               </ul>
             </Collapse>
           </li>

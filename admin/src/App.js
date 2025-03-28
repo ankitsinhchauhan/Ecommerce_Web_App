@@ -6,23 +6,13 @@ import Dashboard from "./Pages/Dashboard";
 import Login from "./Pages/Login";
 import SignUp from "./Pages/SignUp";
 import Products from "./Pages/Product/Products";
-import AddProduct from "./Pages/Product/AddProduct";
-// Add product (upload product)
-import Dialog from "@mui/material/Dialog";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Slide from "@mui/material/Slide";
-import { IoMdClose } from "react-icons/io";
+
 import SideBar from "./Components/SideBar";
 import HomeSliderBanners from "./Pages/HomeSliderBanners/HomeSliderBanners";
-import AddHomeSlider from "./Pages/HomeSliderBanners/AddHomeSlider";
-import AddCategory from "./Pages/Category/AddCategory";
+
 import CategoryList from "./Pages/Category/CategoryList";
 import SubCategoryList from "./Pages/Category/SubCategoryList";
-import AddSubCategory from "./Pages/Category/AddSubCategory";
-import EditCategory from "./Pages/Category/editCategory";
+
 import Users from "./Pages/Users";
 import Orders from "./Pages/Orders";
 import VerifyAccount from "./Pages/VerifyAccount";
@@ -30,11 +20,6 @@ import ChangePassword from "./Pages/ChangePassword";
 import toast, { Toaster } from "react-hot-toast";
 import { fetchDataFromApi } from "./Apis";
 import Profile from "./Pages/Profile";
-import AddAddress from "./Pages/AddAddress";
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const MyContext = createContext();
 
@@ -352,53 +337,6 @@ const App = () => {
       <MyContext.Provider value={values}>
         <RouterProvider router={router} />
 
-        {/* Add/Upload Product */}
-
-        <Dialog
-          fullScreen
-          open={isOpenFullScreenPanle.open}
-          onClose={() =>
-            setIsOpenFullScreenPanle({
-              open: false,
-            })
-          }
-          TransitionComponent={Transition}
-        >
-          <AppBar sx={{ position: "relative" }}>
-            <Toolbar>
-              <IconButton
-                edge="start"
-                color="inherit"
-                onClick={() =>
-                  setIsOpenFullScreenPanle({
-                    open: false,
-                  })
-                }
-                aria-label="close"
-              >
-                <IoMdClose className="text-black" />
-              </IconButton>
-              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                <span className="text-gray-800">
-                  {" "}
-                  {isOpenFullScreenPanle?.model}
-                </span>
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          {isOpenFullScreenPanle?.model === "Add Product" && <AddProduct />}
-          {isOpenFullScreenPanle?.model === "Add Home Slide" && (
-            <AddHomeSlider />
-          )}
-          {isOpenFullScreenPanle?.model === "Add New Category" && (
-            <AddCategory />
-          )}
-          {isOpenFullScreenPanle?.model === "Add Sub Category" && (
-            <AddSubCategory />
-          )}
-          {isOpenFullScreenPanle?.model === "Add Address" && <AddAddress />}
-          {isOpenFullScreenPanle?.model === "Edit Category" && <EditCategory />}
-        </Dialog>
         <Toaster />
       </MyContext.Provider>
     </>
