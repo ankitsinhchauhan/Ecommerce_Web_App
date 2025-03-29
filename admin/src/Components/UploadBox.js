@@ -3,10 +3,11 @@ import { FaRegImage } from "react-icons/fa";
 import { uploadImages } from "../Apis";
 import { useContext } from "react";
 import { MyContext } from "../App";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const UploadBox = (props) => {
   const [previews, setPreviews] = useState([]);
-  const [isLoading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const context = useContext(MyContext);
 
@@ -62,16 +63,26 @@ const UploadBox = (props) => {
 
   return (
     <div className="uploadBox p-3 rounded-md overflow-hidden border border-dashed border-[rgba(0,0,0,0.2)] h-[150px] w-[100%] bg-gray-100 cursor-pointer hover:bg-gray-200 flex items-center justify-center flex-col relative">
-      <FaRegImage className="text-[40px] opacity-35 pointer-events-none" />
-      <h4 className="text-[14px] pointer-events-none">Image Upload</h4>
-      <input
-        type="file"
-        accept="image/*"
-        multiple={props.multiple !== undefined ? props.multiple : false}
-        className="absolute top-0 left-0 w-full h-full z-50 opacity-0"
-        onChange={(e) => onChangeFile(e, "/api/category/uploadImages")}
-        name="images"
-      />
+      {uploading === true ? (
+        <>
+          {" "}
+          <CircularProgress />
+          <h4 className="text-center">Uploading</h4>
+        </>
+      ) : (
+        <>
+          <FaRegImage className="text-[40px] opacity-35 pointer-events-none" />
+          <h4 className="text-[14px] pointer-events-none">Image Upload</h4>
+          <input
+            type="file"
+            accept="image/*"
+            multiple={props.multiple !== undefined ? props.multiple : false}
+            className="absolute top-0 left-0 w-full h-full z-50 opacity-0"
+            onChange={(e) => onChangeFile(e, "/api/category/uploadImages")}
+            name="images"
+          />
+        </>
+      )}
     </div>
   );
 };

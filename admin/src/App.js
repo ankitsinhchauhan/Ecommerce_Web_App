@@ -27,6 +27,7 @@ const App = () => {
   const [isSidebarOpen, setisSidebarOpen] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [catData, setCatData] = useState([]);
 
   // Product panel (upload product)
   const [isOpenFullScreenPanle, setIsOpenFullScreenPanle] = useState({
@@ -320,6 +321,14 @@ const App = () => {
     }
   }, [isLogin]);
 
+  useEffect(() => {
+    fetchDataFromApi(
+      `/api/category/get?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      setCatData(res?.data);
+    });
+  }, []);
+
   const values = {
     isSidebarOpen,
     setisSidebarOpen,
@@ -330,6 +339,8 @@ const App = () => {
     openAlertBox,
     userData,
     setUserData,
+    catData,
+    setCatData,
   };
 
   return (

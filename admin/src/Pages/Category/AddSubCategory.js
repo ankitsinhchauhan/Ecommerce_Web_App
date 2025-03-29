@@ -7,10 +7,26 @@ import Select from "@mui/material/Select";
 
 const AddSubCategory = () => {
   const [subCategory, setSubCategory] = useState("");
+  const [formFields, setFormFields] = useState({
+    name: "",
+    parentCatName: null,
+    parentId: null,
+  });
 
   const handleChangeSubCategory = (event) => {
     setSubCategory(event.target.value);
   };
+
+  const onChangeInput = (e) => {
+    const { name, value } = e.target;
+    setFormFields(() => {
+      return {
+        ...formFields,
+        [name]: value,
+      };
+    });
+  };
+
   return (
     <section className="p-5 bg-gray-50">
       <form className="form py-3 p-8 ">
@@ -40,6 +56,9 @@ const AddSubCategory = () => {
               </h3>
               <input
                 type="text"
+                name="name"
+                value={formFields.name}
+                onChange={onChangeInput}
                 className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
               />
             </div>

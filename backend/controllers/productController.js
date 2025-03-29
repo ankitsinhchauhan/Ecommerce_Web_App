@@ -38,6 +38,8 @@ export async function uploadImages(req, res) {
 
     return res.status(200).json({
       images: imagesArr,
+      success: true,
+      error: false,
     });
   } catch (error) {
     return res.status(500).json({
@@ -58,30 +60,29 @@ export async function createProduct(req, res) {
       brand: req.body.brand,
       price: req.body.price,
       oldPrice: req.body.oldPrice,
+
       catName: req.body.catName,
       catId: req.body.catId,
-      subCatId: req.body.subCatId,
-      subCat: req.body.subCat,
-      thirdsubCat: req.body.thirdsubCat,
-      thirdsubCatId: req.body.thirdsubCatId,
+      // subCatId: req.body.subCatId,
+      // subCat: req.body.subCat,
       countInStock: req.body.countInStock,
       rating: req.body.rating,
       isFeatured: req.body.isFeatured,
       discount: req.body.discount,
-      size: req.body.size,
       productWeight: req.body.productWeight,
       dateCreated: req.body.dateCreated,
     });
 
-    await product.save();
-
     if (!product) {
-      return res.status(500).json({
+      return res.status(400).json({
         message: "Product not created",
         error: true,
         success: false,
       });
     }
+
+    await product.save();
+
     imagesArr = [];
 
     res.status(200).json({

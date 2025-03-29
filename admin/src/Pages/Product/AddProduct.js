@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { IoMdClose } from "react-icons/io";
 import Button from "@mui/material/Button";
@@ -6,9 +6,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Rating from "@mui/material/Rating";
 import UploadBox from "../../Components/UploadBox";
-// import { LazyLoadImage } from "react-lazy-load-image-component";
-
-import "react-lazy-load-image-component/src/effects/blur.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MyContext } from "../../App";
@@ -19,17 +16,17 @@ const AddProduct = () => {
   const [formFields, setFormFields] = useState({
     name: "",
     description: "",
-    images: [],
-    brand: "",
-    price: "",
-    oldPrice: "",
     catName: "",
     catId: "",
+    price: "",
+    oldPrice: "",
     countInStock: "",
-    rating: "",
-    isFeatured: false,
+    brand: "",
     discount: "",
+    isFeatured: false,
     productWeight: [],
+    rating: "",
+    images: [],
   });
 
   const [productCat, setProductCat] = useState("");
@@ -46,10 +43,9 @@ const AddProduct = () => {
     formFields.catId = event.target.value;
   };
 
-  // const selectCatName = (name) => {
-  //   alert(name);
-  //   formFields.catName = name;
-  // };
+  const selectCatName = (name) => {
+    formFields.catName = name;
+  };
 
   const handleChangeProductFeatured = (event) => {
     setProductFeatured(event.target.value);
@@ -103,8 +99,64 @@ const AddProduct = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(0);
+
     setIsLoading(true);
 
+    if (formFields.name === "") {
+      context.openAlertBox("error", "Please enter product name");
+      setIsLoading(false);
+      return false;
+    }
+    if (formFields.description === "") {
+      context.openAlertBox("error", "Please enter description");
+      setIsLoading(false);
+      return false;
+    }
+    if (formFields.catId === "") {
+      context.openAlertBox("error", "Please  select product category");
+      setIsLoading(false);
+      return false;
+    }
+
+    if (formFields.price === "") {
+      context.openAlertBox("error", "Please enter price");
+      setIsLoading(false);
+      return false;
+    }
+    if (formFields.oldPrice === "") {
+      context.openAlertBox("error", "Please enter oldPrice");
+      setIsLoading(false);
+      return false;
+    }
+
+    if (formFields.countInStock === "") {
+      context.openAlertBox("error", "Please enter countInStock");
+      setIsLoading(false);
+      return false;
+    }
+    if (formFields.brand === "") {
+      context.openAlertBox("error", "Please enter brand");
+      setIsLoading(false);
+      return false;
+    }
+    if (formFields.discount === "") {
+      context.openAlertBox("error", "Please enter discount");
+      setIsLoading(false);
+      return false;
+    }
+
+    if (formFields.rating === "") {
+      context.openAlertBox("error", "Please enter rating");
+      setIsLoading(false);
+      return false;
+    }
+
+    if (previews?.length === 0) {
+      context.openAlertBox("error", "Please select product images");
+      setIsLoading(false);
+      return false;
+    }
+    console.log(formFields);
     addData(
       `/api/product/create?token=${localStorage.getItem("accesstoken")}`,
       formFields,
@@ -113,17 +165,16 @@ const AddProduct = () => {
       }
     ).then((res) => {
       console.log(res);
-      if (res?.error === false) {
-        context.openAlertBox("error", res?.message);
 
-        setTimeout(() => {
-          setIsLoading(false);
-          context.setIsOpenFullScreenPanle({
-            open: false,
-          });
-          navigate("/products");
-        }, 2500);
-      }
+      context.openAlertBox("success", "Product Created");
+
+      setTimeout(() => {
+        setIsLoading(false);
+        context.setIsOpenFullScreenPanle({
+          open: false,
+        });
+        navigate("/products");
+      }, 2500);
     });
   };
 
@@ -177,14 +228,16 @@ const AddProduct = () => {
                   className="w-full"
                   onChange={handleChangeProductCat}
                 >
-                  {/* {context?.catData?.map((cat, index) => {
-                    return <MenuItem value={cat?._id} onClick={selectCatName(cat?.name)}>{cat?.name}</MenuItem>;
-                  })} */}
-                  <MenuItem value={10}>Air Conditioner</MenuItem>
-                  <MenuItem value={20}>Dishwasher</MenuItem>
-                  <MenuItem value={30}>Geyser</MenuItem>
-                  <MenuItem value={40}>Refrigerators</MenuItem>
-                  <MenuItem value={50}> Washing Machines</MenuItem>
+                  {context?.catData?.map((cat, index) => {
+                    return (
+                      <MenuItem
+                        value={cat?._id}
+                        onClick={selectCatName(cat?.name)}
+                      >
+                        {cat?.name}
+                      </MenuItem>
+                    );
+                  })}
                 </Select>
               )}
             </div>
@@ -307,7 +360,7 @@ const AddProduct = () => {
           </div>
 
           <div className="col w-full p-5 px-0">
-            <h3 className="font-[700] text-[18px] mb-3">Media & Images</h3>
+            <h3 className="font-[700] text-[18px] mb-3">Product Images</h3>
 
             <div className="grid grid-cols-8 gap-4">
               {previews?.length !== 0 &&

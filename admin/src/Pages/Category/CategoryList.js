@@ -29,25 +29,22 @@ const columns = [
 ];
 
 const CategoryList = () => {
-  const [categoryFilterVal, setCategoryFilterVal] = useState("");
+  // const [categoryFilterVal, setCategoryFilterVal] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const [catData, setCatData] = useState([]);
-
   const context = useContext(MyContext);
-
   useEffect(() => {
     fetchDataFromApi(
       `/api/category/get?token=${localStorage.getItem("accesstoken")}`
     ).then((res) => {
-      setCatData(res?.data);
+      context?.setCatData(res?.data);
     });
   }, [context?.isOpenFullScreenPanle]);
 
-  const handleChangeCateFilter = (event) => {
-    setCategoryFilterVal(event.target.value);
-  };
+  // const handleChangeCateFilter = (event) => {
+  //   setCategoryFilterVal(event.target.value);
+  // };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -62,10 +59,11 @@ const CategoryList = () => {
     deleteData(
       `/api/category/${id}?token=${localStorage.getItem("accesstoken")}`
     ).then((res) => {
+      context.openAlertBox("success", "Category Deleted");
       fetchDataFromApi(
         `/api/category/get?token=${localStorage.getItem("accesstoken")}`
       ).then((res) => {
-        setCatData(res?.data);
+        context?.setCatData(res?.data);
       });
     });
   };
@@ -112,10 +110,10 @@ const CategoryList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {catData?.length !== 0 &&
-                catData?.map((item, index) => {
+              {context?.catData?.length !== 0 &&
+                context?.catData?.map((item, index) => {
                   return (
-                    <TableRow>
+                    <TableRow key={index}>
                       <TableCell>
                         <Checkbox {...label} size="small" />
                       </TableCell>
@@ -171,7 +169,7 @@ const CategoryList = () => {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          onChangeCateFilter={handleChangeCateFilter}
+          // onChangeCateFilter={handleChangeCateFilter}
         />
       </div>
     </>

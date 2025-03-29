@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
 import UploadBox from "../../Components/UploadBox";
 import Button from "@mui/material/Button";
-// import { LazyLoadImage } from "react-lazy-load-image-component";
-// import "react-lazy-load-image-component/src/effects/blur.css";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -79,6 +77,8 @@ const AddCategory = () => {
       }
     ).then((res) => {
       console.log(res);
+
+      context.openAlertBox("success", "Category created successfully!");
 
       setTimeout(() => {
         setIsLoading(false);
