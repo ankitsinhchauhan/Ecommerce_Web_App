@@ -28,6 +28,7 @@ const App = () => {
   const [isLogin, setIsLogin] = useState(false);
   const [userData, setUserData] = useState(null);
   const [catData, setCatData] = useState([]);
+  const [address, setAddress] = useState([]);
 
   // Product panel (upload product)
   const [isOpenFullScreenPanle, setIsOpenFullScreenPanle] = useState({
@@ -341,6 +342,8 @@ const App = () => {
     setUserData,
     catData,
     setCatData,
+    address,
+    setAddress,
   };
 
   return (

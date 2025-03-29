@@ -13,27 +13,24 @@ export async function addAddressController(req, res) {
       mobile,
       status,
       userId,
+      selected,
     } = req.body;
 
-    console.log(address_line1, city, state, pincode, country, mobile, status);
-
-    console.log(userId);
-
-    if (
-      !address_line1 ||
-      city ||
-      state ||
-      pincode ||
-      country ||
-      mobile ||
-      userId
-    ) {
-      return res.status(500).json({
-        message: "Please provide all the fields",
-        error: true,
-        success: false,
-      });
-    }
+    // if (
+    //   !address_line1 ||
+    //   city ||
+    //   state ||
+    //   pincode ||
+    //   country ||
+    //   mobile ||
+    //   userId
+    // ) {
+    //   return res.status(500).json({
+    //     message: "Please provide all the fields",
+    //     error: true,
+    //     success: false,
+    //   });
+    // }
 
     const address = new AddressModel({
       address_line1,
@@ -44,6 +41,7 @@ export async function addAddressController(req, res) {
       mobile,
       status,
       userId,
+      selected,
     });
     const savedAddress = await address.save();
 
@@ -82,13 +80,22 @@ export async function getAddressController(req, res) {
         error: true,
         success: false,
       });
-    }
+    } else {
+      const updatedUser = await UserModel.updateOne(
+        { _id: req?.query?.userId },
+        {
+          $push: {
+            address: address?._id,
+          },
+        }
+      );
 
-    return res.status(200).json({
-      data: address,
-      error: false,
-      success: true,
-    });
+      return res.status(200).json({
+        data: address,
+        error: false,
+        success: true,
+      });
+    }
   } catch (error) {
     return res.status(500).json({
       message: error.message || error,

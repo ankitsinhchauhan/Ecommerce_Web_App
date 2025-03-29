@@ -2,14 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MyContext } from "../App";
-import { editData, postData, uploadImage } from "../Apis";
-// import { useNavigate } from "react-router-dom";
+import { editData, fetchDataFromApi, postData, uploadImage } from "../Apis";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Collapse } from "react-collapse";
-import Checkbox from "@mui/material/Checkbox";
+import Radio from "@mui/material/Radio";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
+import { useNavigate } from "react-router-dom";
 
 const label = { inputProps: { "arial-lable": "Checkbox demo" } };
 
@@ -17,6 +17,7 @@ const Profile = () => {
   const [previews, setPreviews] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(false);
+  const [address, setAddress] = useState([]);
   const [phone, setPhone] = useState("");
   const [userId, setUserId] = useState("");
   const [isChangePasswordFormShow, setI1sChangePasswordFormShow] =
@@ -36,7 +37,7 @@ const Profile = () => {
   });
 
   const context = useContext(MyContext);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userAvatar = [];
@@ -101,13 +102,27 @@ const Profile = () => {
   useEffect(() => {
     const token = localStorage.getItem("accesstoken");
     if (token === null) {
-      // navigate("/login");
+      navigate("/login");
     }
   }, [context?.isLogin]);
+
+  const [seletctedValue, setSelectedValue] = useState("");
+
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
+  };
 
   // user id
   useEffect(() => {
     if (context?.userData?._id !== "" && context?.userData?._id !== undefined) {
+      // fetchDataFromApi(
+      //   `/api/address/get?userId=${
+      //     context?.userData?._id
+      //   } &token=${localStorage.getItem("accesstoken")}`
+      // ).then((res) => {
+      //   setAddress(res?.data);
+      //   context?.setAddress(res?.data);
+      // });
       setUserId(context?.userData?._id);
       setFormFields({
         name: context?.userData?.name,
@@ -329,12 +344,36 @@ const Profile = () => {
           >
             <span className="text-[14px] font-[500] ">Add Address</span>
           </div>
-
           {/* Address Box */}
-          <label className="addressBox w-full flex items-center justify-center bg-[#f1f1f1] p-3 rounded-md cursor-pointer">
-            <Checkbox {...label} />
-          </label>
-
+          <div className="flex gap-2 flex-col mt-4">
+            {address?.length > 0 &&
+              address?.map((address, index) => {
+                return (
+                  <>
+                    <label className=" border border-dashed border-[rgba(0,0,0,0.3)] addressBox w-full flex items-center justify-center bg-[#f1f1f1] p-3 rounded-md cursor-pointer">
+                      <Radio
+                        {...label}
+                        name="address"
+                        checked={seletctedValue === address?._id}
+                        value={address?._id}
+                        onChange={handleChange}
+                      />
+                      <span className="text-[12px]">
+                        {address?.address_line1 +
+                          "" +
+                          address?.city +
+                          "" +
+                          address?.state +
+                          "" +
+                          address?.country +
+                          "" +
+                          address?.pincode}
+                      </span>
+                    </label>
+                  </>
+                );
+              })}
+          </div>
           <br />
           <div className="flex items-center gap-4">
             <Button

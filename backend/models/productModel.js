@@ -13,6 +13,7 @@ const productSchema = new mongoose.Schema(
     images: [
       {
         type: String,
+        required: true,
       },
     ],
     brand: {
@@ -32,14 +33,6 @@ const productSchema = new mongoose.Schema(
       default: "",
     },
     catId: {
-      type: String,
-      default: "",
-    },
-    subCatId: {
-      type: String,
-      default: "",
-    },
-    subCat: {
       type: String,
       default: "",
     },
@@ -67,12 +60,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // size: [
-    //   {
-    //     type: String,
-    //     default: null,
-    //   },
-    // ],
+
     productWeight: [
       {
         type: String,

@@ -56,8 +56,6 @@ export async function createCategory(req, res) {
     let category = new CategoryModel({
       name: req.body.name,
       images: imagesArr,
-      parentId: req.body.parentId,
-      parentCatName: req.body.parentCatName,
     });
     if (!category) {
       return res.status(400).json({

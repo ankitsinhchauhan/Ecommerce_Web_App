@@ -23,7 +23,7 @@ import {
 
 const productRouter = Router();
 
-productRouter.post("/uploadImage", auth, upload.array("images"), uploadImages);
+productRouter.post("/uploadImages", auth, upload.array("images"), uploadImages);
 productRouter.post("/create", auth, createProduct);
 productRouter.get("/getAllProducts", getAllProduct);
 productRouter.get("/getAllProductsByCatId/:id", getAllProductsByCatId);
@@ -45,6 +45,6 @@ productRouter.get("/getFeaturedProducts", getFeaturedProduct);
 productRouter.delete("/:id", deleteProduct);
 productRouter.get("/:id", getProduct);
 productRouter.delete("/deleteImage", auth, removeImageFromCloudinary);
-productRouter.put("/updateProduct/:id", auth, UpdateProduct);
+productRouter.put("/:id", auth, UpdateProduct);
 
 export default productRouter;

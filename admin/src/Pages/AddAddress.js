@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { MyContext } from "../App";
-import { postData } from "../Apis";
+import { addData, fetchDataFromApi } from "../Apis";
 
 const AddAddress = () => {
   const [phone, setPhone] = useState("");
@@ -23,13 +23,14 @@ const AddAddress = () => {
     country: "",
     mobile: "",
     status: "",
-    userId: context?.userData?._id,
+    selected: false,
+    userId: "",
   });
 
   useEffect(() => {
     setFormFields((preveState) => ({
       ...preveState,
-      userId: formFields?.userId,
+      userId: context?.userData?._id,
     }));
   }, [context?.userData]);
 
@@ -83,11 +84,11 @@ const AddAddress = () => {
       return false;
     }
     if (phone === "") {
-      context.openAlertBox("error", "Please enter your mobile number");
+      context.openAlertBox("error", "Please enter your 10 digit mobile number");
       return false;
     }
 
-    postData(
+    addData(
       `/api/address/add?token=${localStorage.getItem("accesstoken")}`,
       formFields,
       { withCredentials: true }
@@ -95,13 +96,23 @@ const AddAddress = () => {
       console.log(res);
       if (res?.error !== true) {
         setIsLoading(false);
-        context.openAlertBox("success", res?.message);
+        context.openAlertBox("success", "Address created successfully");
+        context?.setIsOpenFullScreenPanle({
+          open: false,
+        });
+
+        fetchDataFromApi(
+          `/api/address/get?token=${localStorage.getItem("accesstoken")}`
+        ).then((res) => {
+          context?.setAddress(res.data);
+        });
       } else {
-        context.openAlertBox("error", res?.message);
+        context.openAlertBox("error", res?.data?.message);
         setIsLoading(false);
       }
     });
   };
+
   return (
     <section className="p-5 bg-gray-50">
       <form className="form py-3 p-8" onSubmit={handleSubmit}>
@@ -172,6 +183,7 @@ const AddAddress = () => {
               <PhoneInput
                 defaultCountry="in"
                 value={phone}
+                disabled={isLoading === true ? true : false}
                 onChange={(phone) => {
                   setPhone(phone);
                   {

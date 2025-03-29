@@ -16,6 +16,8 @@ const AddProduct = () => {
   const [formFields, setFormFields] = useState({
     name: "",
     description: "",
+    images: [],
+    category: "",
     catName: "",
     catId: "",
     price: "",
@@ -26,7 +28,6 @@ const AddProduct = () => {
     isFeatured: false,
     productWeight: [],
     rating: "",
-    images: [],
   });
 
   const [productCat, setProductCat] = useState("");
@@ -41,9 +42,10 @@ const AddProduct = () => {
   const handleChangeProductCat = (event) => {
     setProductCat(event.target.value);
     formFields.catId = event.target.value;
+    formFields.category = event.target.value;
   };
 
-  const selectCatName = (name) => {
+  const selectCatByName = (name) => {
     formFields.catName = name;
   };
 
@@ -85,14 +87,13 @@ const AddProduct = () => {
   const removeImg = (image, index) => {
     var imageArr = [];
     imageArr = previews;
-
     deleteImages(`/api/category/deleteImage?img=${image}`).then((res) => {
       imageArr.splice(index, 1);
       setPreviews([]);
 
       setTimeout(() => {
         setPreviews(imageArr);
-        formFields.images = imageArr;
+        // formFields.images = previewsArr;
       }, 100);
     });
   };
@@ -153,10 +154,14 @@ const AddProduct = () => {
 
     if (previews?.length === 0) {
       context.openAlertBox("error", "Please select product images");
+
       setIsLoading(false);
+
       return false;
     }
+
     console.log(formFields);
+
     addData(
       `/api/product/create?token=${localStorage.getItem("accesstoken")}`,
       formFields,
@@ -232,7 +237,7 @@ const AddProduct = () => {
                     return (
                       <MenuItem
                         value={cat?._id}
-                        onClick={selectCatName(cat?.name)}
+                        onClick={() => selectCatByName(cat?.name)}
                       >
                         {cat?.name}
                       </MenuItem>
@@ -340,7 +345,9 @@ const AddProduct = () => {
                 className="w-full"
                 onChange={handleChangeProductWeight}
               >
-                <MenuItem value={""}>None</MenuItem>
+                <MenuItem value={""}>
+                  <em>None</em>
+                </MenuItem>
                 <MenuItem value={10}>1.0</MenuItem>
                 <MenuItem value={20}>1.5</MenuItem>
                 <MenuItem value={30}>2.0</MenuItem>
@@ -384,7 +391,7 @@ const AddProduct = () => {
               <UploadBox
                 multiple={true}
                 name="images"
-                url="/api/product/uploadImage"
+                url="/api/product/uploadImages"
                 setPreviewsFun={setPreviewsFun}
               />
             </div>

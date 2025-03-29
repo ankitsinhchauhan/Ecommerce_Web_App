@@ -67,6 +67,15 @@ const Products = () => {
     });
   };
 
+  const deleteProduct = (id) => {
+    deleteData(
+      `/api/product/${id}?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      getProducts();
+      context.openAlertBox("success", "Product Deleted successfully");
+    });
+  };
+
   const handleChangeCateFilter = (event) => {
     setCategoryFilterVal(event.target.value);
   };
@@ -78,22 +87,6 @@ const Products = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
-  };
-
-  const deleteProduct = (id) => {
-    deleteData(
-      `/api/product/${id}?token=${localStorage.getItem("accesstoken")}`
-    ).then((res) => {
-      context.openAlertBox("success", "Product Deleted");
-
-      fetchDataFromApi(
-        `/api/product/getAllProducts?token=${localStorage.getItem(
-          "accesstoken"
-        )}`
-      ).then((res) => {
-        setProductData(res?.products);
-      });
-    });
   };
 
   return (
@@ -171,85 +164,97 @@ const Products = () => {
             </TableHead>
             <TableBody>
               {productData?.length !== 0 &&
-                productData?.map((product, index) => {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell style={{ minWidth: columns.minWidth }}>
-                        <Checkbox {...label} size="small" />
-                      </TableCell>
-                      <TableCell style={{ minWidth: columns.minWidth }}>
-                        <div className="flex items-center gap-4 w-[300px]">
-                          <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                            <Link to={`/product/${product?._id}`}>
-                              <LazyLoadImage
-                                src={product?.images[0]}
-                                alt={"image"}
-                                effect="blur"
-                                className="w-full group-hover:scale-105 transition-all"
-                              />
-                            </Link>
-                          </div>
-                          <div className="info w-[75%]">
-                            <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
+                productData
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.reverse()
+                  ?.map((product, index) => {
+                    return (
+                      <TableRow key={index}>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <Checkbox {...label} size="small" />
+                        </TableCell>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <div className="flex items-center gap-4 w-[300px]">
+                            <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
                               <Link to={`/product/${product?._id}`}>
-                                {product?.name}
+                                <LazyLoadImage
+                                  src={product?.images[0]}
+                                  alt={"images"}
+                                  effect="blur"
+                                  className="w-full group-hover:scale-105 transition-all"
+                                />
                               </Link>
-                            </h3>
-                            <span className="text-[12px]">
-                              {product?.brand}
+                            </div>
+                            <div className="info w-[75%]">
+                              <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
+                                <Link to={`/product/${product?._id}`}>
+                                  {product?.name}
+                                </Link>
+                              </h3>
+                              <span className="text-[12px]">
+                                {product?.brand}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          {product?.catName}
+                        </TableCell>
+
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <div className="flex gap-1 flex-col">
+                            <span className="price text-primary text-[14px] font-[600]">
+                              &#x20b9; {product?.price}
+                            </span>
+
+                            <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
+                              &#x20b9; {product?.oldPrice}
                             </span>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell style={{ minWidth: columns.minWidth }}>
-                        {product?.catName}
-                      </TableCell>
+                        </TableCell>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <p className="text-[14px] w-[100px]">
+                            <span className="font-[600]">{product?.sale}</span>
+                            sale
+                          </p>
+                        </TableCell>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <div className="flex items-center gap-4">
+                            <Button
+                              className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]"
+                              onClick={() =>
+                                context.setIsOpenFullScreenPanle({
+                                  open: true,
+                                  model: "Edit Product",
+                                  id: product?._id,
+                                })
+                              }
+                            >
+                              <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                            </Button>
 
-                      <TableCell style={{ minWidth: columns.minWidth }}>
-                        <div className="flex gap-1 flex-col">
-                          <span className="price text-primary text-[14px] font-[600]">
-                            &#x20b9; {product?.price}
-                          </span>
+                            <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                              <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                            </Button>
 
-                          <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                            &#x20b9; {product?.oldPrice}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell style={{ minWidth: columns.minWidth }}>
-                        <p className="text-[14px] w-[100px]">
-                          <span className="font-[600]">{product?.sale}</span>
-                          sale
-                        </p>
-                      </TableCell>
-                      <TableCell style={{ minWidth: columns.minWidth }}>
-                        <div className="flex items-center gap-4">
-                          <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                            <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                          </Button>
-
-                          <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                            <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                          </Button>
-
-                          <Button
-                            className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]"
-                            onClick={() => deleteProduct(product?._id)}
-                          >
-                            <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                            <Button
+                              className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]"
+                              onClick={() => deleteProduct(product?._id)}
+                            >
+                              <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={10}
+          count={productData?.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

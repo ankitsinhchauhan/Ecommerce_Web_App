@@ -1,6 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-
 import ProductModel from "./../models/productModel.js";
 
 // cloudinary
@@ -18,6 +17,7 @@ export async function uploadImages(req, res) {
     imagesArr = [];
 
     const image = req.files;
+    console.log(image);
 
     const options = {
       use_filename: true,
@@ -58,13 +58,11 @@ export async function createProduct(req, res) {
       description: req.body.description,
       images: imagesArr,
       brand: req.body.brand,
+      category: req.body.category,
       price: req.body.price,
       oldPrice: req.body.oldPrice,
-
       catName: req.body.catName,
       catId: req.body.catId,
-      // subCatId: req.body.subCatId,
-      // subCat: req.body.subCat,
       countInStock: req.body.countInStock,
       rating: req.body.rating,
       isFeatured: req.body.isFeatured,
@@ -80,12 +78,10 @@ export async function createProduct(req, res) {
         success: false,
       });
     }
-
     await product.save();
 
     imagesArr = [];
-
-    res.status(200).json({
+    return res.status(200).json({
       message: "Product created successfully!",
       error: false,
       success: true,

@@ -26,6 +26,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
+import EditProduct from "../Pages/Product/EditProduct";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -252,6 +253,9 @@ const Header = () => {
         )}
         {context?.isOpenFullScreenPanle?.model === "Edit Category" && (
           <EditCategory />
+        )}
+        {context?.isOpenFullScreenPanle?.model === "Edit Product" && (
+          <EditProduct />
         )}
       </Dialog>
     </>

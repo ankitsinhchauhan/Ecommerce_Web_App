@@ -85,7 +85,7 @@ const AddCategory = () => {
         context.setIsOpenFullScreenPanle({
           open: false,
         });
-        // context?.getCat();
+
         navigate("/category/list");
       }, 2500);
     });
@@ -145,13 +145,16 @@ const AddCategory = () => {
 
         <br />
         <br />
-        <div className="w-[250px]">
-          <Button type="submit" className="btn-blue btn-lg w-full flex gap-2">
+        <div className="w-[250px] cursor-pointer">
+          <Button
+            type="submit"
+            className="btn-blue btn-lg w-full flex gap-2 cursor-pointer"
+          >
             {isLoading === true ? (
               <CircularProgress color="inherit" />
             ) : (
               <>
-                <FaCloudUploadAlt className="text-[25px] text-white" />
+                <FaCloudUploadAlt className="text-[25px] text-white cursor-pointer" />
                 Publish and View
               </>
             )}

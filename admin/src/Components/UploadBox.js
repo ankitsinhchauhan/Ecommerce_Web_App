@@ -56,6 +56,19 @@ const UploadBox = (props) => {
         // props.setPreviews(res?.data?.images);
         props.setPreviewsFun(res?.data?.images);
       });
+
+      uploadImages(
+        `/api/product/uploadImages?token=${localStorage.getItem(
+          "accesstoken"
+        )}`,
+        formData
+      ).then((res) => {
+        console.log(res);
+        setUploading(false);
+
+        // props.setPreviews(res?.data?.images);
+        props.setPreviewsFun(res?.data?.images);
+      });
     } catch (error) {
       console.error("Upload Failed:", error);
     }
@@ -78,7 +91,13 @@ const UploadBox = (props) => {
             accept="image/*"
             multiple={props.multiple !== undefined ? props.multiple : false}
             className="absolute top-0 left-0 w-full h-full z-50 opacity-0"
-            onChange={(e) => onChangeFile(e, "/api/category/uploadImages")}
+            onChange={(e) =>
+              onChangeFile(
+                e,
+                "/api/category/uploadImages",
+                "/api/product/uploadImages"
+              )
+            }
             name="images"
           />
         </>
