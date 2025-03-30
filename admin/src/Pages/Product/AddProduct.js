@@ -348,9 +348,9 @@ const AddProduct = () => {
                 <MenuItem value={""}>
                   <em>None</em>
                 </MenuItem>
-                <MenuItem value={10}>1.0</MenuItem>
-                <MenuItem value={20}>1.5</MenuItem>
-                <MenuItem value={30}>2.0</MenuItem>
+                <MenuItem value={1.0}>1.0</MenuItem>
+                <MenuItem value={2.0}>1.5</MenuItem>
+                <MenuItem value={3.0}>2.0</MenuItem>
               </Select>
             </div>
             <div className="col">

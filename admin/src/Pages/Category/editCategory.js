@@ -84,10 +84,9 @@ const EditCategory = () => {
       return false;
     }
 
+    const Id = context?.isOpenFullScreenPanle?.id;
     editData(
-      `/api/category/${
-        context?.isOpenFullScreenPanle?.id
-      }?token=${localStorage.getItem("accesstoken")}`,
+      `/api/category/${Id}?token=${localStorage.getItem("accesstoken")}`,
       formFields
     ).then((res) => {
       console.log(res);

@@ -9,8 +9,8 @@ import UploadBox from "../../Components/UploadBox";
 import CircularProgress from "@mui/material/CircularProgress";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MyContext } from "../../App";
-import { addData, deleteImages, fetchDataFromApi } from "../../Apis";
-import { useNavigate, useParams } from "react-router-dom";
+import { deleteImages, editData, fetchDataFromApi } from "../../Apis";
+import { useNavigate } from "react-router-dom";
 
 const EditProduct = () => {
   const [formFields, setFormFields] = useState({
@@ -40,12 +40,33 @@ const EditProduct = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const id = context?.isOpenFullScreenPanle?.id;
+
     fetchDataFromApi(
-      `/api/product/${
-        context?.setIsOpenFullScreenPanle?.id
-      }?token=${localStorage.getItem("accesstoken")}`
+      `/api/product/${id}?token=${localStorage.getItem("accesstoken")}`
     ).then((res) => {
-      console.log(context?.setIsOpenFullScreenPanle?.id);
+      setFormFields({
+        name: res?.product?.name,
+        description: res?.product?.description,
+        images: res?.product?.images,
+        category: res?.product?.category,
+        catName: res?.product?.catName,
+        catId: res?.product?.catId,
+        price: res?.product?.price,
+        oldPrice: res?.product?.oldPrice,
+        countInStock: res?.product?.countInStock,
+        brand: res?.product?.brand,
+        discount: res?.product?.discount,
+        isFeatured: res?.product?.isFeatured,
+        productWeight: res?.product?.productWeight,
+        rating: res?.product?.rating,
+      });
+
+      setProductCat(res?.product?.catId);
+      setProductFeatured(res?.product?.isFeatured);
+      setProductWeight(res?.product?.productWeight);
+
+      setPreviews(res?.product?.images);
     });
   }, []);
 
@@ -90,14 +111,22 @@ const EditProduct = () => {
   };
 
   const setPreviewsFun = (previewsArr) => {
-    setPreviews(previewsArr);
-    formFields.images = previewsArr;
+    const imgArr = previews;
+    for (let i = 0; i < previewsArr.length; i++) {
+      imgArr.push(previewsArr[i]);
+    }
+
+    setPreviews([]);
+    setTimeout(() => {
+      setPreviews(imgArr);
+      formFields.images = imgArr;
+    }, 10);
   };
 
   const removeImg = (image, index) => {
     var imageArr = [];
     imageArr = previews;
-    deleteImages(`/api/category/deleteImage?img=${image}`).then((res) => {
+    deleteImages(`/api/product/deleteImage?img=${image}`).then((res) => {
       imageArr.splice(index, 1);
       setPreviews([]);
 
@@ -172,16 +201,19 @@ const EditProduct = () => {
 
     console.log(formFields);
 
-    addData(
-      `/api/product/create?token=${localStorage.getItem("accesstoken")}`,
+    const Id = context?.isOpenFullScreenPanle?.id;
+
+    editData(
+      `/api/product/updateProduct/${Id}?token=${localStorage.getItem(
+        "accesstoken"
+      )}`,
       formFields,
       {
         withCredentials: true,
       }
     ).then((res) => {
       console.log(res);
-
-      context.openAlertBox("success", "Product Created");
+      context.openAlertBox("success", "Product Updated");
 
       setTimeout(() => {
         setIsLoading(false);
@@ -247,6 +279,7 @@ const EditProduct = () => {
                     return (
                       <MenuItem
                         value={cat?._id}
+                        key={index}
                         onClick={() => selectCatByName(cat?.name)}
                       >
                         {cat?.name}
@@ -368,9 +401,8 @@ const EditProduct = () => {
                 Product Rating
               </h3>
               <Rating
-                name="half-rating"
-                defaultValue={1}
-                precision={0.5}
+                name="rating"
+                value={formFields.rating}
                 onChange={onChangeRating}
               />
             </div>

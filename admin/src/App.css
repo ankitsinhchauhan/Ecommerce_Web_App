@@ -125,3 +125,100 @@ input[type="text"]:disabled {
 .react-international-phone-input-container {
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
+
+/* Product Zoom */
+
+.zoomProductSlideThumb .swiper-wrapper {
+  padding-top: 38px !important;
+}
+
+.zoomProductSlideThumb .swiper-slide {
+  height: 80px !important;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.zoomProductSlideThumb .swiper-button-next {
+  bottom: 0px !important;
+  right: inherit !important;
+  top: inherit !important;
+  width: 100% !important;
+  height: 30px !important;
+  border-radius: 0px !important;
+}
+.zoomProductSlideThumb .swiper-button-next::after {
+  transform: rotate(90deg);
+}
+.zoomProductSlideThumb .swiper-button-prev {
+  top: 20px !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 30px !important;
+  border-radius: 0px !important;
+}
+.zoomProductSlideThumb .swiper-button-prev::after {
+  transform: rotate(90deg);
+}
+
+.zoomProductSlideThumb .swiper-button-prev:hover,
+.zoomProductSlideThumb .swiper-button-next:hover {
+  background: #6c6cff !important;
+}
+.zoomProductSlideThumb .swiper-button-prev:hover::after,
+.zoomProductSlideThumb .swiper-button-next:hover::after {
+  color: white !important;
+}
+
+.swiper-slide .iiz {
+  height: 400px !important;
+  overflow: hidden !important;
+}
+
+/* .productContent .action button {
+  min-width: 40px !important;
+  height: 30px !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: rgba(0, 0, 0, 0.7);
+} */
+
+.swiper-button-prev,
+.swiper-button-next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 100%;
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  box-shadow: 0 1px 3px #0000001f, 0 1px 2px #0000003d !important;
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 24px !important;
+  color: #000;
+}
+
+.smallBtn .swiper-button-prev,
+.swiper-button-next {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  top: 55% !important;
+}
+
+.smallBtn .swiper-button-prev::after,
+.smallBtn .swiper-button-next::after {
+  font-size: 18px !important;
+  color: #000;
+}
+
+.smallBtn .swiper-button-prev:hover,
+.smallBtn .swiper-button-next:hover {
+  background: #6c6cff !important;
+}
+.smallBtn .swiper-button-prev:hover::after,
+.smallBtn .swiper-button-next:hover::after {
+  color: white !important;
+}

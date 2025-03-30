@@ -3,6 +3,7 @@ import auth from "./../middlewares/auth.js";
 import upload from "./../middlewares/multer.js";
 import {
   createProduct,
+  deleteMultipleProduct,
   deleteProduct,
   getAllProduct,
   getAllProductsByCatId,
@@ -11,8 +12,6 @@ import {
   getAllProductsByRating,
   getAllProductsBySubCatId,
   getAllProductsBySubCatName,
-  getAllProductsByThirdLevelCatId,
-  getAllProductsByThirdLevelCatName,
   getFeaturedProduct,
   getProduct,
   getProductCount,
@@ -30,14 +29,6 @@ productRouter.get("/getAllProductsByCatId/:id", getAllProductsByCatId);
 productRouter.get("/getAllProductsByCatName", getAllProductsByCatName);
 productRouter.get("/getAllProductsBySubCatId/:id", getAllProductsBySubCatId);
 productRouter.get("/getAllProductsBySubCatName", getAllProductsBySubCatName);
-productRouter.get(
-  "/getAllProductsByThirdLevelCatId/:id",
-  getAllProductsByThirdLevelCatId
-);
-productRouter.get(
-  "/getAllProductsByThirdLevelCatName",
-  getAllProductsByThirdLevelCatName
-);
 productRouter.get("/getAllProductsByPrice", getAllProductsByPrice);
 productRouter.get("/getAllProductsByRating", getAllProductsByRating);
 productRouter.get("/productCounts", getProductCount);
@@ -45,6 +36,7 @@ productRouter.get("/getFeaturedProducts", getFeaturedProduct);
 productRouter.delete("/:id", deleteProduct);
 productRouter.get("/:id", getProduct);
 productRouter.delete("/deleteImage", auth, removeImageFromCloudinary);
-productRouter.put("/:id", auth, UpdateProduct);
+productRouter.put("/updateProduct/:id", auth, UpdateProduct);
+productRouter.delete("/deleteMultiple", deleteMultipleProduct);
 
 export default productRouter;
