@@ -20,7 +20,8 @@ import Checkbox from "@mui/material/Checkbox";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { MyContext } from "../../App";
-// import CircularProgress from "@mui/material/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
+import Rating from "@mui/material/Rating";
 import SearchBox from "../../Components/SearchBox";
 import { deleteData, deleteMultipleData, fetchDataFromApi } from "../../Apis";
 
@@ -39,6 +40,11 @@ const columns = [
     minWidth: 100,
   },
   {
+    id: "reating",
+    label: "RATING",
+    minWidth: 100,
+  },
+  {
     id: "action",
     label: "ACTION",
     minWidth: 100,
@@ -51,6 +57,7 @@ const Products = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [productData, setProductData] = useState([]);
   const [sortedIds, setSortedIds] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const context = useContext(MyContext);
 
@@ -95,6 +102,7 @@ const Products = () => {
   };
 
   const getProducts = async () => {
+    setIsLoading(true);
     fetchDataFromApi(
       `/api/product/getAllProducts?token=${localStorage.getItem("accesstoken")}`
     ).then((res) => {
@@ -104,7 +112,10 @@ const Products = () => {
           productArr[i] = res?.products[i];
           productArr[i].checked = false;
         }
-        setProductData(productArr);
+        setTimeout(() => {
+          setProductData(productArr);
+          setIsLoading(false);
+        }, 300);
       }
     });
   };
@@ -142,6 +153,7 @@ const Products = () => {
 
   const handleChangeProductCat = (event) => {
     setProductCat(event.target.value);
+    setIsLoading(true);
     const id = event.target.value;
     fetchDataFromApi(
       `/api/product/getAllProductsByCatId/${id}?token=${localStorage.getItem(
@@ -150,6 +162,9 @@ const Products = () => {
     ).then((res) => {
       if (res?.error === false) {
         setProductData(res?.products);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 300);
       }
     });
   };
@@ -254,7 +269,8 @@ const Products = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {productData?.length !== 0 &&
+              {isLoading === false ? (
+                productData?.length !== 0 &&
                 productData
                   ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   ?.reverse()
@@ -317,6 +333,16 @@ const Products = () => {
                           </p>
                         </TableCell>
                         <TableCell style={{ minWidth: columns.minWidth }}>
+                          <p className="text-[14px] w-[100px]">
+                            <Rating
+                              name="half-rating"
+                              size="small"
+                              defaultValue={product?.rating}
+                              precision={0.5}
+                            />
+                          </p>
+                        </TableCell>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
                           <div className="flex items-center gap-4">
                             <Button
                               className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]"
@@ -345,7 +371,18 @@ const Products = () => {
                         </TableCell>
                       </TableRow>
                     );
-                  })}
+                  })
+              ) : (
+                <>
+                  <TableRow>
+                    <TableCell colSpan={8}>
+                      <div className="flex items-center justify-center w-full min-h-[400px]">
+                        <CircularProgress color="inherit" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

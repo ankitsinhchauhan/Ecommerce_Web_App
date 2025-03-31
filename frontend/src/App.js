@@ -29,22 +29,34 @@ import Address from "./pages/Address";
 const MyContext = createContext();
 
 const App = () => {
-  const [openProductDetailsModal, setOpenProductDetailsModal] = useState(false);
+  const [openProductDetailsModal, setOpenProductDetailsModal] = useState({
+    open: false,
+    item: {},
+  });
   const [fullWidth, setFullWidth] = useState("lg");
   const [maxWidth, setMaxWidth] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
   const [userData, setUserData] = useState(null);
   const [openCartPanel, setOpenCartPanel] = useState(false);
+  const [catData, setCatData] = useState([]);
 
-  const handleCloseOpenProductModal = () => {
-    setOpenProductDetailsModal(false);
+  const handleOpenProductDetailModal = (status, item) => {
+    setOpenProductDetailsModal({
+      open: status,
+      item: item,
+    });
+  };
+
+  const handleCloseProductDetailModal = () => {
+    setOpenProductDetailsModal({
+      open: false,
+      item: {},
+    });
   };
 
   const toggleCartPanel = (newOpen) => () => {
     setOpenCartPanel(newOpen);
   };
-
-  const context = useContext(MyContext);
 
   useEffect(() => {
     const token = localStorage.getItem("accesstoken");
@@ -71,6 +83,13 @@ const App = () => {
     }
   }, [isLogin]);
 
+  useEffect(() => {
+    fetchDataFromApi(`/api/category/get`).then((res) => {
+      console.log(res);
+      setCatData(res?.data);
+    });
+  }, []);
+
   const openAlertBox = (status, msg) => {
     if (status === "success") {
       toast.success(msg);
@@ -82,6 +101,7 @@ const App = () => {
 
   const values = {
     setOpenProductDetailsModal,
+    handleOpenProductDetailModal,
     setOpenCartPanel,
     toggleCartPanel,
     openCartPanel,
@@ -90,6 +110,8 @@ const App = () => {
     setIsLogin,
     userData,
     setUserData,
+    catData,
+    setCatData,
   };
 
   return (
@@ -119,10 +141,10 @@ const App = () => {
       <Toaster />
 
       <Dialog
-        open={openProductDetailsModal}
+        open={openProductDetailsModal.open}
         fullWidth={fullWidth}
         maxWidth={maxWidth}
-        onClose={handleCloseOpenProductModal}
+        onClose={handleCloseProductDetailModal}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         className="productDetailsModal"
@@ -131,17 +153,22 @@ const App = () => {
           <div className="flex items-center w-full productDetailsModalContainer relative ">
             <Button
               className="!w-[40px] !h-[40px] !min-w-[40px] !rounded-full !text-black !absolute !top-[0px] !right-[0px] !bg-[#f1f1f1] "
-              onClick={handleCloseOpenProductModal}
+              onClick={handleCloseProductDetailModal}
             >
-              {" "}
-              <IoMdClose />
+              <IoMdClose className="text-[20px]" />
             </Button>
-            <div className="col1 w-[45%] px-3 ">
-              <ProductZoom />
-            </div>
-            <div className="col2 w-[55%] py-8 px-8 pr-16 productContent">
-              <ProductDetailComponents />
-            </div>
+            {openProductDetailsModal?.item?.length !== 0 && (
+              <>
+                <div className="col1 w-[45%] px-3 ">
+                  <ProductZoom images={openProductDetailsModal?.item?.images} />
+                </div>
+                <div className="col2 w-[55%] py-8 px-8 pr-16 productContent">
+                  <ProductDetailComponents
+                    item={openProductDetailsModal?.item}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </DialogContent>
       </Dialog>

@@ -6,40 +6,37 @@ import { FaRegHeart } from "react-icons/fa6";
 import { IoIosGitCompare } from "react-icons/io";
 import QtyBox from "./QtyBox";
 
-const ProductDetailComponents = () => {
+const ProductDetailComponents = (props) => {
   return (
     <>
-      <h1 className="text-[24px] font-[600] mb-3 ">
-        Convertible 5in1 Inverter Split AC AR18CY3YATA
-      </h1>
+      <h1 className="text-[24px] font-[600] mb-3 ">{props?.item?.name}</h1>
       <div className="flex items-center gap-3 mb-2">
         <span className="text-gray-400 text-[13px]">
           Brands :{" "}
-          <span className="font-[500] text-black opacity-75">Samsung</span>
+          <span className="font-[500] text-black opacity-75">
+            {props?.item?.brand}
+          </span>
         </span>
         <Rating name="size-small" defaultValue={4} size="small" />{" "}
         <span className="text-[13px] cursor-pointer">Review (5)</span>
       </div>
       <div className="flex items-center gap-4 mt-4">
-        <span className="oldPrice line-through text-gray-500 text-[20px] font-[500]">
-          $99.00
-        </span>
         <span className="price text-red-500 text-[20px] font-[600]">
-          $85.00
+          &#x20b9; {props?.item?.price}
         </span>
+        <span className="oldPrice line-through text-gray-500 text-[20px] font-[500]">
+          &#x20b9; {props?.item?.oldPrice}
+        </span>
+
         <span className="text-[14px]">
           Available In Stock :{" "}
-          <span className="text-green-600 font-bold">147 Items</span>
+          <span className="text-green-600 font-bold">
+            {props?.item?.countInStock} Items
+          </span>
         </span>
       </div>
+      <p className="mt-3 pr-10">{props?.item?.description}</p>
 
-      <p className="mt-3 pr-10">
-        Cool rooms quickly from corner to corner, so feel comfortable wherever
-        you are. Digital Inverter technology cools the air 43% faster*. Its
-        advanced design also has a 15% larger fan, 18% wider inlet and a 31%
-        wider blade. So cool air is dispersed farther and wider**, reaching up
-        to 15 meters.
-      </p>
       {/* QtyBox */}
       <p className="text-[14px] mt-5 mb-2 text-[#000]">
         Free Shipping (Est. Delivery Time 2-3 Days)

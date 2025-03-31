@@ -222,3 +222,7 @@ input[type="text"]:disabled {
 .smallBtn .swiper-button-next:hover::after {
   color: white !important;
 }
+
+.contentRight {
+  padding-top: 85px !important;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { RiMenu2Line } from "react-icons/ri";
 import { LiaAngleDownSolid } from "react-icons/lia";
@@ -7,9 +7,17 @@ import { MdRocketLaunch } from "react-icons/md";
 import CategoryPanel from "../Category/CategoryPanel";
 
 import "./Search/style.css";
+import { MyContext } from "../../App";
 
 const Navbar = () => {
   const [isOpenCategoryPanel, setIsOpenCategoryPanel] = useState(false);
+  const [catData, setCatData] = useState([]);
+
+  const context = useContext(MyContext);
+
+  useEffect(() => {
+    setCatData(context?.catData);
+  }, [context?.catData]);
 
   const openCategoryPanel = () => {
     setIsOpenCategoryPanel(true);
@@ -53,45 +61,23 @@ const Navbar = () => {
                   </Button>
                 </Link>
                 {/* Category Menu */}
-                <div className="subMenu absolute top-[120%] left-[0%] min-w-[200px] bg-white shadow-md opacity-0 transition-all">
-                  <ul>
-                    <li className="list-none w-full">
-                      <Link to="/" className="w-full">
-                        <Button className="!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start">
-                          Air Conditioners
-                        </Button>
-                      </Link>
-                    </li>
-                    <li className="list-none w-full">
-                      <Link to="/" className="w-full">
-                        <Button className="!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start !rounded-none">
-                          Refrigerators
-                        </Button>
-                      </Link>
-                    </li>
-                    <li className="list-none w-full">
-                      <Link to="/" className="w-full">
-                        <Button className="!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start !rounded-none">
-                          Washing Machines
-                        </Button>
-                      </Link>
-                    </li>
-                    <li className="list-none w-full">
-                      <Link to="/" className="w-full">
-                        <Button className="!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start !rounded-none">
-                          Dishwashers
-                        </Button>
-                      </Link>
-                    </li>
-                    <li className="list-none w-full">
-                      <Link to="/" className="w-full">
-                        <Button className="!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start !rounded-none">
-                          Home & Kichen
-                        </Button>
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
+                {catData?.length !== 0 && (
+                  <div className="subMenu absolute top-[120%] left-[0%] min-w-[200px] bg-white shadow-md opacity-0 transition-all">
+                    <ul>
+                      {catData?.map((cat, index) => {
+                        return (
+                          <li className="list-none w-full" key={index}>
+                            <Link to="/productListing" className="w-full">
+                              <Button className="!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start">
+                                {cat?.name}
+                              </Button>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
               </li>
               <li className="list-none">
                 <Link
@@ -136,10 +122,14 @@ const Navbar = () => {
       </nav>
 
       {/* Category Panel */}
-      <CategoryPanel
-        isOpenCategoryPanel={isOpenCategoryPanel}
-        setIsOpenCategoryPanel={setIsOpenCategoryPanel}
-      />
+
+      {catData?.length !== 0 && (
+        <CategoryPanel
+          isOpenCategoryPanel={isOpenCategoryPanel}
+          setIsOpenCategoryPanel={setIsOpenCategoryPanel}
+          data={catData}
+        />
+      )}
     </>
   );
 };

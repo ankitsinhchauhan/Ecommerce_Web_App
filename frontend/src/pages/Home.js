@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import HomeCateSlider from "../components/CateSlider/HomeCateSlider";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import AddBannerSlider from "../components/AddBannerSlider/AddBannerSlider";
@@ -6,18 +6,52 @@ import AddBannerSlider from "../components/AddBannerSlider/AddBannerSlider";
 // import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import ProductSlider from "../components/HomeSlider/ProductSlider";
 import AddSecondBannerSlider from "../components/AddBannerSlider/AddSecondBannerSlider";
 import CompanyName from "../components/HomeSlider/CompanyName";
 import HomeSliderV2 from "../components/HomeSlider/HomeSliderV2";
 import BannerBoxV2 from "../components/HomeSlider/BannerBoxV2";
+import { MyContext } from "../App";
+import { fetchDataFromApi } from "../api";
+import ProductSlider from "../components/HomeSlider/ProductSlider";
 
 const Home = () => {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const [populatProductsData, setPopularProductsData] = useState([]);
+  const [productData, setAllProductsData] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+
+  const context = useContext(MyContext);
+
+  useEffect(() => {
+    fetchDataFromApi(`/api/product/getAllProducts`).then((res) => {
+      console.log(res);
+      setAllProductsData(res?.products);
+    });
+
+    fetchDataFromApi(`/api/product/getFeaturedProducts`).then((res) => {
+      console.log(res);
+      setFeaturedProducts(res?.products);
+    });
+  }, []);
+
+  useEffect(() => {
+    fetchDataFromApi(
+      `/api/product/getAllProductsByCatId/${context?.catData[0]?._id}`
+    ).then((res) => {
+      setPopularProductsData(res?.products);
+    });
+  }, [context?.catData]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const filterByCatId = (id) => {
+    fetchDataFromApi(`/api/product/getAllProductsByCatId/${id}`).then((res) => {
+      setPopularProductsData(res?.products);
+    });
+  };
+
   return (
     <>
       {/* <HomeSlider /> */}
@@ -39,7 +73,9 @@ const Home = () => {
         </div>
       </section>
 
-      <HomeCateSlider />
+      {context?.catData?.length !== 0 && (
+        <HomeCateSlider data={context?.catData} />
+      )}
 
       {/* Product Item */}
       <section className="bg-white py-8 mt-5">
@@ -47,16 +83,34 @@ const Home = () => {
           <div className="flex items-center gap-10">
             <div className="lefSec">
               <h2 className="text-[20px] font-[600]">Popular Product</h2>
-              <p className="text-[14px] font-[400]">
+              <p className="text-[14px] font-[400 mt-0 mb-0]">
                 Do not miss the current offers until the end of March.
               </p>
             </div>
-            <Tabs value={value} onChange={handleChange} centered>
-              <Tab label="Home Appliances" />
-              <Tab label="Kitchen Appliances" />
-            </Tabs>
+            <div className="rightSec w-[60%]">
+              <Tabs
+                value={value}
+                variant="scrollable"
+                scrollButtons="auto"
+                aria-label="scrollable auto tabs example"
+                onChange={handleChange}
+              >
+                {context?.catData?.length !== 0 &&
+                  context?.catData?.map((cat, index) => {
+                    return (
+                      <Tab
+                        label={cat?.name}
+                        onClick={() => filterByCatId(cat?._id)}
+                      />
+                    );
+                  })}
+              </Tabs>
+            </div>
           </div>
-          <ProductSlider items={5} />
+
+          {populatProductsData?.length !== 0 && (
+            <ProductSlider items={6} data={populatProductsData} />
+          )}
         </div>
         {/* Delivery, Location, Return and GST Biil  */}
         <section className="py-10  bg-white mt-4">
@@ -75,7 +129,7 @@ const Home = () => {
                   Free Delivery Now On Your First Order and over $200
                 </p>
               </div>
-              <p className="font-bold text-[22px]">-Only $200 </p>
+              <p className="font-bold text-[22px]"> - only &#x20b9;2000 </p>
             </div>
             {/* Banner Slider */}
 
@@ -84,10 +138,14 @@ const Home = () => {
         </section>
       </section>
       {/* Product Slider 2 */}
-      <section className="py-5 pt-0  bg-white">
+      <section className="py-5 pt-0 bg-white">
         <div className="container">
           <h2 className="text-[25px] font-[600]">Latest Product</h2>
-          <ProductSlider items={5} />
+
+          {productData?.length !== 0 && (
+            <ProductSlider items={5} data={productData} />
+          )}
+
           {/* Add Banner Slider 2 */}
           <AddSecondBannerSlider items={2} />
         </div>
@@ -96,7 +154,9 @@ const Home = () => {
       <section className="py-5 bg-white">
         <div className="container">
           <h2 className="text-[25px] font-[600]">Future Product</h2>
-          <ProductSlider items={5} />
+          {featuredProducts?.length !== 0 && (
+            <ProductSlider items={5} data={featuredProducts} />
+          )}
         </div>
       </section>
 

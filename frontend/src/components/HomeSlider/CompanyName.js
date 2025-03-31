@@ -7,7 +7,7 @@ const CompanyName = () => {
   const [slider] = useState([
     { img: "/Logo/Crompton.png" },
     { img: "/Logo/Lg.png" },
-    { img: "/Logo/Voltas Copy.png" },
+    { img: "/Logo/Voltas.png" },
     { img: "/Logo/Whirlpool.png" },
     { img: "/Logo/Havells.png" },
     { img: "/Logo/Orient.png" },

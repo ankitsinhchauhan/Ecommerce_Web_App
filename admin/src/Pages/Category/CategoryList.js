@@ -14,14 +14,11 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
-import Checkbox from "@mui/material/Checkbox";
-
 import { MyContext } from "../../App";
 import { deleteData, fetchDataFromApi } from "../../Apis";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const columns = [
   { id: "image", label: "IMAGE", minWidth: 150 },
   { id: "catName", label: "CATEGORY NAME", minWidth: 150 },
@@ -90,14 +87,11 @@ const CategoryList = () => {
         </div>
       </div>
       {/* Category Material Ui */}
-      <div className="card my-4 pt-5 bg-white shadow-md sm:rounded-lg">
+      <div className="card my-4  pt-5 bg-white shadow-md sm:rounded-lg">
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell width={60}>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
                 {columns.map((column) => (
                   <TableCell
                     width={column.minWidth}
@@ -114,11 +108,8 @@ const CategoryList = () => {
                 context?.catData?.map((item, index) => {
                   return (
                     <TableRow key={index}>
-                      <TableCell>
-                        <Checkbox {...label} size="small" />
-                      </TableCell>
                       <TableCell width={100}>
-                        <div className="flex items-center gap-4 w-[80px]">
+                        <div className="flex items-center gap-4 w-[60px]">
                           <div className="img w-full rounded-md overflow-hidden group">
                             <Link to="/product/799574" data-discover="true">
                               <LazyLoadImage
@@ -169,7 +160,6 @@ const CategoryList = () => {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          // onChangeCateFilter={handleChangeCateFilter}
         />
       </div>
     </>

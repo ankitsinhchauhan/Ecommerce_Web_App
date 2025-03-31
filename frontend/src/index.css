@@ -367,7 +367,7 @@ footer form input::placeholder {
 
 /* Product Zoom */
 
-.zoomProductSlideThumb .swiper-wrapper {
+.zoomProductSlideThumb.space .swiper-wrapper {
   padding-top: 38px !important;
 }
 
@@ -484,4 +484,14 @@ button .MuiCircularProgress-root {
 }
 .react-international-phone-input-container {
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.MuiDialog-paper {
+  width: 1200px !important;
+  max-width: 1200px !important;
+}
+
+.productDetailsModal .MuiDialog-paper {
+  width: 1200 !important;
+  max-width: 1200px !important;
 }

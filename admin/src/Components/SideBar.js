@@ -28,7 +28,7 @@ const SideBar = () => {
   return (
     <>
       <div
-        className={`sidebar fixed top-0 left-0 bg-[#fff] h-full border-r border-[rgba(0,0,0,0.2)] py-2 px-4 ${
+        className={`sidebar fixed top-0 left-0 z-[50] bg-[#fff] h-full border-r border-[rgba(0,0,0,0.2)] py-2 px-4 ${
           context.isSidebarOpen === true ? "w-[18%]" : "w-[0px] opacity-0"
         } `}
       >
@@ -141,6 +141,15 @@ const SideBar = () => {
                     Product Upload
                   </Button>
                 </li>
+
+                <li className="w-full">
+                  <Link to="/product/addWeight">
+                    <Button className="!text-[rgba(0,0,0,0.7)] !text-[13px] !font-[500] !capitalize !justify-start !w-full !pl-9 flex gap-3">
+                      <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
+                      Add Product Weight
+                    </Button>
+                  </Link>
+                </li>
               </ul>
             </Collapse>
           </li>
@@ -186,28 +195,6 @@ const SideBar = () => {
                     Add a Category
                   </Button>
                 </li>
-                {/* <li className="w-full">
-                  <Link to="/subCategory/list">
-                    <Button className="!text-[rgba(0,0,0,0.7)] !text-[13px] !font-[500] !capitalize !justify-start !w-full !pl-9 flex gap-3">
-                      <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                      Sub Category List
-                    </Button>
-                  </Link>
-                </li>
-                <li className="w-full">
-                  <Button
-                    className="!text-[rgba(0,0,0,0.7)] !text-[13px] !font-[500] !capitalize !justify-start !w-full !pl-9 flex gap-3"
-                    onClick={() =>
-                      context.setIsOpenFullScreenPanle({
-                        open: true,
-                        model: "Add Sub Category",
-                      })
-                    }
-                  >
-                    <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                    Add a Sub Category
-                  </Button>
-                </li> */}
               </ul>
             </Collapse>
           </li>

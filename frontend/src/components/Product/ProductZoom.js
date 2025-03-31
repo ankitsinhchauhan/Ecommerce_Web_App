@@ -7,7 +7,7 @@ import "swiper/css/pagination";
 
 import { Navigation } from "swiper/modules";
 
-const ProductZoom = () => {
+const ProductZoom = (props) => {
   const [slideIndex, setSlideIndex] = useState(0);
 
   const zoomSliderBig = useRef();
@@ -31,86 +31,26 @@ const ProductZoom = () => {
             spaceBetween={0}
             navigation={true}
             modules={[Navigation]}
-            className="zoomProductSlideThumb h-[400px] overflow-hidden"
+            className={`zoomProductSlideThumb h-[400px] overflow-hidden ${props?.images?.length > 5 && 'space'}`}
           >
-            <SwiperSlide>
-              <div
-                className={`item rounded-md overflow-hidden cursor-pointer group ${
-                  slideIndex === 0 ? "opacity-1" : "opacity-30"
-                }`}
-                onClick={() => goto(0)}
-              >
-                <img
-                  src="/asserts/Air Conditioners/Sm41.avif"
-                  className="w-full transition-all group-hover:scale-105"
-                />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div
-                className={`item rounded-md overflow-hidden cursor-pointer group ${
-                  slideIndex === 1 ? "opacity-1" : "opacity-30"
-                }`}
-                onClick={() => goto(1)}
-              >
-                <img
-                  src="/asserts/Air Conditioners/Sm42.avif"
-                  className="w-full transition-all group-hover:scale-105"
-                />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div
-                className={`item rounded-md overflow-hidden cursor-pointer group ${
-                  slideIndex === 2 ? "opacity-1" : "opacity-30"
-                }`}
-                onClick={() => goto(2)}
-              >
-                <img
-                  src="/asserts/Air Conditioners/Sm43.avif"
-                  className="w-full transition-all group-hover:scale-105"
-                />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div
-                className={`item rounded-md overflow-hidden cursor-pointer group ${
-                  slideIndex === 3 ? "opacity-1" : "opacity-30"
-                }`}
-                onClick={() => goto(3)}
-              >
-                <img
-                  src="/asserts/Air Conditioners/Sm44.jpg"
-                  className="w-full transition-all group-hover:scale-105"
-                />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div
-                className={`item rounded-md overflow-hidden cursor-pointer group ${
-                  slideIndex === 4 ? "opacity-1" : "opacity-30"
-                }`}
-                onClick={() => goto(4)}
-              >
-                <img
-                  src="/asserts/Air Conditioners/Sm45.avif"
-                  className="w-full transition-all group-hover:scale-105"
-                />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div
-                className={`item rounded-md overflow-hidden cursor-pointer group ${
-                  slideIndex === 5 ? "opacity-1" : "opacity-30"
-                }`}
-                onClick={() => goto(5)}
-              >
-                <img
-                  src="/asserts/Air Conditioners/Sm46.avif"
-                  className="w-full transition-all group-hover:scale-105"
-                />
-              </div>
-            </SwiperSlide>
+            {props?.images?.map((item, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <div
+                    className={`item rounded-md overflow-hidden cursor-pointer group ${
+                      slideIndex === index ? "opacity-1" : "opacity-30"
+                    }`}
+                    onClick={() => goto(index)}
+                  >
+                    <img
+                      src={item}
+                      alt=""
+                      className="w-full transition-all group-hover:scale-105"
+                    />
+                  </div>
+                </SwiperSlide>
+              );
+            })}
             <SwiperSlide></SwiperSlide>
           </Swiper>
         </div>
@@ -123,48 +63,13 @@ const ProductZoom = () => {
             spaceBetween={0}
             navigation={false}
           >
-            <SwiperSlide>
-              <InnerImageZoom
-                zoomType="hover"
-                zoomScale={1}
-                src="/asserts/Air Conditioners/Sm41.avif"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <InnerImageZoom
-                zoomType="hover"
-                zoomScale={1}
-                src="/asserts/Air Conditioners/Sm42.avif"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <InnerImageZoom
-                zoomType="hover"
-                zoomScale={1}
-                src="/asserts/Air Conditioners/Sm43.avif"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <InnerImageZoom
-                zoomType="hover"
-                zoomScale={1}
-                src="/asserts/Air Conditioners/Sm44.jpg"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <InnerImageZoom
-                zoomType="hover"
-                zoomScale={1}
-                src="/asserts/Air Conditioners/Sm45.avif"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <InnerImageZoom
-                zoomType="hover"
-                zoomScale={1}
-                src="/asserts/Air Conditioners/Sm46.avif"
-              />
-            </SwiperSlide>
+            {props?.images?.map((item, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <InnerImageZoom zoomType="hover" zoomScale={1} src={item} />
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         </div>
       </div>

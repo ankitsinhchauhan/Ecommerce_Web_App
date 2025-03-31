@@ -9,7 +9,7 @@ import UploadBox from "../../Components/UploadBox";
 import CircularProgress from "@mui/material/CircularProgress";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MyContext } from "../../App";
-import { addData, deleteImages } from "../../Apis";
+import { addData, deleteImages, fetchDataFromApi } from "../../Apis";
 import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
@@ -33,11 +33,22 @@ const AddProduct = () => {
   const [productCat, setProductCat] = useState("");
   const [productFeatured, setProductFeatured] = useState("");
   const [productWeight, setProductWeight] = useState([]);
+  const [productWeightData, setProductWeightData] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const context = useContext(MyContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchDataFromApi(
+      `/api/product/productWeight/get?token=${localStorage.getItem(
+        "accesstoken"
+      )}`
+    ).then((res) => {
+      setProductWeightData(res?.data);
+    });
+  }, []);
 
   const handleChangeProductCat = (event) => {
     setProductCat(event.target.value);
@@ -186,7 +197,7 @@ const AddProduct = () => {
   return (
     <section className="p-5 bg-gray-50">
       <form className="form py-3 p-8 " onSubmit={handleSubmit}>
-        <div className="scroll max-h-[71vh] overflow-y-scroll pr-4">
+        <div className="scroll max-h-[72vh] overflow-y-scroll pr-4">
           <div className="grid grid-cols-1 mb-3">
             <div className="col">
               <h3 className="text-[16px] font-[500] mb-1 text-black">
@@ -331,27 +342,32 @@ const AddProduct = () => {
                 <MenuItem value={false}>False</MenuItem>
               </Select>
             </div>
+
             <div className="col">
               <h3 className="text-[16px] font-[500] mb-1 text-black">
                 Product Weight
               </h3>
-              <Select
-                multiple
-                labelId="demo-simple-select-label"
-                id="productCatDrop"
-                size="small"
-                value={productWeight}
-                label="Category"
-                className="w-full"
-                onChange={handleChangeProductWeight}
-              >
-                <MenuItem value={""}>
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={1.0}>1.0</MenuItem>
-                <MenuItem value={2.0}>1.5</MenuItem>
-                <MenuItem value={3.0}>2.0</MenuItem>
-              </Select>
+
+              {productWeightData?.length !== 0 && (
+                <Select
+                  multiple
+                  labelId="demo-simple-select-label"
+                  id="productCatDrop"
+                  size="small"
+                  value={productWeight}
+                  label="Category"
+                  className="w-full"
+                  onChange={handleChangeProductWeight}
+                >
+                  {productWeightData?.map((item, index) => {
+                    return (
+                      <MenuItem key={index} value={item?.name}>
+                        {item?.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              )}
             </div>
             <div className="col">
               <h3 className="text-[16px] font-[500] mb-1 text-black">

@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import ProductModel from "./../models/productModel.js";
+import ProductWeightModel from "../models/productWeight.js";
 
 // cloudinary
 cloudinary.config({
@@ -708,6 +709,147 @@ export async function UpdateProduct(req, res) {
 
     return res.status(200).json({
       message: "The Product is updated",
+      error: false,
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// Create Product Weight
+export async function createProductWeight(req, res) {
+  try {
+    let productWeight = new ProductWeightModel({
+      name: req.body.name,
+    });
+
+    productWeight = await productWeight.save();
+
+    if (!productWeight) {
+      return res.status(400).json({
+        error: true,
+        success: false,
+        message: "Product Weight not Created",
+      });
+    }
+    return res.status(200).json({
+      message: "Product Weight Created successfully!",
+      error: false,
+      success: true,
+      product: productWeight,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// deleteProudct Weight
+export async function deleteProductWeight(req, res) {
+  try {
+    const deleteProductWeight = await ProductWeightModel.findByIdAndDelete(
+      req.params.id
+    );
+    if (!deleteProductWeight) {
+      return res.status(400).json({
+        error: true,
+        success: false,
+        message: "Item not deleted",
+      });
+    }
+  } catch (error) {
+    return res.status(200).json({
+      message: "Product Weight Deleted!",
+      error: false,
+      success: true,
+    });
+  }
+}
+
+// Update Product weight
+export async function UpdateProductWeight(req, res) {
+  try {
+    const productWeight = await ProductWeightModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!productWeight) {
+      return res.status(404).json({
+        message: "Product weight can not be updated!",
+        error: true,
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "The Product Weight is updated",
+      error: false,
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// Get product Weight
+export async function getProductWeight(req, res) {
+  try {
+    const productWeight = await ProductWeightModel.find();
+
+    if (!productWeight) {
+      return res.status(404).json({
+        error: true,
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      data: productWeight,
+      error: false,
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// Get product By Id Weight
+
+export async function getProductWeightById(req, res) {
+  try {
+    const productWeight = await ProductWeightModel.findById(req.params.id);
+
+    if (!productWeight) {
+      return res.status(404).json({
+        error: true,
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      data: productWeight,
       error: false,
       success: true,
     });

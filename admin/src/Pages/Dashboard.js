@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DashboardBoxes from "../Components/DashboardBoxes";
 import Button from "@mui/material/Button";
 import { FaAngleDown } from "react-icons/fa6";
@@ -9,10 +9,9 @@ import { RiEdit2Line } from "react-icons/ri";
 import { FaRegEye } from "react-icons/fa";
 import { GoTrash } from "react-icons/go";
 import { FaPlus } from "react-icons/fa6";
-import ProgressBar from "../Components/ProgressBar";
 
 import Checkbox from "@mui/material/Checkbox";
-import Pagination from "@mui/material/Pagination";
+// import Pagination from "@mui/material/Pagination";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -22,6 +21,11 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import CircularProgress from "@mui/material/CircularProgress";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import Rating from "@mui/material/Rating";
+
 import { MyContext } from "../App";
 
 // ReChats
@@ -34,17 +38,14 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { deleteData, fetchDataFromApi } from "../Apis";
+import SearchBox from "../Components/SearchBox";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const columns = [
-  { id: "product", label: "PRODUCT", minWidth: 150 },
-  { id: "category", label: "CATEGORY", minWidth: 100 },
-  {
-    id: "subcategory",
-    label: "SUB CATEGORY",
-    minWidth: 150,
-  },
+  { id: "product", label: "PRODUCT", minWidth: 100 },
+  { id: "category", label: "CATEGORY", minWidth: 150 },
   {
     id: "price",
     label: "PRICE",
@@ -56,27 +57,27 @@ const columns = [
     minWidth: 100,
   },
   {
+    id: "reating",
+    label: "RATING",
+    minWidth: 100,
+  },
+  {
     id: "action",
     label: "ACTION",
     minWidth: 100,
   },
 ];
-
 const Dashboard = () => {
   const [isOpenOrderProduct, setIsOpenOrderProduct] = useState(null);
 
-  const isShowOrderProduct = (index) => {
-    if (isOpenOrderProduct === index) {
-      setIsOpenOrderProduct(null);
-    } else {
-      setIsOpenOrderProduct(index);
-    }
-  };
-
   // material ui
+  const [productCat, setProductCat] = useState("");
+  const [productData, setProductData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sortedIds, setSortedIds] = useState([]);
   const [categoryFilterVal, setCategoryFilterVal] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [chatr1Data, setChart1Data] = useState([
     {
       name: "JAN",
@@ -152,6 +153,56 @@ const Dashboard = () => {
     },
   ]);
 
+  const context = useContext(MyContext);
+
+  useEffect(() => {
+    getProducts();
+  }, [context?.isOpenFullScreenPanle]);
+
+  const isShowOrderProduct = (index) => {
+    if (isOpenOrderProduct === index) {
+      setIsOpenOrderProduct(null);
+    } else {
+      setIsOpenOrderProduct(index);
+    }
+  };
+
+  // Handle to toggle all checkboxes
+  const handleSelectAll = (e) => {
+    const isChecked = e.target.checked;
+
+    // update all items checked status
+    const updateItems = productData.map((item) => ({
+      ...item,
+      checked: isChecked,
+    }));
+    setProductData(updateItems);
+
+    //updaate the sorted IDs state
+    if (isChecked) {
+      const ids = updateItems.map((item) => item._id).sort((a, b) => a - b);
+
+      setSortedIds(ids);
+    } else {
+      setSortedIds([]);
+    }
+  };
+
+  // Handler to toggle individual checkboxes
+  const handleCheckboxChange = (e, id, index) => {
+    const updatedItems = productData.map((item) =>
+      item._id === id ? { ...item, checked: !item.checked } : item
+    );
+    setProductData(updatedItems);
+
+    // update the sortedIds state
+    const selectedIds = updatedItems
+      .filter((item) => item.checked)
+      .map((item) => item._id)
+      .sort((a, b) => a - b);
+    setSortedIds(selectedIds);
+  };
+
   const handleChangeCateFilter = (event) => {
     setCategoryFilterVal(event.target.value);
   };
@@ -164,7 +215,52 @@ const Dashboard = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const context = useContext(MyContext);
+
+  const getProducts = async () => {
+    setIsLoading(true);
+    fetchDataFromApi(
+      `/api/product/getAllProducts?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      let productArr = [];
+      if (res?.error === false) {
+        for (let i = 0; i < res?.products?.length; i++) {
+          productArr[i] = res?.products[i];
+          productArr[i].checked = false;
+        }
+        setTimeout(() => {
+          setProductData(productArr);
+          setIsLoading(false);
+        }, 300);
+      }
+    });
+  };
+
+  const deleteProduct = (id) => {
+    deleteData(
+      `/api/product/${id}?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      getProducts();
+      context.openAlertBox("success", "Product Deleted");
+    });
+  };
+
+  const handleChangeProductCat = (event) => {
+    setProductCat(event.target.value);
+    setIsLoading(true);
+    const id = event.target.value;
+    fetchDataFromApi(
+      `/api/product/getAllProductsByCatId/${id}?token=${localStorage.getItem(
+        "accesstoken"
+      )}`
+    ).then((res) => {
+      if (res?.error === false) {
+        setProductData(res?.products);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 300);
+      }
+    });
+  };
 
   return (
     <>
@@ -199,508 +295,32 @@ const Dashboard = () => {
       </div>
       <DashboardBoxes />
 
-      {/* Product Tabel Tailwind css */}
-      <div className="card my-4 bg-white shadow-md sm:rounded-lg">
-        <div className="flex items-center justify-between px-5 py-5">
-          <h2 className="text-[20px] font-[600]">
-            Products
-            <span className="font-[400] text-[14px]">(Tailwind Css)</span>
-          </h2>
-        </div>
-
-        {/* Filter by category */}
-        <div className="flex items-center w-full pl-5 justify-between pr-5">
-          <div className="col w-[20%] ">
-            <h4 className="text-[13px] font-[600] mb-2">Category By</h4>
-            <Select
-              className="w-full "
-              size="small"
-              labelId="demo-simple-select-standard-label"
-              id="demo-simple-select-standard"
-              value={categoryFilterVal}
-              onChange={handleChangeCateFilter}
-              label="Category"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Refrigerators</MenuItem>
-              <MenuItem value={20}>Washing Machines</MenuItem>
-              <MenuItem value={30}>Air Conditioners</MenuItem>
-              <MenuItem value={40}>Microwaves</MenuItem>
-              <MenuItem value={50}>Dishwashers</MenuItem>
-            </Select>
-          </div>
-          <div className="col w-[25%] ml-auto flex items-center gap-3">
-            <Button className="btn !bg-green-600 !text-white btn-sm">
-              Export
-            </Button>
-            <Button
-              className="btn-blue btn-sm"
-              onClick={() =>
-                context.setIsOpenFullScreenPanle({
-                  open: true,
-                  model: "Add Product",
-                })
-              }
-            >
-              Add Product
-            </Button>
-          </div>
-        </div>
-
-        <div className="relative overflow-x-auto mt-5 pb-5">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-black uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="px-6 pr-0 py-3" width="10%">
-                  <div className="w-[60px]">
-                    <Checkbox {...label} size="small" />
-                  </div>
-                </th>
-
-                <th scope="col" className="px-0 py-3 whitespace-nowrap">
-                  Product
-                </th>
-                <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Category
-                </th>
-                <th scope="col" className="px-6 py-3 whitespace-nowrap ">
-                  Sub Category
-                </th>
-                <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Price
-                </th>
-                <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Sales
-                </th>
-                <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td className="px-6 pr-0 py-2">
-                  <div className="w-[60px]">
-                    <Checkbox {...label} size="small" />
-                  </div>
-                </td>
-                <td className="px-0 py-2">
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-2">
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="warning" />
-                </td>
-                <td className="px-6 py-2">
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td className="px-6 pr-0 py-2">
-                  <div className="w-[60px]">
-                    <Checkbox {...label} size="small" />
-                  </div>
-                </td>
-                <td className="px-0 py-2">
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-2">
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="warning" />
-                </td>
-                <td className="px-6 py-2">
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td className="px-6 pr-0 py-2">
-                  <div className="w-[60px]">
-                    <Checkbox {...label} size="small" />
-                  </div>
-                </td>
-                <td className="px-0 py-2">
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-2">
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="warning" />
-                </td>
-                <td className="px-6 py-2">
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td className="px-6 pr-0 py-2">
-                  <div className="w-[60px]">
-                    <Checkbox {...label} size="small" />
-                  </div>
-                </td>
-                <td className="px-0 py-2">
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-2">
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="warning" />
-                </td>
-                <td className="px-6 py-2">
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td className="px-6 pr-0 py-2">
-                  <div className="w-[60px]">
-                    <Checkbox {...label} size="small" />
-                  </div>
-                </td>
-                <td className="px-0 py-2">
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-2">
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="warning" />
-                </td>
-                <td className="px-6 py-2">
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td className="px-6 pr-0 py-2">
-                  <div className="w-[60px]">
-                    <Checkbox {...label} size="small" />
-                  </div>
-                </td>
-                <td className="px-0 py-2">
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">Electronics</td>
-                <td className="px-6 py-2">
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-2">
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="warning" />
-                </td>
-                <td className="px-6 py-2">
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        {/* Pagiantion */}
-        <div className=" flex items-center justify-end pt-5 pb-5 px-4">
-          <Pagination count={10} size="small" color="primary" />
-        </div>
-      </div>
       {/* Product Tabel Material Ui */}
-      <div className="card my-4 bg-white shadow-md sm:rounded-lg">
-        <div className="flex items-center justify-between px-5 py-5">
-          <h2 className="text-[20px] font-[600]">
-            Products
-            <span className="font-[400] text-[14px]">(Material Ui Table )</span>
-          </h2>
-        </div>
-
+      <div className="card my-4 pt-5 bg-white shadow-md sm:rounded-lg">
         {/* Filter by category */}
-        <div className="flex items-center w-full pl-5 justify-between pr-5">
+        <div className="flex items-center w-full px-5 justify-between">
           <div className="col w-[20%] ">
             <h4 className="text-[13px] font-[600] mb-2">Category By</h4>
-            <Select
-              className="w-full "
-              size="small"
-              labelId="demo-simple-select-standard-label"
-              id="demo-simple-select-standard"
-              value={categoryFilterVal}
-              onChange={handleChangeCateFilter}
-              label="Category"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Refrigerators</MenuItem>
-              <MenuItem value={20}>Washing Machines</MenuItem>
-              <MenuItem value={30}>Air Conditioners</MenuItem>
-              <MenuItem value={40}>Microwaves</MenuItem>
-              <MenuItem value={50}>Dishwashers</MenuItem>
-            </Select>
+            {context?.catData?.length !== 0 && (
+              <Select
+                style={{ zoom: "80%" }}
+                className="w-full "
+                size="small"
+                labelId="demo-simple-select-label"
+                id="productCatDrop"
+                value={productCat}
+                onChange={handleChangeProductCat}
+                label="Category"
+              >
+                {context?.catData?.map((cat, index) => {
+                  return <MenuItem value={cat?._id}>{cat?.name}</MenuItem>;
+                })}
+              </Select>
+            )}
           </div>
-          <div className="col w-[25%] ml-auto flex items-center gap-3">
-            <Button className="btn !bg-green-600 !text-white btn-sm">
-              Export
-            </Button>
-            <Button
-              className="btn-blue btn-sm"
-              onClick={() =>
-                context.setIsOpenFullScreenPanle({
-                  open: true,
-                  model: "Add Product",
-                })
-              }
-            >
-              Add Product
-            </Button>
+
+          <div className="col1 w-[20%] ml-auto">
+            <SearchBox />
           </div>
         </div>
 
@@ -711,7 +331,16 @@ const Dashboard = () => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  <Checkbox {...label} size="small" />
+                  <Checkbox
+                    {...label}
+                    size="small"
+                    onChange={handleSelectAll}
+                    checked={
+                      productData?.length > 0
+                        ? productData.every((item) => item.checked)
+                        : false
+                    }
+                  />
                 </TableCell>
                 {columns.map((column) => (
                   <TableCell
@@ -725,391 +354,127 @@ const Dashboard = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="success" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
+              {isLoading === false ? (
+                productData?.length !== 0 &&
+                productData
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.reverse()
+                  ?.map((product, index) => {
+                    return (
+                      <TableRow key={index}>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <Checkbox
+                            {...label}
+                            size="small"
+                            checked={product.checked === true ? true : false}
+                            onChange={(e) =>
+                              handleCheckboxChange(e, product._id, index)
+                            }
+                          />
+                        </TableCell>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <div className="flex items-center gap-4 w-[300px]">
+                            <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
+                              <Link to={`/product/${product?._id}`}>
+                                <LazyLoadImage
+                                  src={product?.images[0]}
+                                  alt={"images"}
+                                  effect="blur"
+                                  className="w-full group-hover:scale-105 transition-all"
+                                />
+                              </Link>
+                            </div>
+                            <div className="info w-[75%]">
+                              <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
+                                <Link to={`/product/${product?._id}`}>
+                                  {product?.name}
+                                </Link>
+                              </h3>
+                              <span className="text-[12px]">
+                                {product?.brand}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          {product?.catName}
+                        </TableCell>
 
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <div className="flex gap-1 flex-col">
+                            <span className="price text-primary text-[14px] font-[600]">
+                              &#x20b9; {product?.price}
+                            </span>
 
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="success" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="success" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="success" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="success" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/asserts/Air Conditioners/Sm41.avif"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                    <div className="info w-[75%]">
-                      <Link to="/product/799574">
-                        <h3 className=" text-[14px] font-[600] leading-4 hover:text-primary">
-                          Convertible 5in1 Inverter Split AC AR18CY3YATA
-                        </h3>
-                      </Link>
-                      <span className="text-[12px]">Samsung</span>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  Electronics
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex gap-1 flex-col">
-                    <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
-                      $99.00
-                    </span>
-                    <span className="price text-primary text-[14px] font-[600]">
-                      $85.00
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <p className="text-[14px] w-[100px]">
-                    <span className="font-[600]">234</span>Sales
-                  </p>
-                  <ProgressBar value={40} type="success" />
-                </TableCell>
-                <TableCell style={{ minWidth: columns.minWidth }}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
+                            <span className="oldPrice line-through leading-3 text-gray-500 text-[15px] font-[500]">
+                              &#x20b9; {product?.oldPrice}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <p className="text-[14px] w-[100px]">
+                            <span className="font-[600]">{product?.sale}</span>
+                            sale
+                          </p>
+                        </TableCell>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <p className="text-[14px] w-[100px]">
+                            <Rating
+                              name="half-rating"
+                              size="small"
+                              defaultValue={product?.rating}
+                              precision={0.5}
+                            />
+                          </p>
+                        </TableCell>
+                        <TableCell style={{ minWidth: columns.minWidth }}>
+                          <div className="flex items-center gap-4">
+                            <Button
+                              className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]"
+                              onClick={() =>
+                                context.setIsOpenFullScreenPanle({
+                                  open: true,
+                                  model: "Edit Product",
+                                  id: product?._id,
+                                })
+                              }
+                            >
+                              <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                            </Button>
+                            <Link to={`/product/${product?._id}`}>
+                              <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                                <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                              </Button>
+                            </Link>
+                            <Button
+                              className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]"
+                              onClick={() => deleteProduct(product?._id)}
+                            >
+                              <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+              ) : (
+                <>
+                  <TableRow>
+                    <TableCell colSpan={8}>
+                      <div className="flex items-center justify-center w-full min-h-[400px]">
+                        <CircularProgress color="inherit" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={10}
+          count={productData?.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

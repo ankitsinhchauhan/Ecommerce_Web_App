@@ -34,12 +34,21 @@ const EditProduct = () => {
   const [productFeatured, setProductFeatured] = useState("");
   const [productWeight, setProductWeight] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [productWeightData, setProductWeightData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const context = useContext(MyContext);
   const navigate = useNavigate();
 
   useEffect(() => {
+    fetchDataFromApi(
+      `/api/product/productWeight/get?token=${localStorage.getItem(
+        "accesstoken"
+      )}`
+    ).then((res) => {
+      setProductWeightData(res?.data);
+    });
+
     const id = context?.isOpenFullScreenPanle?.id;
 
     fetchDataFromApi(
@@ -378,23 +387,27 @@ const EditProduct = () => {
               <h3 className="text-[16px] font-[500] mb-1 text-black">
                 Product Weight
               </h3>
-              <Select
-                multiple
-                labelId="demo-simple-select-label"
-                id="productCatDrop"
-                size="small"
-                value={productWeight}
-                label="Category"
-                className="w-full"
-                onChange={handleChangeProductWeight}
-              >
-                <MenuItem value={""}>
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>1.0</MenuItem>
-                <MenuItem value={20}>1.5</MenuItem>
-                <MenuItem value={30}>2.0</MenuItem>
-              </Select>
+
+              {productWeightData?.length !== 0 && (
+                <Select
+                  multiple
+                  labelId="demo-simple-select-label"
+                  id="productCatDrop"
+                  size="small"
+                  value={productWeight}
+                  label="Category"
+                  className="w-full"
+                  onChange={handleChangeProductWeight}
+                >
+                  {productWeightData?.map((item, index) => {
+                    return (
+                      <MenuItem key={index} value={item?.name}>
+                        {item?.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              )}
             </div>
             <div className="col">
               <h3 className="text-[16px] font-[500] mb-1 text-black">

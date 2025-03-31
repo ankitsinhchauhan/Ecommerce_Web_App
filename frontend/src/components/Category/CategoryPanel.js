@@ -25,7 +25,8 @@ const CategoryPanel = (props) => {
       <Divider />
 
       {/* Category Panel */}
-      <CategoryCollapse />
+
+      {props?.data?.length !== 0 && <CategoryCollapse data={props?.data} />}
     </Box>
   );
 

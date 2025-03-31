@@ -21,6 +21,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { fetchDataFromApi } from "./Apis";
 import Profile from "./Pages/Profile";
 import ProductDetails from "./Pages/Product/ProductDetails";
+import AddProductWeight from "./Pages/Product/AddProductWeight";
 
 const MyContext = createContext();
 
@@ -312,6 +313,34 @@ const App = () => {
                 } transition-all`}
               >
                 <ProductDetails />
+              </div>
+            </div>
+          </section>
+        </>
+      ),
+    },
+
+    // product Weight
+    {
+      path: "/product/addWeight",
+      element: (
+        <>
+          <section className="main">
+            <Header />
+            <div className="contentMain flex">
+              <div
+                className={`overflow-hidden sidebarwrapper ${
+                  isSidebarOpen === true ? "w-[18%]" : "w-[0px] opacity-0"
+                } transition-all`}
+              >
+                <SideBar />
+              </div>
+              <div
+                className={`contentRight  py-4 px-5  ${
+                  isSidebarOpen === false ? "w-[100%]" : "w-[82%]"
+                } transition-all`}
+              >
+                <AddProductWeight />
               </div>
             </div>
           </section>
