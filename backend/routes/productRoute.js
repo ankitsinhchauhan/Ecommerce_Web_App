@@ -7,6 +7,7 @@ import {
   deleteMultipleProduct,
   deleteProduct,
   deleteProductWeight,
+  filters,
   getAllProduct,
   getAllProductsByCatId,
   getAllProductsByCatName,
@@ -20,6 +21,7 @@ import {
   getProductWeight,
   getProductWeightById,
   removeImageFromCloudinary,
+  sortBy,
   UpdateProduct,
   UpdateProductWeight,
   uploadImages,
@@ -28,6 +30,7 @@ import {
 const productRouter = Router();
 
 productRouter.post("/uploadImages", auth, upload.array("images"), uploadImages);
+
 productRouter.post("/create", auth, createProduct);
 productRouter.get("/getAllProducts", getAllProduct);
 productRouter.get("/getAllProductsByCatId/:id", getAllProductsByCatId);
@@ -49,5 +52,8 @@ productRouter.delete("/productWeight/:id", deleteProductWeight);
 productRouter.put("/productWeight/:id", auth, UpdateProductWeight);
 productRouter.get("/productWeight/get", getProductWeight);
 productRouter.get("/productWeight/:id", getProductWeightById);
+
+productRouter.post("/filters", filters);
+productRouter.post("/sortBy", sortBy);
 
 export default productRouter;

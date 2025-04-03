@@ -77,6 +77,19 @@ export const uploadImages = async (url, formData) => {
   }
 };
 
+// post Method
+export const uploadBannerImages = async (url, formData) => {
+  try {
+    const { res } = await axios.post(backendURL + url, formData, {
+      Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+      "Content-Type": "multipart/form-data",
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // DELETE Image
 
 export const deleteImages = async (url, image) => {

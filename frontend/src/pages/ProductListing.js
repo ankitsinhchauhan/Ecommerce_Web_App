@@ -12,17 +12,39 @@ import { IoMenu } from "react-icons/io5";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Pagination from "@mui/material/Pagination";
+import ProductLoading from "./../components/Product/ProductLoading";
+import { postData } from "../api";
 
 const ProductListing = () => {
   const [itemView, setItemView] = useState("grid");
-
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const [productsData, setProductsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [selectedSortVal, setSelectedSortVal] = useState("Name A t0 Z");
+
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleSortBy = (name, order, products, value) => {
+    setSelectedSortVal(value);
+    postData(`/api/product/sortBy`, {
+      products: products,
+      sortBy: name,
+      order: order,
+    }).then((res) => {
+      setProductsData(res);
+      setAnchorEl(null);
+    });
   };
 
   return (
@@ -52,12 +74,19 @@ const ProductListing = () => {
       <div className="bg-white p-2 mt-4">
         <div className="container flex  gap-3 ">
           <div className="sidebarwrapper w-[20%] h-full bg-white">
-            <SideBar />
+            <SideBar
+              productsData={productsData}
+              setProductsData={setProductsData}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              page={page}
+              setTotalPages={setTotalPages}
+            />
           </div>
 
           {/* Right Content */}
           <div className="rightContent w-[80%] py-3">
-            <div className="bg-[#f1f1f1] p-2 w-full mb-4 rounded-md flex items-center justify-between">
+            <div className="bg-[#f1f1f1] p-2 w-full mb-4 rounded-md flex items-center justify-between sticky top-[140px] z-[99]">
               <div className="col1 flex items-center ItemViewAction">
                 <Button
                   className={`!w-[40px] !h-[40px] !min-w-[40px] !rounded-full !text-[#000] ${
@@ -76,7 +105,11 @@ const ProductListing = () => {
                   <IoGridSharp className="text-[#000]" />
                 </Button>
                 <sapn className="text-[14px] font-[500] pl-3 text-[rgba(0,0,0,0.7)]">
-                  There are 20 products
+                  There are{" "}
+                  {productsData?.products?.length !== 0
+                    ? productsData?.products?.length
+                    : 0}{" "}
+                  products.
                 </sapn>
               </div>
 
@@ -91,9 +124,9 @@ const ProductListing = () => {
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}
                   onClick={handleClick}
-                  className="!bg-white !text-[12px] !text-[#000] !capitalize !border-2 !border-[#000]"
+                  className="!bg-white !text-[13px]  !text-[#000] !capitalize !border-2 !border-[#000]"
                 >
-                  Sales, highest to lowest
+                  {selectedSortVal}
                 </Button>
                 <Menu
                   id="basic-menu"
@@ -105,31 +138,46 @@ const ProductListing = () => {
                   }}
                 >
                   <MenuItem
-                    onClick={handleClose}
+                    onClick={() =>
+                      handleSortBy("name", "asc", productsData, "Name, A to Z")
+                    }
                     className=" !text-[13px] !text-[#000] !capitalize"
                   >
-                    Sales, highest to lowest
+                    Name , A to Z
                   </MenuItem>
+
                   <MenuItem
-                    onClick={handleClose}
+                    onClick={() =>
+                      handleSortBy("name", "desc", productsData, "Name, Z to A")
+                    }
                     className=" !text-[13px] !text-[#000] !capitalize"
                   >
-                    Name : A to Z
+                    Name , Z to A
                   </MenuItem>
+
                   <MenuItem
-                    onClick={handleClose}
-                    className=" !text-[13px] !text-[#000] !capitalize"
-                  >
-                    Name : Z to A
-                  </MenuItem>
-                  <MenuItem
-                    onClick={handleClose}
+                    onClick={() =>
+                      handleSortBy(
+                        "price",
+                        "asc",
+                        productsData,
+                        "Price, low to high"
+                      )
+                    }
                     className=" !text-[13px] !text-[#000] !capitalize"
                   >
                     Price, low to high
                   </MenuItem>
+
                   <MenuItem
-                    onClick={handleClose}
+                    onClick={() =>
+                      handleSortBy(
+                        "name",
+                        "desc",
+                        productsData,
+                        "Price , high to low"
+                      )
+                    }
                     className=" !text-[13px] !text-[#000] !capitalize"
                   >
                     Price, high to low
@@ -142,39 +190,46 @@ const ProductListing = () => {
             <div
               className={`grid ${
                 itemView === "grid"
-                  ? "grid-cols-4 md:grid-cols-4"
+                  ? "grid-cols-5 md:grid-cols-5"
                   : "grid-cols-1 md:grid-cols-1"
               } gap-4`}
             >
               {itemView === "grid" ? (
                 <>
-                  <ProductItem />
-                  <ProductItem />
-                  <ProductItem />
-                  <ProductItem />
-                  <ProductItem />
-                  <ProductItem />
-                  <ProductItem />
-                  <ProductItem />
+                  {isLoading === true ? (
+                    <ProductLoading view={itemView} />
+                  ) : (
+                    productsData?.products?.length !== 0 &&
+                    productsData?.products?.map((item, index) => {
+                      return <ProductItem key={index} item={item} />;
+                    })
+                  )}
                 </>
               ) : (
                 <>
-                  <ProductItemListView />
-                  <ProductItemListView />
-                  <ProductItemListView />
-                  <ProductItemListView />
-                  <ProductItemListView />
-                  <ProductItemListView />
-                  <ProductItemListView />
-                  <ProductItemListView />
+                  {isLoading === true ? (
+                    <ProductLoading view={itemView} />
+                  ) : (
+                    productsData?.products?.length !== 0 &&
+                    productsData?.products?.map((item, index) => {
+                      return <ProductItemListView key={index} item={item} />;
+                    })
+                  )}
                 </>
               )}
             </div>
-            {/* pagination */}
-            <div className="flex items-center justify-center mt-5">
-              {" "}
-              <Pagination count={10} />
-            </div>
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center mt-8">
+                <Pagination
+                  showFirstButton
+                  showLastButton
+                  count={totalPages}
+                  page={page}
+                  onChange={(e, value) => setPage(value)}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

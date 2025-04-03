@@ -13,6 +13,7 @@ import BannerBoxV2 from "../components/HomeSlider/BannerBoxV2";
 import { MyContext } from "../App";
 import { fetchDataFromApi } from "../api";
 import ProductSlider from "../components/HomeSlider/ProductSlider";
+import ProductLoading from "../components/Product/ProductLoading";
 
 const Home = () => {
   const [value, setValue] = useState(0);
@@ -47,6 +48,7 @@ const Home = () => {
   };
 
   const filterByCatId = (id) => {
+    setPopularProductsData([]);
     fetchDataFromApi(`/api/product/getAllProductsByCatId/${id}`).then((res) => {
       setPopularProductsData(res?.products);
     });
@@ -82,8 +84,8 @@ const Home = () => {
         <div className="container">
           <div className="flex items-center gap-10">
             <div className="lefSec">
-              <h2 className="text-[20px] font-[600]">Popular Product</h2>
-              <p className="text-[14px] font-[400 mt-0 mb-0]">
+              <h2 className="text-[25px] font-[600]">Popular Product</h2>
+              <p className="text-[14px] font-[400]  mt-0 mb-0">
                 Do not miss the current offers until the end of March.
               </p>
             </div>
@@ -108,6 +110,8 @@ const Home = () => {
             </div>
           </div>
 
+          {populatProductsData?.length === 0 && <ProductLoading />}
+
           {populatProductsData?.length !== 0 && (
             <ProductSlider items={6} data={populatProductsData} />
           )}
@@ -126,10 +130,10 @@ const Home = () => {
 
               <div className="col2">
                 <p className="mb-0 font-[500]">
-                  Free Delivery Now On Your First Order and over $200
+                  Free Delivery Now On Your First Order and over &#x20b9;1000
                 </p>
               </div>
-              <p className="font-bold text-[22px]"> - only &#x20b9;2000 </p>
+              <p className="font-bold text-[22px]"> - only &#x20b9;1000 </p>
             </div>
             {/* Banner Slider */}
 
@@ -142,8 +146,10 @@ const Home = () => {
         <div className="container">
           <h2 className="text-[25px] font-[600]">Latest Product</h2>
 
+          {productData?.length === 0 && <ProductLoading />}
+
           {productData?.length !== 0 && (
-            <ProductSlider items={5} data={productData} />
+            <ProductSlider items={6} data={productData} />
           )}
 
           {/* Add Banner Slider 2 */}
@@ -154,8 +160,11 @@ const Home = () => {
       <section className="py-5 bg-white">
         <div className="container">
           <h2 className="text-[25px] font-[600]">Future Product</h2>
+
+          {featuredProducts?.length === 0 && <ProductLoading />}
+
           {featuredProducts?.length !== 0 && (
-            <ProductSlider items={5} data={featuredProducts} />
+            <ProductSlider items={6} data={featuredProducts} />
           )}
         </div>
       </section>

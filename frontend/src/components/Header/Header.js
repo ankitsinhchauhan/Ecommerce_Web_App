@@ -62,7 +62,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-md font-outfit">
+    <header className="bg-white shadow-md font-outfit sticky -top-[47px] z-[100]">
       <div className="top-strip   bg-gray-10 border-gray-300 border-t-[1px] border-b-[1px]">
         <div className="container">
           <div className="flex items-center justify-between">

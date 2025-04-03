@@ -31,7 +31,9 @@ const ProductZoom = (props) => {
             spaceBetween={0}
             navigation={true}
             modules={[Navigation]}
-            className={`zoomProductSlideThumb h-[400px] overflow-hidden ${props?.images?.length > 5 && 'space'}`}
+            className={`zoomProductSlideThumb h-[400px] overflow-hidden ${
+              props?.images?.length > 5 && "space"
+            }`}
           >
             {props?.images?.map((item, index) => {
               return (

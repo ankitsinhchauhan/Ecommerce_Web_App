@@ -58,6 +58,7 @@ export async function createProduct(req, res) {
       name: req.body.name,
       description: req.body.description,
       images: imagesArr,
+
       brand: req.body.brand,
       category: req.body.category,
       price: req.body.price,
@@ -672,7 +673,9 @@ export async function UpdateProduct(req, res) {
       {
         name: req.body.name,
         description: req.body.description,
+
         images: req.body.images,
+
         brand: req.body.brand,
         price: req.body.price,
         oldPrice: req.body.oldPrice,
@@ -852,6 +855,85 @@ export async function getProductWeightById(req, res) {
       data: productWeight,
       error: false,
       success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+//Filters
+export async function filters(req, res) {
+  const { catId, minPrice, maxPrice, rating, page, limit } = req.body;
+
+  const filters = {};
+  if (catId?.length) {
+    filters.catId = { $in: catId };
+  }
+
+  if (minPrice || maxPrice) {
+    filters.price = { $gte: +minPrice || 0, $lte: +maxPrice || Infinity };
+  }
+
+  if (rating?.length) {
+    filters.rating = { $in: rating };
+  }
+
+  try {
+    const products = await ProductModel.find(filters)
+      .populate("category")
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    const total = await ProductModel.countDocuments(filters);
+
+    return res.status(200).json({
+      error: false,
+      success: true,
+      products: products,
+      total: total,
+      page: parseInt(page),
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// sort By Product
+const sortItems = (products, sortBy, order) => {
+  return products.sort((a, b) => {
+    if (sortBy === "name") {
+      return order === "asc"
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name);
+    }
+
+    if (sortBy === "price") {
+      return order === "asc" ? a.price - b.price : b.price - a.price;
+    }
+    return 0;
+  });
+};
+
+export async function sortBy(req, res) {
+  try {
+    const { products, sortBy, order } = req.body;
+    const sortedItems = sortItems([...products?.products], sortBy, order);
+
+    return res.status(200).json({
+      error: false,
+      success: true,
+      products: sortedItems,
+      page: 0,
+      totalPages: 0,
     });
   } catch (error) {
     return res.status(500).json({

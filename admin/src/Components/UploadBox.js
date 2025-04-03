@@ -7,6 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 const UploadBox = (props) => {
   const [previews, setPreviews] = useState([]);
+
   const [uploading, setUploading] = useState(false);
 
   const context = useContext(MyContext);

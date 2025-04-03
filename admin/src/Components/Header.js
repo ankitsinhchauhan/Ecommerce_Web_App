@@ -63,12 +63,12 @@ const Header = () => {
         withCredentials: true,
       }
     ).then((res) => {
-      console.log(res);
+      context.setIsLogin(false);
       if (res?.error === false) {
         context.setIsLogin(false);
         localStorage.removeItem("accesstoken");
         localStorage.removeItem("refreshtoken");
-        navigate("/");
+        navigate("/login");
       }
     });
   };

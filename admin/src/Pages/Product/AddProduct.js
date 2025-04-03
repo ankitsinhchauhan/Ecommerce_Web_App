@@ -35,6 +35,7 @@ const AddProduct = () => {
   const [productWeight, setProductWeight] = useState([]);
   const [productWeightData, setProductWeightData] = useState([]);
   const [previews, setPreviews] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const context = useContext(MyContext);
@@ -98,7 +99,11 @@ const AddProduct = () => {
   const removeImg = (image, index) => {
     var imageArr = [];
     imageArr = previews;
-    deleteImages(`/api/category/deleteImage?img=${image}`).then((res) => {
+    deleteImages(
+      `/api/product/deleteImage?img=${image}?token=${localStorage.getItem(
+        "accesstoken"
+      )}`
+    ).then((res) => {
       imageArr.splice(index, 1);
       setPreviews([]);
 
@@ -247,6 +252,7 @@ const AddProduct = () => {
                   {context?.catData?.map((cat, index) => {
                     return (
                       <MenuItem
+                        key={index}
                         value={cat?._id}
                         onClick={() => selectCatByName(cat?.name)}
                       >
@@ -376,7 +382,7 @@ const AddProduct = () => {
               <Rating
                 name="half-rating"
                 defaultValue={1}
-                precision={0.5}
+                precision={1}
                 onChange={onChangeRating}
               />
             </div>

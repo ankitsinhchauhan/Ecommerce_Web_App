@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import Rating from "@mui/material/Rating";
 import Button from "@mui/material/Button";
+import { MdOutlineShoppingCart } from "react-icons/md";
 
 import { FaRegHeart } from "react-icons/fa6";
 import { IoIosGitCompare } from "react-icons/io";
@@ -12,8 +13,9 @@ import { MyContext } from "../../App";
 
 const ProductItem = (props) => {
   const context = useContext(MyContext);
+
   return (
-    <div className="productItem  shadow-md rounded-sm overflow-hidden border border-1  border-[rgba(0,0,0,0.1)] py-5">
+    <div className="productItem h-[420px]  shadow-md rounded-sm overflow-hidden border border-1  border-[rgba(0,0,0,0.1)] py-5">
       <div className=" group imgWrapper w-[100%] h-[200px] overflow-hidden rounded-md relative">
         <Link to={`/product/${props?.item?._id}`}>
           <div className="img h-[200px] overflow-hidden">
@@ -27,7 +29,7 @@ const ProductItem = (props) => {
         </Link>
         {/* Discount */}
         <sapn className="discoutn flex items-center absolute top-[5px] left-[10px] z-50 px-2 py-1 text-[12px] font-[500] bg-primary text-white rounded-lg">
-          {props?.item?.discount}
+          {props?.item?.discount}%
         </sapn>
         {/* Icons */}
 
@@ -48,12 +50,14 @@ const ProductItem = (props) => {
           </Button>
         </div>
       </div>
-      <div className="info p-3 py-5">
+      <div className="info p-3  py-5 relative bp-[50px] h-[190px]">
         <h6 className="text-[13px]  !font-[400]">
           <span to={`/product/${props?.item?._id}`}>{props?.item?.brand}</span>
         </h6>
         <h3 className="text-[14px] link transition-all title mt-1.5 mb-1.5 font-[500] text-[#000]">
-          <Link to={`/product/${props?.item?._id}`}>{props?.item?.name}</Link>
+          <Link to={`/product/${props?.item?._id}`}>
+            {props?.item?.name?.substr(0, 30) + "..."}
+          </Link>
         </h3>
         {/* <p>1 Year Standard Warranty on this Product, 10 Year warranty on the compressor</p> */}
         <Rating name="size-small" defaultValue={4} size="small" readOnly />
@@ -64,6 +68,15 @@ const ProductItem = (props) => {
           <span className="oldPrice line-through text-gray-500 text-[15px] font-[500]">
             &#x20b9; {props?.item?.oldPrice}
           </span>
+        </div>
+
+        <div className=" !absolute bottom-[5px] left-0 pl-3 pr-3 w-full">
+          <Button
+            className="btn-org btn-border flex w-full btn-sm gap-2"
+            size="small"
+          >
+            <MdOutlineShoppingCart className="text-[18px]" /> Add to Cart
+          </Button>
         </div>
       </div>
     </div>

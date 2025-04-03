@@ -41,10 +41,7 @@ const Navbar = () => {
           <div className="co1_2 w-[60%]">
             <ul className="flex items-center  gap-5 ">
               <li className="list-none">
-                <Link
-                  to="/ProductListing"
-                  className="link transition text-[14px] font-[500]"
-                >
+                <Link to="/" className="link transition text-[14px] font-[500]">
                   <Button className="link transition !font-[500] !text-[rgba(0,0,0,0.8)] hover:!text-primary">
                     Shop
                   </Button>
@@ -67,7 +64,10 @@ const Navbar = () => {
                       {catData?.map((cat, index) => {
                         return (
                           <li className="list-none w-full" key={index}>
-                            <Link to="/productListing" className="w-full">
+                            <Link
+                              to={`/product?catId=${cat?._id}`}
+                              className="w-full"
+                            >
                               <Button className="!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start">
                                 {cat?.name}
                               </Button>

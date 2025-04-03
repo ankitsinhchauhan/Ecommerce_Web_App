@@ -94,7 +94,7 @@ h6 {
 .btn-org.btn-border {
   background: none !important;
   color: #6c6cff !important;
-  border: 1px solid #6c6cff !important;
+  border: 2px solid #6c6cff !important;
   font-weight: 500;
   font-size: 16px;
   padding: 7px 20px !important;
@@ -494,4 +494,8 @@ button .MuiCircularProgress-root {
 .productDetailsModal .MuiDialog-paper {
   width: 1200 !important;
   max-width: 1200px !important;
+}
+
+header {
+  box-shadow: 0px 1px 5px #0000001a;
 }
