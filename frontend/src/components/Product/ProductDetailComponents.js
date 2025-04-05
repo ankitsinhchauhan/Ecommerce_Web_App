@@ -1,12 +1,62 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 import { IoCartOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa6";
 import { IoIosGitCompare } from "react-icons/io";
 import QtyBox from "./QtyBox";
+import CircularProgress from "@mui/material/CircularProgress";
+import { MyContext } from "../../App";
+import { addData, fetchDataFromApi } from "../../api";
 
 const ProductDetailComponents = (props) => {
+  const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const context = useContext(MyContext);
+
+  const handleSelectQty = (qty) => {
+    setQuantity(qty);
+  };
+
+  const addToCart = (product, userId, quantity) => {
+    const data = {
+      productTitle: product?.name,
+      brand: product?.brand,
+      image: product?.images[0],
+      rating: product?.rating,
+      price: product?.price,
+      oldPrice: product?.oldPrice,
+      quantity: quantity,
+      subTotal: parseInt(product?.price * quantity),
+      productId: product?._id,
+      countInStock: product?.countInStock,
+      discount: product?.discount,
+      weight: product?.productWeight,
+      userId: userId,
+    };
+
+    setIsLoading(true);
+
+    addData(
+      `/api/cart/add?token=${localStorage.getItem("accesstoken")}`,
+      data
+    ).then((res) => {
+      context.openAlertBox("success", "Item added successfully!");
+      getCartItem();
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+    });
+  };
+
+  const getCartItem = () => {
+    fetchDataFromApi(
+      `/api/cart/get?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      context?.setCartData(res?.data);
+    });
+  };
   return (
     <>
       <h1 className="text-[24px] font-[600] mb-3 ">{props?.item?.name}</h1>
@@ -48,11 +98,20 @@ const ProductDetailComponents = (props) => {
       </p>
       <div className="flex items-center gap-4 py-4">
         <div className="qtyBoxWrapper w-[70px]">
-          <QtyBox />
+          <QtyBox handleSelectQty={handleSelectQty} />
         </div>
-        <Button className="btn-org flex gap-2">
-          <IoCartOutline className="text-[22px]" />
-          Add to Cart
+        <Button
+          className="btn-org flex gap-2  p-3 !min-w-[150px]"
+          onClick={() => addToCart(props?.item, props?.userData?._id, quantity)}
+        >
+          {isLoading === true ? (
+            <CircularProgress />
+          ) : (
+            <>
+              <IoCartOutline className="text-[22px]" />
+              Add to Cart
+            </>
+          )}
         </Button>
       </div>
       <div className="flex items-center gap-4 mt-4">

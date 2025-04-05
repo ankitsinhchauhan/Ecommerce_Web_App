@@ -6,7 +6,7 @@ import { GoGift } from "react-icons/go";
 import { TbTruckReturn } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { BiChat } from "react-icons/bi";
-import { Button } from "@mui/material";
+import { Button, Dialog, DialogContent } from "@mui/material";
 import { FaFacebookF } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa6";
 import { FaPinterest } from "react-icons/fa6";
@@ -20,6 +20,8 @@ import Drawer from "@mui/material/Drawer";
 import { IoMdClose } from "react-icons/io";
 import { MyContext } from "../../App";
 import CartPanel from "../Cart/CartPanel";
+import ProductDetailComponents from "../Product/ProductDetailComponents";
+import ProductZoom from "../Product/ProductZoom";
 
 const Footer = () => {
   const context = useContext(MyContext);
@@ -257,9 +259,55 @@ const Footer = () => {
         {context?.cartData?.length !== 0 ? (
           <CartPanel data={context?.cartData} />
         ) : (
-          "Cart Empty"
+          <>
+            <div className="flex items-center justify-center flex-col pt-[100px] gap-5">
+              <img src="/empty-cart.png" alt="" className="w-[150px]" />
+              <h4>Your Cart is currently empty</h4>
+              <Button
+                className="btn-org btn-sm"
+                onClick={context.toggleCartPanel(false)}
+              >
+                Continue Shopping
+              </Button>
+            </div>
+          </>
         )}
       </Drawer>
+
+      <Dialog
+        open={context?.openProductDetailsModal.open}
+        fullWidth={context?.fullWidth}
+        maxWidth={context?.maxWidth}
+        onClose={context?.handleCloseProductDetailModal}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        className="productDetailsModal"
+      >
+        <DialogContent>
+          <div className="flex items-center w-full productDetailsModalContainer relative ">
+            <Button
+              className="!w-[40px] !h-[40px] !min-w-[40px] !rounded-full !text-black !absolute !top-[0px] !right-[0px] !bg-[#f1f1f1] "
+              onClick={context?.handleCloseProductDetailModal}
+            >
+              <IoMdClose className="text-[20px]" />
+            </Button>
+            {context?.openProductDetailsModal?.item?.length !== 0 && (
+              <>
+                <div className="col1 w-[45%] px-3 ">
+                  <ProductZoom
+                    images={context?.openProductDetailsModal?.item?.images}
+                  />
+                </div>
+                <div className="col2 w-[55%] py-8 px-8 pr-16 productContent">
+                  <ProductDetailComponents
+                    item={context?.openProductDetailsModal?.item}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -13,6 +13,7 @@ import Reviews from "./reviews";
 const ProductsDetials = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [productData, setProductData] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
   const [reviewscount, setReviewsCount] = useState(0);
   const [relatedProductData, setRelatedProductData] = useState([]);

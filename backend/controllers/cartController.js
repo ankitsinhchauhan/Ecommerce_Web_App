@@ -6,9 +6,13 @@ export async function addToCartController(req, res) {
     const userId = req.userId; //middleware
     const {
       productTitle,
+      brand,
       image,
       rating,
       price,
+      oldPrice,
+      discount,
+
       quantity,
       subTotal,
       productId,
@@ -36,9 +40,13 @@ export async function addToCartController(req, res) {
 
     const cartItem = new CartProductModel({
       productTitle: productTitle,
+      brand: brand,
       image: image,
       rating: rating,
       price: price,
+      oldPrice: oldPrice,
+      discount: discount,
+
       quantity: quantity,
       subTotal: subTotal,
       productId: productId,

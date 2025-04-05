@@ -10,6 +10,7 @@ import { FiPlus } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa6";
 import { IoIosGitCompare } from "react-icons/io";
 import { MdZoomOutMap } from "react-icons/md";
+import CircularProgress from "@mui/material/CircularProgress";
 import { MyContext } from "../../App";
 import { deleteData, editData } from "../../api";
 
@@ -17,12 +18,16 @@ const ProductItem = (props) => {
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
   const [cartItem, setCartItem] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const context = useContext(MyContext);
 
   const addToCart = (product, userId, quantity) => {
+    setIsLoading(true);
     context?.addToCart(product, userId, quantity);
     setIsAdded(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   };
 
   useEffect(() => {
@@ -103,6 +108,7 @@ const ProductItem = (props) => {
             />
           </div>
         </Link>
+
         {/* Discount */}
         <sapn className="discoutn flex items-center absolute top-[5px] left-[10px] z-50 px-2 py-1 text-[12px] font-[500] bg-primary text-white rounded-lg">
           {props?.item?.discount}%
@@ -159,21 +165,32 @@ const ProductItem = (props) => {
               <MdOutlineShoppingCart className="text-[18px]" /> Add to Cart
             </Button>
           ) : (
-            <div className="flex items-center justify-between overflow-hidden rounded-full border border-[rgba(0,0,0,0.1)]">
-              <Button
-                className="!min-w-[35px] !w-[35px] !h-[30px] !bg-[#f1f1f1] !rounded-none"
-                onClick={minusQty}
-              >
-                <FaMinus className="text-[rgba(0,0,0,0.7)]" />
-              </Button>
-              <span>{quantity}</span>
-              <Button
-                className="!min-w-[35px] !w-[35px] !h-[30px] !bg-primary !rounded-none"
-                onClick={addQty}
-              >
-                <FiPlus className="text-white" />
-              </Button>
-            </div>
+            <>
+              {isLoading === true ? (
+                <Button
+                  className="btn-org btn-border flex w-full btn-sm gap-2"
+                  size="small"
+                >
+                  <CircularProgress />
+                </Button>
+              ) : (
+                <div className="flex items-center justify-between overflow-hidden rounded-full border border-[rgba(0,0,0,0.1)]">
+                  <Button
+                    className="!min-w-[35px] !w-[35px] !h-[30px] !bg-[#f1f1f1] !rounded-none"
+                    onClick={minusQty}
+                  >
+                    <FaMinus className="text-[rgba(0,0,0,0.7)]" />
+                  </Button>
+                  <span>{quantity}</span>
+                  <Button
+                    className="!min-w-[35px] !w-[35px] !h-[30px] !bg-primary !rounded-none"
+                    onClick={addQty}
+                  >
+                    <FiPlus className="text-white" />
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
