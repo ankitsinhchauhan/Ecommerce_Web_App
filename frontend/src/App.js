@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header/Header";
@@ -23,7 +23,7 @@ import CheckOut from "./pages/CheckOut";
 import MyAccount from "./pages/MyAccount";
 import MyList from "./pages/MyList";
 import Orders from "./pages/Orders";
-import { fetchDataFromApi } from "./api";
+import { addData, fetchDataFromApi } from "./api";
 import Address from "./pages/Address";
 
 const MyContext = createContext();
@@ -39,6 +39,7 @@ const App = () => {
   const [userData, setUserData] = useState(null);
   const [openCartPanel, setOpenCartPanel] = useState(false);
   const [catData, setCatData] = useState([]);
+  const [cartData, setCartData] = useState([]);
 
   const handleOpenProductDetailModal = (status, item) => {
     setOpenProductDetailsModal({
@@ -78,6 +79,7 @@ const App = () => {
           }
         }
       });
+      getCartItem();
     } else {
       setIsLogin(false);
     }
@@ -85,7 +87,6 @@ const App = () => {
 
   useEffect(() => {
     fetchDataFromApi(`/api/category/get`).then((res) => {
-      console.log(res);
       setCatData(res?.data);
     });
   }, []);
@@ -97,6 +98,42 @@ const App = () => {
     if (status === "error") {
       toast.error(msg);
     }
+  };
+
+  const addToCart = (product, userId, quantity) => {
+    if (userId === undefined) {
+      openAlertBox("error", "You are not login, Please Login first ");
+      return false;
+    }
+
+    const data = {
+      productTitle: product?.name,
+      image: product?.images[0],
+      rating: product?.rating,
+      price: product?.price,
+      quantity: quantity,
+      subTotal: parseInt(product?.price * quantity),
+      productId: product?._id,
+      countInStock: product?.countInStock,
+      userId: userId,
+    };
+
+    addData(
+      `/api/cart/add?token=${localStorage.getItem("accesstoken")}`,
+      data
+    ).then((res) => {
+      openAlertBox("success", "Item added successfully!");
+
+      getCartItem();
+    });
+  };
+
+  const getCartItem = () => {
+    fetchDataFromApi(
+      `/api/cart/get?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      setCartData(res?.data);
+    });
   };
 
   const values = {
@@ -112,6 +149,10 @@ const App = () => {
     setUserData,
     catData,
     setCatData,
+    addToCart,
+    cartData,
+    setCartData,
+    getCartItem,
   };
 
   return (

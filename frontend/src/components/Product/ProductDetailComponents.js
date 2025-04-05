@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 import { IoCartOutline } from "react-icons/io5";
@@ -18,7 +18,12 @@ const ProductDetailComponents = (props) => {
           </span>
         </span>
         <Rating name="size-small" defaultValue={4} size="small" />{" "}
-        <span className="text-[13px] cursor-pointer">Review (5)</span>
+        <span
+          className="text-[13px] cursor-pointer"
+          onClick={props.gotoReviews}
+        >
+          Review ({props?.reviewscount})
+        </span>
       </div>
       <div className="flex items-center gap-4 mt-4">
         <span className="price text-red-500 text-[20px] font-[600]">

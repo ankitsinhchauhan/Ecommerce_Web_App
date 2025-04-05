@@ -33,7 +33,8 @@ const AccountSideBar = () => {
 
   const formData = new FormData();
 
-  const onChangeFile = async (e, apiEndPoint) => {
+  const onChangeFile = async (e) => {
+    e.preventDefault();
     try {
       setPreviews([]);
 

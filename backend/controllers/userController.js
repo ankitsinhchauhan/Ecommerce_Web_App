@@ -9,6 +9,7 @@ import sendEmailFun from "./../config/sendEmail.js";
 
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import ReviewsModel from "../models/reviewsModel.js";
 
 // cloudinary
 cloudinary.config({
@@ -89,7 +90,6 @@ export async function registerUserController(req, res) {
 }
 
 // Verify email
-
 export async function verifyEmailController(req, res) {
   try {
     const { email, otp } = req.body;
@@ -139,7 +139,6 @@ export async function verifyEmailController(req, res) {
 }
 
 // Login
-
 export async function loginUserController(req, res) {
   try {
     const { email, password } = req.body;
@@ -212,6 +211,95 @@ export async function loginUserController(req, res) {
   }
 }
 
+// Sign up with Google
+export async function authWithGoogle(req, res) {
+  const { name, email, password, avatar, mobile, signUpWithGoogle, role } =
+    req.body;
+
+  try {
+    const existinUser = await UserModel.findOne({ email: email });
+
+    if (!existinUser) {
+      const user = await UserModel.create({
+        name: name,
+        mobile: mobile,
+        email: email,
+        password: "null",
+        avatar: avatar,
+        role: role,
+        verify_email: true,
+        signUpWithGoogle: true,
+      });
+
+      await user.save();
+
+      const accesstoken = await generatedAccessToken(user._id);
+      const refreshtoken = await generatedRefreshToken(user._id);
+
+      //update user
+      const updateUser = await UserModel.findByIdAndUpdate(user?._id, {
+        last_login_date: new Date(),
+      });
+
+      const cookiesOption = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      };
+      res.cookie("accessToken", accesstoken, cookiesOption);
+      res.cookie("refreshToken", refreshtoken, cookiesOption);
+
+      return res.json({
+        message: "Login Successfully!",
+        error: false,
+        success: true,
+        data: {
+          accesstoken,
+          refreshtoken,
+        },
+      });
+    } else {
+      const accesstoken = await generatedAccessToken(existinUser._id);
+      const refreshtoken = await generatedRefreshToken(existinUser._id);
+
+      //update user
+      const updateUser = await UserModel.findByIdAndUpdate(existinUser?._id, {
+        last_login_date: new Date(),
+      });
+
+      const cookiesOption = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      };
+      res.cookie("accessToken", accesstoken, cookiesOption);
+      res.cookie("refreshToken", refreshtoken, cookiesOption);
+
+      return res.json({
+        message: "Login Successfully!",
+        error: false,
+        success: true,
+        data: {
+          accesstoken,
+          refreshtoken,
+        },
+      });
+    }
+
+    // return res.status(200).json({
+    //   message: error.message || error,
+    //   error: false,
+    //   success: true,
+    // });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
 // Logout controller
 export async function logoutController(req, res) {
   try {
@@ -246,7 +334,6 @@ export async function logoutController(req, res) {
 }
 
 //Image Upload
-
 var imagesArr = [];
 export async function imageUploadController(req, res) {
   try {
@@ -535,6 +622,7 @@ export async function resetPassword(req, res) {
     const hashPassword = await bcryptjs.hash(confirmPassword, salt);
 
     user.password = hashPassword;
+
     await user.save();
 
     return res.status(200).json({
@@ -572,13 +660,15 @@ export async function changePassowrd(req, res) {
       });
     }
 
-    const checkPassword = await bcryptjs.compare(OldPassword, user.password);
-    if (!checkPassword) {
-      return res.status(500).json({
-        message: "Check your password",
-        error: true,
-        success: false,
-      });
+    if (user?.signUpWithGoogle === false) {
+      const checkPassword = await bcryptjs.compare(OldPassword, user.password);
+      if (!checkPassword) {
+        return res.status(500).json({
+          message: "Check your password",
+          error: true,
+          success: false,
+        });
+      }
     }
 
     if (newPassword !== confirmPassword) {
@@ -593,6 +683,7 @@ export async function changePassowrd(req, res) {
     const hashPassword = await bcryptjs.hash(confirmPassword, salt);
 
     user.password = hashPassword;
+    user.signUpWithGoogle = false;
     await user.save();
 
     return res.status(200).json({
@@ -680,6 +771,64 @@ export async function userDetails(req, res) {
   } catch (error) {
     return res.status(500).json({
       message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+//review controller
+export async function addReview(req, res) {
+  try {
+    const { image, userName, review, rating, userId, productId } = req.body;
+
+    const userReview = new ReviewsModel({
+      image: image,
+      userName: userName,
+      review: review,
+      rating: rating,
+      userId: userId,
+      productId: productId,
+    });
+
+    await userReview.save();
+
+    return res.status(200).json({
+      message: "Review added successfully!",
+      error: false,
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something is wrong",
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// get review controller
+export async function getReviews(req, res) {
+  try {
+    const productId = req.query.productId;
+
+    const reviews = await ReviewsModel.find({ productId: productId });
+
+    if (!reviews) {
+      return res.status(404).json({
+        error: true,
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      error: false,
+      success: true,
+      reviews: reviews,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something is wrong",
       error: true,
       success: false,
     });

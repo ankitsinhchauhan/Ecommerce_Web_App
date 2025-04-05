@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { FaEye } from "react-icons/fa";
@@ -8,6 +8,11 @@ import { FcGoogle } from "react-icons/fc";
 import { postData } from "../api";
 import { MyContext } from "../App";
 import CircularProgress from "@mui/material/CircularProgress";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { firebaseApp } from "../firebase";
+
+const auth = getAuth(firebaseApp);
+const googleProvider = new GoogleAuthProvider();
 
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +25,10 @@ const Register = () => {
 
   const context = useContext(MyContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const onChangeInput = (e) => {
     const { name, value } = e.target;
@@ -71,6 +80,60 @@ const Register = () => {
         setIsLoading(false);
       }
     });
+  };
+
+  const authWithGoogle = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+
+        const fields = {
+          name: user.providerData[0].displayName,
+          email: user.providerData[0].email,
+          password: null,
+          avatar: user.providerData[0].photoURL,
+          mobile: user.providerData[0].phoneNumber,
+          role: "USER",
+        };
+
+        postData("/api/user/authWithGoogle", fields).then((res) => {
+          console.log(res);
+
+          if (res?.error !== true) {
+            setIsLoading(false);
+            context.openAlertBox("success", res?.message);
+            localStorage.setItem("userEmail", fields.email);
+
+            localStorage.setItem("accesstoken", res?.data?.accesstoken);
+            localStorage.setItem("refreshtoken", res?.data?.refreshtoken);
+
+            context.setIsLogin(true); // set Login status to true
+
+            navigate("/");
+          } else {
+            context.openAlertBox("error", res?.message);
+            setIsLoading(false);
+          }
+        });
+
+        console.log(user);
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
   };
 
   return (
@@ -158,8 +221,11 @@ const Register = () => {
             <p className="text-center font-[500]">
               Or continue with social account
             </p>
-            <Button className="flex gap-3 w-full !bg-[#f1f1f1] btn-lg !text-black">
-              <FcGoogle className="text-[20px]" /> Login with Google
+            <Button
+              className="flex gap-3 w-full !bg-[#f1f1f1] btn-lg !text-black"
+              onClick={authWithGoogle}
+            >
+              <FcGoogle className="text-[20px]" /> SignUp with Google
             </Button>
           </form>
         </div>

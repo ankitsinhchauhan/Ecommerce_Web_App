@@ -24,6 +24,8 @@ const Home = () => {
   const context = useContext(MyContext);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     fetchDataFromApi(`/api/product/getAllProducts`).then((res) => {
       console.log(res);
       setAllProductsData(res?.products);

@@ -253,21 +253,24 @@ const MyAccount = () => {
               <hr />
 
               <form className="mt-8" onSubmit={handleSubmitChangePassword}>
-                <div className="flex items-center gap-5">
-                  <div className="w-[50%]">
-                    <TextField
-                      type="name"
-                      label="OldPassword"
-                      variant="outlined"
-                      size="small"
-                      className="w-full"
-                      name="OldPassword"
-                      value={changePassword.OldPassword}
-                      disabled={isLoading2 === true ? true : false}
-                      onChange={onChangeInput}
-                    />
-                  </div>
-                  <div className="w-[50%]">
+                <div className="grid grid-cols-2 gap-5">
+                  {context?.userData?.signUpWithGoogle === false && (
+                    <div className="col">
+                      <TextField
+                        type="name"
+                        label="OldPassword"
+                        variant="outlined"
+                        size="small"
+                        className="w-full"
+                        name="OldPassword"
+                        value={changePassword.OldPassword}
+                        disabled={isLoading2 === true ? true : false}
+                        onChange={onChangeInput}
+                      />
+                    </div>
+                  )}
+
+                  <div className="col">
                     <TextField
                       type="text"
                       label="newPassword"
@@ -279,9 +282,8 @@ const MyAccount = () => {
                       onChange={onChangeInput}
                     />
                   </div>
-                </div>
-                <div className="flex items-center gap-5 mt-4">
-                  <div className="w-[50%]">
+
+                  <div className="col">
                     <TextField
                       type="text"
                       label="confimePassword"
@@ -290,7 +292,7 @@ const MyAccount = () => {
                       className="w-full"
                       name="confirmPassword"
                       value={changePassword.confirmPassword}
-                      disabled={isLoading2 === true ? true : false}
+                      // disabled={isLoading2 === true ? true : false}
                       onChange={onChangeInput}
                     />
                   </div>

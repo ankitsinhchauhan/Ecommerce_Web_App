@@ -35,8 +35,6 @@ productRouter.post("/create", auth, createProduct);
 productRouter.get("/getAllProducts", getAllProduct);
 productRouter.get("/getAllProductsByCatId/:id", getAllProductsByCatId);
 productRouter.get("/getAllProductsByCatName", getAllProductsByCatName);
-productRouter.get("/getAllProductsBySubCatId/:id", getAllProductsBySubCatId);
-productRouter.get("/getAllProductsBySubCatName", getAllProductsBySubCatName);
 productRouter.get("/getAllProductsByPrice", getAllProductsByPrice);
 productRouter.get("/getAllProductsByRating", getAllProductsByRating);
 productRouter.get("/productCounts", getProductCount);

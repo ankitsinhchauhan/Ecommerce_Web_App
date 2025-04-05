@@ -14,6 +14,12 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { postData } from "../Apis";
 import { MyContext } from "../App";
 
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { firebaseApp } from "./../firebase";
+
+const auth = getAuth(firebaseApp);
+const googleProvider = new GoogleAuthProvider();
+
 const SignUp = () => {
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [loadingFb, setLoadingFb] = useState(false);
@@ -87,6 +93,61 @@ const SignUp = () => {
       }
     });
   };
+
+  const authWithGoogle = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+
+        const fields = {
+          name: user.providerData[0].displayName,
+          email: user.providerData[0].email,
+          password: null,
+          avatar: user.providerData[0].photoURL,
+          mobile: user.providerData[0].phoneNumber,
+          role: "USER",
+        };
+
+        postData("/api/user/authWithGoogle", fields).then((res) => {
+          console.log(res);
+
+          if (res?.error !== true) {
+            setIsLoading(false);
+            context.openAlertBox("success", res?.message);
+            localStorage.setItem("userEmail", fields.email);
+
+            localStorage.setItem("accesstoken", res?.data?.accesstoken);
+            localStorage.setItem("refreshtoken", res?.data?.refreshtoken);
+
+            context.setIsLogin(true); // set Login status to true
+
+            navigate("/");
+          } else {
+            context.openAlertBox("error", res?.message);
+            setIsLoading(false);
+          }
+        });
+
+        console.log(user);
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
+  };
+
   return (
     <section className=" bg-white w-full">
       <header className="w-full fixed top-0 left-0 px-4 py-3 flex items-center justify-between z-50 bg-gray-100">
@@ -122,7 +183,10 @@ const SignUp = () => {
           Join us today! Get special
           <br /> benefits and stay up-to-date.
         </h1>
-        <div className="flex items-center justify-center w-full mt-5 gap-2">
+        <div
+          className="flex items-center justify-center w-full mt-5 gap-2"
+          onClick={authWithGoogle}
+        >
           <Button
             size="small"
             onClick={handleClickGoogle}

@@ -49,14 +49,11 @@ const Navbar = () => {
               </li>
 
               <li className="list-none relative">
-                <Link
-                  to="/categories"
-                  className="link transition text-[14px] font-[500]"
-                >
+                <div className="link transition text-[14px] font-[500]">
                   <Button className="link transition !font-[500] !text-[rgba(0,0,0,0.8)] hover:!text-primary">
                     Categories
                   </Button>
-                </Link>
+                </div>
                 {/* Category Menu */}
                 {catData?.length !== 0 && (
                   <div className="subMenu absolute top-[120%] left-[0%] min-w-[200px] bg-white shadow-md opacity-0 transition-all">

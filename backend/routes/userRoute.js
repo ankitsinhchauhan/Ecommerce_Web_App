@@ -1,7 +1,10 @@
 import { Router } from "express";
 import {
+  addReview,
+  authWithGoogle,
   changePassowrd,
   forgotPasswordController,
+  getReviews,
   imageUploadController,
   loginUserController,
   logoutController,
@@ -20,6 +23,7 @@ import upload from "../middlewares/multer.js";
 const userRouter = Router();
 
 userRouter.post("/register", registerUserController);
+userRouter.post("/authWithGoogle", authWithGoogle);
 userRouter.post("/verifyemail", verifyEmailController);
 userRouter.post("/login", loginUserController);
 userRouter.get("/logout", auth, logoutController);
@@ -37,5 +41,8 @@ userRouter.post("/resetPassword", resetPassword);
 userRouter.post("/changePassowrd", changePassowrd);
 userRouter.post("/refreshToken", refreshToken);
 userRouter.get("/userDetails", auth, userDetails);
+
+userRouter.post("/addReview", auth, addReview);
+userRouter.get("/getReview", getReviews);
 
 export default userRouter;
