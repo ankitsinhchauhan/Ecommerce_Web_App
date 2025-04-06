@@ -8,17 +8,20 @@ import { MdOutlineShoppingCart } from "react-icons/md";
 import { FaMinus } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa6";
+import { FaHeart } from "react-icons/fa6";
 import { IoIosGitCompare } from "react-icons/io";
 import { MdZoomOutMap } from "react-icons/md";
 import CircularProgress from "@mui/material/CircularProgress";
 import { MyContext } from "../../App";
-import { deleteData, editData } from "../../api";
+import { addData, deleteData, editData } from "../../api";
 
 const ProductItem = (props) => {
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
+  const [isAddedMyList, setIsAddedMyList] = useState(false);
   const [cartItem, setCartItem] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const context = useContext(MyContext);
 
   const addToCart = (product, userId, quantity) => {
@@ -41,6 +44,16 @@ const ProductItem = (props) => {
       setQuantity(item[0]?.quantity);
     } else {
       setQuantity(1);
+    }
+    const myListItem = context?.cartData?.filter((item) =>
+      item.productId.includes(props?.item?._id)
+    );
+
+    if (myListItem?.length !== 0) {
+      setCartItem(item);
+      setIsAddedMyList(true);
+    } else {
+      setIsAddedMyList(false);
     }
   }, [context?.cartData]);
 
@@ -95,6 +108,35 @@ const ProductItem = (props) => {
     });
   };
 
+  // Add to MyList
+  const handleAddToMyList = (item) => {
+    console.log(context?.userData);
+    if (context?.userData?._id === undefined) {
+      context.openAlertBox("error", "Your are not login please login first!");
+      return false;
+    } else {
+      const obj = {
+        productId: item?._id,
+        userId: context?.userData?._id,
+        productTitle: item?.name,
+        image: item?.images[0],
+        rating: item?.rating,
+        price: item?.price,
+        oldPrice: item?.oldPrice,
+        brand: item?.brand,
+        discount: item?.discount,
+      };
+
+      addData(
+        `/api/myList/add?token=${localStorage.getItem("accesstoken")}`,
+        obj
+      ).then((res) => {
+        context.openAlertBox("success", "The product saved in my list ");
+        setIsAddedMyList(true);
+        context?.getMyListData();
+      });
+    }
+  };
   return (
     <div className="productItem h-[420px]  shadow-md rounded-sm overflow-hidden border border-1  border-[rgba(0,0,0,0.1)] py-5">
       <div className=" group imgWrapper w-[100%] h-[200px] overflow-hidden rounded-md relative">
@@ -124,8 +166,15 @@ const ProductItem = (props) => {
           >
             <MdZoomOutMap className="text-[18px] !text-black group-hover:text-white hover:!text-white " />
           </Button>
-          <Button className="!w-[40px] !h-[40px] !min-w-[40px] !rounded-full !bg-white text-black  hover:!bg-primary hover:text-white group">
-            <FaRegHeart className="text-[18px] !text-black group-hover:text-white hover:!text-white" />
+          <Button
+            className={`!w-[40px] !h-[40px] !min-w-[40px] !rounded-full !bg-white text-black  hover:!bg-primary hover:text-white group `}
+            onClick={() => handleAddToMyList(props?.item)}
+          >
+            {isAddedMyList === true ? (
+              <FaHeart className="text-[18px] !text-primary group-hover:text-white hover:!text-white" />
+            ) : (
+              <FaRegHeart className="text-[18px] !text-black group-hover:text-white hover:!text-white" />
+            )}
           </Button>
           <Button className="!w-[40px] !h-[40px] !min-w-[40px] !rounded-full !bg-white text-black  hover:!bg-primary hover:text-white group">
             <IoIosGitCompare className="text-[18px] !text-black group-hover:text-white hover:!text-white" />

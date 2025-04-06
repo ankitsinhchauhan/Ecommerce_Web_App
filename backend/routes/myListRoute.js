@@ -9,7 +9,7 @@ import {
 const myListRouter = Router();
 
 myListRouter.post("/add", auth, addToMyList);
-myListRouter.get("/", auth, getMyListController);
+myListRouter.get("/get", auth, getMyListController);
 myListRouter.delete("/:id", auth, deleteToMyList);
 
 export default myListRouter;

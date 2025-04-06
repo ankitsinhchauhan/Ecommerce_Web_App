@@ -34,6 +34,7 @@ const App = () => {
   const [openCartPanel, setOpenCartPanel] = useState(false);
   const [catData, setCatData] = useState([]);
   const [cartData, setCartData] = useState([]);
+  const [myListData, setMyListData] = useState([]);
 
   const handleOpenProductDetailModal = (status, item) => {
     setOpenProductDetailsModal({
@@ -73,7 +74,9 @@ const App = () => {
           }
         }
       });
+
       getCartItem();
+      getMyListData();
     } else {
       setIsLogin(false);
     }
@@ -93,7 +96,7 @@ const App = () => {
       toast.error(msg);
     }
   };
-
+  // Add to cart
   const addToCart = (product, userId, quantity) => {
     if (userId === undefined) {
       openAlertBox("error", "You are not login, Please Login first ");
@@ -134,6 +137,15 @@ const App = () => {
     });
   };
 
+  const getMyListData = () => {
+    fetchDataFromApi(
+      `/api/myList/get?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      console.log(res);
+      setMyListData(res?.data);
+    });
+  };
+
   const values = {
     openProductDetailsModal,
     setOpenProductDetailsModal,
@@ -153,6 +165,9 @@ const App = () => {
     cartData,
     setCartData,
     getCartItem,
+    myListData,
+    setMyListData,
+    getMyListData,
   };
 
   return (

@@ -60,14 +60,6 @@ const ProductListing = () => {
           >
             Home
           </Link>
-          <Link
-            underline="hover"
-            color="inherit"
-            href="/material-ui/getting-started/installation/"
-            className="link transition"
-          >
-            Appliances
-          </Link>
         </Breadcrumbs>
       </div>
       {/* side bar */}
