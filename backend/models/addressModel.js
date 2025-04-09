@@ -15,7 +15,7 @@ const addressSchema = new mongoose.Schema(
       default: "",
     },
     pincode: {
-      tyep: String,
+      type: Number,
     },
     country: {
       type: String,
@@ -31,6 +31,13 @@ const addressSchema = new mongoose.Schema(
     selected: {
       type: Boolean,
       default: true,
+    },
+    landmark: {
+      type: String,
+    },
+    addressType: {
+      type: String,
+      enum: ["Home", "Office"],
     },
     userId: {
       type: String,

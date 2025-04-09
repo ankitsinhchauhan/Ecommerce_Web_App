@@ -11,37 +11,21 @@ export async function addAddressController(req, res) {
       pincode,
       country,
       mobile,
-      status,
+      landmark,
       userId,
-      selected,
+      addressType,
     } = req.body;
-
-    // if (
-    //   !address_line1 ||
-    //   city ||
-    //   state ||
-    //   pincode ||
-    //   country ||
-    //   mobile ||
-    //   userId
-    // ) {
-    //   return res.status(500).json({
-    //     message: "Please provide all the fields",
-    //     error: true,
-    //     success: false,
-    //   });
-    // }
 
     const address = new AddressModel({
       address_line1,
       city,
       state,
-      pincode,
       country,
+      pincode,
       mobile,
-      status,
+      landmark,
       userId,
-      selected,
+      addressType,
     });
     const savedAddress = await address.save();
 
@@ -96,6 +80,75 @@ export async function getAddressController(req, res) {
         success: true,
       });
     }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// Delete Address
+export async function deleteAddressController(req, res) {
+  try {
+    const userId = req.userId; //middleware
+    const _id = req.params.id;
+
+    if (!_id) {
+      return res.status(400).json({
+        message: "Provide id",
+        error: true,
+        success: false,
+      });
+    }
+
+    const deletedAddress = await AddressModel.deleteOne({
+      _id: _id,
+      userId: userId,
+    });
+
+    if (!deletedAddress) {
+      return res.status(404).json({
+        message: "The product in the database not found",
+        error: true,
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "address Remove",
+      error: false,
+      success: true,
+      data: deletedAddress,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// get Signle address
+export async function getSingleAddress(req, res) {
+  try {
+    const id = req.params.id;
+    const address = await AddressModel.findOne({ _id: id });
+    if (!address) {
+      return res.status(404).json({
+        message: "Address not found",
+        error: true,
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      error: false,
+      address: address,
+    });
   } catch (error) {
     return res.status(500).json({
       message: error.message || error,

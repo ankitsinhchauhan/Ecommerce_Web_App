@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MyContext } from "../App";
-import { editData, postData, uploadImage } from "../Apis";
+import { editData, fetchDataFromApi, postData, uploadImage } from "../Apis";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Collapse } from "react-collapse";
 import Radio from "@mui/material/Radio";
-// import { PhoneInput } from "react-international-phone";
+import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +18,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(false);
   const [address, setAddress] = useState([]);
-  // const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("");
   const [userId, setUserId] = useState("");
   const [isChangePasswordFormShow, setI1sChangePasswordFormShow] =
     useState(false);
@@ -26,7 +26,7 @@ const Profile = () => {
   const [formFields, setFormFields] = useState({
     name: "",
     email: "",
-    // mobile: "",
+    mobile: "",
   });
 
   const [changePassword, setChangePassword] = useState({
@@ -116,23 +116,23 @@ const Profile = () => {
   // user id
   useEffect(() => {
     if (context?.userData?._id !== "" && context?.userData?._id !== undefined) {
-      // fetchDataFromApi(
-      //   `/api/address/get?userId=${
-      //     context?.userData?._id
-      //   } &token=${localStorage.getItem("accesstoken")}`
-      // ).then((res) => {
-      //   setAddress(res?.data);
-      //   context?.setAddress(res?.data);
-      // });
+      fetchDataFromApi(
+        `/api/address/get?userId=${
+          context?.userData?._id
+        }&token=${localStorage.getItem("accesstoken")}`
+      ).then((res) => {
+        setAddress(res?.data);
+        context?.setAddress(res.data);
+      });
       setUserId(context?.userData?._id);
       setFormFields({
         name: context?.userData?.name,
         email: context?.userData?.email,
-        // mobile: context?.userData?.mobile,
+        mobile: context?.userData?.mobile,
       });
 
-      // const ph = `"${context?.userData?.mobile}"`;
-      // setPhone(ph);
+      const ph = `"${context?.userData?.mobile}"`;
+      setPhone(ph);
 
       setChangePassword({
         email: context?.userData?.email,
@@ -174,10 +174,10 @@ const Profile = () => {
       context.openAlertBox("error", "Please enter email");
       return false;
     }
-    // if (formFields.mobile === "") {
-    //   context.openAlertBox("error", "Please enter mobile number");
-    //   return false;
-    // }
+    if (formFields.mobile === "") {
+      context.openAlertBox("error", "Please enter mobile number");
+      return false;
+    }
     editData(
       `/api/user/${userId}?token=${localStorage.getItem("accesstoken")}`,
       formFields,
@@ -319,19 +319,20 @@ const Profile = () => {
             </div>
           </div>
           <div className="flex items-center gap-5 mt-4">
-            {/* <div className="w-[50%]">
+            <div className="w-[50%]">
               <PhoneInput
                 defaultCountry="in"
                 value={phone}
                 disabled={isLoading === true ? true : false}
                 onChange={(phone) => {
                   setPhone(phone);
-                  setFormFields({
+                  setFormFields((prevState) => ({
+                    ...prevState,
                     mobile: phone,
-                  });
+                  }));
                 }}
               />
-            </div> */}
+            </div>
           </div>
           <br />
           <div
@@ -346,7 +347,7 @@ const Profile = () => {
             <span className="text-[14px] font-[500] ">Add Address</span>
           </div>
           {/* Address Box */}
-          <div className="flex gap-2 flex-col mt-4">
+          <div className="flex gap-4 flex-col mt-4">
             {address?.length > 0 &&
               address?.map((address, index) => {
                 return (
@@ -361,13 +362,13 @@ const Profile = () => {
                       />
                       <span className="text-[12px]">
                         {address?.address_line1 +
-                          "" +
+                          " " +
                           address?.city +
-                          "" +
+                          " " +
                           address?.state +
-                          "" +
+                          " " +
                           address?.country +
-                          "" +
+                          " " +
                           address?.pincode}
                       </span>
                     </label>
