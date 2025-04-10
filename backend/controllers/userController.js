@@ -424,24 +424,11 @@ export async function removeImageFromCloudinary(req, res) {
 export async function updateUserDetailsController(req, res) {
   try {
     const userid = req.userId; // auth middleware
-    const { name, email, mobile, password } = req.body;
+    const { name, email, mobile } = req.body;
 
     const userExist = await UserModel.findById(userid);
     if (!userExist) {
       return res.status(400).send("User can not be updated!");
-    }
-
-    let verifyCode = "";
-    if (email !== userExist.email) {
-      verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
-    }
-
-    let hashPassword = "";
-    if (password) {
-      const salt = await bcryptjs.genSalt(10);
-      hashPassword = await bcryptjs.hash(password, salt);
-    } else {
-      hashPassword = userExist.password;
     }
 
     const updateUser = await UserModel.findByIdAndUpdate(
@@ -450,10 +437,6 @@ export async function updateUserDetailsController(req, res) {
         name: name,
         mobile: mobile,
         email: email,
-        verify_email: email !== userExist.email ? false : true,
-        password: hashPassword,
-        otp: verifyCode !== "" ? verifyCode : null,
-        otpExpires: verifyCode !== "" ? Date.now() + 600000 : "",
       },
       { new: true }
     );

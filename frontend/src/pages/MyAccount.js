@@ -94,8 +94,8 @@ const MyAccount = () => {
       context.openAlertBox("error", "Please enter email");
       return false;
     }
-    if (formFields.mobile === "") {
-      context.openAlertBox("error", "Please enter mobile number");
+    if (phone === "") {
+      context.openAlertBox("error", "Please enter 10 digit mobile number");
       return false;
     }
 
@@ -104,8 +104,6 @@ const MyAccount = () => {
       formFields,
       { withCredentials: true }
     ).then((res) => {
-      console.log(res);
-
       if (res?.error !== true) {
         setIsLoading(false);
         context.openAlertBox("success", "User Updated succesfully");

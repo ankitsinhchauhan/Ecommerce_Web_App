@@ -27,7 +27,9 @@ const AddressBox = (props) => {
 
   const editAddress = (id) => {
     setAnchorEl(null);
-    props.editAddress(id); 
+    context?.setOpenAddressPanel(true);
+    context?.setAddressMode("edit");
+    context?.setAddressId(id);
   };
 
   return (
@@ -43,14 +45,15 @@ const AddressBox = (props) => {
       <span className="text-[13px] block pt-1 w-100">
         {props?.address?.address_line1 +
           " " +
+          props?.address?.landmark +
+          " " +
           props?.address?.city +
+          " " +
+          props?.address?.pincode +
           " " +
           props?.address?.state +
           " " +
-          props?.address?.country +
-          " " +
-          props?.address?.pincode +
-          " "}
+          props?.address?.country}
       </span>
 
       <div className="absolute top-[20px]  right-[20px]">
@@ -82,7 +85,9 @@ const AddressBox = (props) => {
             },
           }}
         >
-          <MenuItem onClick={editAddress}>Edit</MenuItem>
+          <MenuItem onClick={() => editAddress(props?.address?._id)}>
+            Edit
+          </MenuItem>
           <MenuItem onClick={() => removeAddress(props?.address?._id)}>
             Delete
           </MenuItem>

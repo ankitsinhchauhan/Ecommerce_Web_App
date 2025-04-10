@@ -38,7 +38,7 @@ const CartPanel = (props) => {
               <div className="info w-[75%] pr-5 pt-3 relative">
                 <h4 className="text-[16px] font-[500] w-[90%]">
                   <Link to="/product/57757" className="link transition-all">
-                    {item?.productTitle?.substr(0, 40) + "..."}
+                    {item?.productTitle?.substr(0, 20) + "..."}
                   </Link>
                 </h4>
                 <p className="flex items-center gap-5 mt-2 mb-2">
@@ -46,7 +46,11 @@ const CartPanel = (props) => {
                     Qty : <span>{item?.quantity}</span>
                   </span>
                   <span className="text-primary font-[500]">
-                    Price : &#x20b9; {item?.subTotal}
+                    Price :
+                    {item?.subTotal?.toLocaleString("en-Us", {
+                      style: "currency",
+                      currency: "INR",
+                    })}
                   </span>
                 </p>
                 <RiDeleteBin6Line
@@ -106,7 +110,11 @@ const CartPanel = (props) => {
             >
               <Button className="btn-org btn-lg ">View Cart</Button>
             </Link>
-            <Link to="/checkout" className="w-[50%] d-block">
+            <Link
+              to="/checkout"
+              className="w-[50%] d-block"
+              onClick={context.toggleCartPanel(false)}
+            >
               <Button className="btn-org btn-border btn-lg ">Check Out</Button>
             </Link>
           </div>

@@ -29,12 +29,15 @@ const App = () => {
     item: {},
   });
 
+  const [addressMode, setAddressMode] = useState("add");
   const [isLogin, setIsLogin] = useState(false);
   const [userData, setUserData] = useState(null);
   const [openCartPanel, setOpenCartPanel] = useState(false);
+  const [openAddressPanel, setOpenAddressPanel] = useState(false);
   const [catData, setCatData] = useState([]);
   const [cartData, setCartData] = useState([]);
   const [myListData, setMyListData] = useState([]);
+  const [addressId, setAddressId] = useState("");
 
   const handleOpenProductDetailModal = (status, item) => {
     setOpenProductDetailsModal({
@@ -54,29 +57,21 @@ const App = () => {
     setOpenCartPanel(newOpen);
   };
 
+  const toggleAddressPanel = (newOpen) => () => {
+    if (newOpen === false) {
+      setAddressMode("add");
+    }
+    setOpenAddressPanel(newOpen);
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("accesstoken");
     if (token !== undefined && token !== null && token !== "") {
       setIsLogin(true);
 
-      fetchDataFromApi(`/api/user/userDetails?token=${token}`).then((res) => {
-        setUserData(res?.data);
-
-        if (res?.response?.data?.error === true) {
-          if (res?.response?.data?.message === "You have not login") {
-            localStorage.removeItem("accesstoken");
-            localStorage.removeItem("refreshtoken");
-            openAlertBox("error", "Your session is closed login again");
-
-            window.location.href = "/login";
-
-            setIsLogin(false);
-          }
-        }
-      });
-
       getCartItem();
       getMyListData();
+      getuserDetails();
     } else {
       setIsLogin(false);
     }
@@ -146,6 +141,26 @@ const App = () => {
     });
   };
 
+  //get user Details
+  const getuserDetails = () => {
+    const token = localStorage.getItem("accesstoken");
+    fetchDataFromApi(`/api/user/userDetails?token=${token}`).then((res) => {
+      setUserData(res?.data);
+
+      if (res?.response?.data?.error === true) {
+        if (res?.response?.data?.message === "You have not login") {
+          localStorage.removeItem("accesstoken");
+          localStorage.removeItem("refreshtoken");
+          openAlertBox("error", "Your session is closed login again");
+
+          window.location.href = "/login";
+
+          setIsLogin(false);
+        }
+      }
+    });
+  };
+
   const values = {
     openProductDetailsModal,
     setOpenProductDetailsModal,
@@ -168,6 +183,14 @@ const App = () => {
     myListData,
     setMyListData,
     getMyListData,
+    openAddressPanel,
+    setOpenAddressPanel,
+    toggleAddressPanel,
+    getuserDetails,
+    addressMode,
+    setAddressMode,
+    addressId,
+    setAddressId,
   };
 
   return (

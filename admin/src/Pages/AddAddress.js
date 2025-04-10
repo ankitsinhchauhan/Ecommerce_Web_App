@@ -22,8 +22,8 @@ const AddAddress = () => {
     pincode: "",
     country: "",
     mobile: "",
-    status: "",
-    selected: false,
+    landmark: "",
+    addressType: "",
     userId: "",
   });
 
@@ -81,6 +81,16 @@ const AddAddress = () => {
 
     if (formFields.country === "") {
       context.openAlertBox("error", "Please enter your country");
+      return false;
+    }
+
+    if (formFields.landmark === "") {
+      context.openAlertBox("error", "Please enter your landmark");
+      return false;
+    }
+
+    if (formFields.addressType === "") {
+      context.openAlertBox("error", "Please enter your addressType");
       return false;
     }
     if (phone === "") {
@@ -186,12 +196,10 @@ const AddAddress = () => {
                 disabled={isLoading === true ? true : false}
                 onChange={(phone) => {
                   setPhone(phone);
-                  {
-                    setFormFields((preveState) => ({
-                      ...preveState,
-                      mobile: phone,
-                    }));
-                  }
+                  setFormFields((prevState) => ({
+                    ...prevState,
+                    mobile: phone,
+                  }));
                 }}
               />
             </div>

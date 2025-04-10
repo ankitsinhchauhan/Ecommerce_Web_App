@@ -22,6 +22,7 @@ import { MyContext } from "../../App";
 import CartPanel from "../Cart/CartPanel";
 import ProductDetailComponents from "../Product/ProductDetailComponents";
 import ProductZoom from "../Product/ProductZoom";
+import AddAddress from "../../pages/AddAddress";
 
 const Footer = () => {
   const context = useContext(MyContext);
@@ -272,6 +273,27 @@ const Footer = () => {
             </div>
           </>
         )}
+      </Drawer>
+
+      {/* Address panel */}
+
+      <Drawer
+        open={context.openAddressPanel}
+        onClose={context.toggleAddressPanel(false)}
+        anchor={"right"}
+        className="addressPanel"
+      >
+        <div className="flex items-center justify-between py-3 px-4 gap-3 border-b border-[rgba(0,0,0,0.1)]">
+          <h4>
+            {context?.addressMode === "add" ? "Add" : "Edit"} Delivery Address
+          </h4>
+          <IoMdClose
+            className="text-[20px] cursor-pointer"
+            onClick={context.toggleAddressPanel(false)}
+          />
+        </div>
+
+        <AddAddress />
       </Drawer>
 
       <Dialog

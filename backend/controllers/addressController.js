@@ -157,3 +157,49 @@ export async function getSingleAddress(req, res) {
     });
   }
 }
+
+// Edit address
+export async function editAddress(req, res) {
+  try {
+    const id = req.params.id;
+    const {
+      address_line1,
+      city,
+      state,
+      pincode,
+      country,
+      mobile,
+      landmark,
+      userId,
+      addressType,
+    } = req.body;
+
+    const address = await AddressModel.findByIdAndUpdate(
+      id,
+      {
+        address_line1: address_line1,
+        city: city,
+        state: state,
+        pincode: pincode,
+        country: country,
+        mobile: mobile,
+        landmark: landmark,
+        addressType: addressType,
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: "Address Updated successfully.",
+      success: true,
+      error: false,
+      address: address,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}

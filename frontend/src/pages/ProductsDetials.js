@@ -78,22 +78,6 @@ const ProductsDetials = () => {
             >
               Home
             </Link>
-            <Link
-              to="/appliances"
-              underline="hover"
-              color="inherit"
-              className="link transition !text-[14px]"
-            >
-              Appliances
-            </Link>
-            <Link
-              to="/"
-              underline="hover"
-              color="inherit"
-              className="link transition !text-[14px]"
-            >
-              Air Conditioner
-            </Link>
           </Breadcrumbs>
         </div>
       </div>

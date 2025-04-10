@@ -109,7 +109,7 @@ const ProductDetailComponents = (props) => {
           ) : (
             <>
               <IoCartOutline className="text-[22px]" />
-              Add to Cart
+              Add to Cart 
             </>
           )}
         </Button>

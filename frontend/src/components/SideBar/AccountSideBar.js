@@ -61,13 +61,12 @@ const AccountSideBar = () => {
           return false;
         }
       }
-      console.log(formData);
+
       uploadImage(
         `/api/user/user-avatar?token=${localStorage.getItem("accesstoken")}`,
         formData,
         { withCredentials: true }
       ).then((res) => {
-        console.log(res);
         setIsLoading(false);
 
         let avatar = [];

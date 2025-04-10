@@ -174,7 +174,7 @@ const Profile = () => {
       context.openAlertBox("error", "Please enter email");
       return false;
     }
-    if (formFields.mobile === "") {
+    if (phone === "") {
       context.openAlertBox("error", "Please enter mobile number");
       return false;
     }
