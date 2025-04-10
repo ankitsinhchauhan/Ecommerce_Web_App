@@ -19,6 +19,27 @@ const CheckOut = () => {
     }
   }, [context?.userData, userData]);
 
+  useEffect(() => {
+    setTotalAmount(
+      context?.cartData?.length !== 0
+        ? context?.cartData
+            ?.map((item) => parseInt(item.price) * item.quantity)
+            .reduce((total, value) => total + value, 0)
+        : 0
+    )?.toLocaleString("en-US", { style: "currency", currency: "INR" });
+
+    localStorage
+      .setItem(
+        "totalAmount",
+        context?.cartData?.length !== 0
+          ? context?.cartData
+              ?.map((item) => parseInt(item.price) * item.quantity)
+              .reduce((total, value) => total + value, 0)
+          : 0
+      )
+      ?.toLocaleString("en-US", { style: "currency", currency: "INR" });
+  }, [context.cartData]);
+
   const editAddress = (id) => {
     context?.setOpenAddressPanel(true);
     context?.setAddressMode("edit");
@@ -34,6 +55,42 @@ const CheckOut = () => {
 
   const checkout = (e) => {
     e.preventDefault();
+
+    var option = {
+      key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+      key_secret: process.env.REACT_APP_RAZORPAY_KEY_SECRET,
+      amount: parseInt(totalAmount * 100),
+      currency: "INR",
+      order_receipt: context?.userData?.name,
+      name: "ShopNestWebApp",
+      description: "for testing purpose",
+      handler: function (res) {
+        console.log(res);
+
+        const paymentId = res.razorpay_payment_id;
+        const user = context?.userData;
+
+        const payLoad = {
+          userId: user?._id,
+          products: context?.cartData,
+          paymentId: paymentId,
+          payment_status: "COMPLETED",
+          delivery_address: selectedAddress,
+          totalAmt: totalAmount,
+          date: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }),
+        };
+      },
+      them: {
+        color: "#6c6cff ",
+      },
+    };
+
+    var pay = new window.Razorpay(option);
+    pay.open();
   };
 
   return (
