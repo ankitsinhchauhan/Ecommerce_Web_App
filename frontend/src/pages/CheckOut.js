@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa6";
 import { BsBagCheckFill } from "react-icons/bs";
 import Radio from "@mui/material/Radio";
 import { MyContext } from "../App";
+import { addData, deleteData } from "../api";
 
 const CheckOut = () => {
   const [userData, setUserData] = useState(null);
@@ -83,7 +84,15 @@ const CheckOut = () => {
             year: "numeric",
           }),
         };
+
+        addData(`/api/order/create`, payLoad).then((res) => {
+          context.openAlertBox("success", res?.message);
+          if (res?.error === false) {
+            deleteData(`/api/order/create`);
+          }
+        });
       },
+
       them: {
         color: "#6c6cff ",
       },
