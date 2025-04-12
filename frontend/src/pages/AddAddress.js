@@ -14,7 +14,6 @@ import { addData, editData, fetchDataFromApi } from "../api";
 
 const AddAddress = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [addressId, setAddressId] = useState("");
   const [phone, setPhone] = useState("");
   const [addressType, setAddressType] = useState("");
 

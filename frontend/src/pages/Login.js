@@ -234,7 +234,7 @@ const Login = () => {
                 to="/register"
                 className="link text-[14px] font-[600] text-primary"
               >
-                Sign Up
+                Register
               </Link>
             </p>
             <p className="text-center font-[500]">

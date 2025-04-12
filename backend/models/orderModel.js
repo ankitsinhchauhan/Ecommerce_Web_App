@@ -39,7 +39,7 @@ const orderSchema = new mongoose.Schema(
     },
     order_status: {
       type: String,
-      default: pending,
+      default: "pending",
     },
     delivery_address: {
       type: mongoose.Schema.ObjectId,

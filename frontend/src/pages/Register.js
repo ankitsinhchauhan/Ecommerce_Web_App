@@ -141,7 +141,7 @@ const Register = () => {
       <div className="container">
         <div className="card shadow-md w-[400px] m-auto rounded-md bg-white p-7">
           <h3 className="text-center text-[35px] font-[400] text-black">
-            SIGN UP
+            REGISTER
           </h3>
           <form className="w-full mt-7" onSubmit={handleSubmit}>
             <div className="form-group w-full mb-5">

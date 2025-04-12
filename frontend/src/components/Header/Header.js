@@ -122,9 +122,16 @@ const Header = () => {
                   <Tooltip title="Login">
                     <Link
                       to="/login"
-                      className="link transition text-[26px] font-[500] text-gray-600"
+                      className="link transition text-[16px] font-[500] text-gray-600 px-1"
                     >
-                      <GoPerson />
+                      Login
+                    </Link>
+                    <span className="fonte-bold">|</span>
+                    <Link
+                      to="/register"
+                      className="link transition text-[16px] font-[500] text-gray-600 px-1"
+                    >
+                      Register
                     </Link>
                   </Tooltip>
                 </li>

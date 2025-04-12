@@ -5,18 +5,30 @@ import { FaPlus } from "react-icons/fa6";
 import { BsBagCheckFill } from "react-icons/bs";
 import Radio from "@mui/material/Radio";
 import { MyContext } from "../App";
-import { addData, deleteData } from "../api";
+import { addData, deleteData, fetchDataFromApi } from "../api";
+import { useNavigate } from "react-router-dom";
+import { BsFillBagCheckFill } from "react-icons/bs";
 
 const CheckOut = () => {
   const [userData, setUserData] = useState(null);
   const [isChecked, setIsChecked] = useState(0);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [totalAmount, setTotalAmount] = useState();
+
   const context = useContext(MyContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (context?.userData !== null) {
       setUserData(context?.userData);
+      setSelectedAddress(context?.userData?.address_details[0]?._id);
+
+      fetchDataFromApi(
+        `/api/order/order-list?token=${localStorage.getItem("accesstoken")}`
+      ).then((res) => {
+        console.log(res);
+      });
     }
   }, [context?.userData, userData]);
 
@@ -29,16 +41,16 @@ const CheckOut = () => {
         : 0
     )?.toLocaleString("en-US", { style: "currency", currency: "INR" });
 
-    localStorage
-      .setItem(
-        "totalAmount",
-        context?.cartData?.length !== 0
-          ? context?.cartData
-              ?.map((item) => parseInt(item.price) * item.quantity)
-              .reduce((total, value) => total + value, 0)
-          : 0
-      )
-      ?.toLocaleString("en-US", { style: "currency", currency: "INR" });
+    // localStorage
+    //   .setItem(
+    //     "totalAmount",
+    //     context?.cartData?.length !== 0
+    //       ? context?.cartData
+    //           ?.map((item) => parseInt(item.price) * item.quantity)
+    //           .reduce((total, value) => total + value, 0)
+    //       : 0
+    //   )
+    //   ?.toLocaleString("en-US", { style: "currency", currency: "INR" });
   }, [context.cartData]);
 
   const editAddress = (id) => {
@@ -66,8 +78,6 @@ const CheckOut = () => {
       name: "ShopNestWebApp",
       description: "for testing purpose",
       handler: function (res) {
-        console.log(res);
-
         const paymentId = res.razorpay_payment_id;
         const user = context?.userData;
 
@@ -85,11 +95,20 @@ const CheckOut = () => {
           }),
         };
 
-        addData(`/api/order/create`, payLoad).then((res) => {
-          context.openAlertBox("success", res?.message);
-          if (res?.error === false) {
-            deleteData(`/api/order/create`);
-          }
+        addData(
+          `/api/order/create?token=${localStorage.getItem("accesstoken")}`,
+          payLoad
+        ).then((res) => {
+          context.openAlertBox("success", "Order Placed");
+
+          deleteData(
+            `/api/cart/emptyCart/${user?._id}?token=${localStorage.getItem(
+              "accesstoken"
+            )}`
+          ).then((res) => {
+            context?.getCartItem();
+          });
+          // navigate("/");
         });
       },
 
@@ -100,6 +119,38 @@ const CheckOut = () => {
 
     var pay = new window.Razorpay(option);
     pay.open();
+  };
+
+  const cashOnDelivery = () => {
+    const user = context?.userData;
+
+    const payLoad = {
+      userId: user?._id,
+      products: context?.cartData,
+      paymentId: "",
+      payment_status: "CASH ON DELIVERY",
+      delivery_address: selectedAddress,
+      totalAmt: totalAmount,
+      date: new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      }),
+    };
+    addData(
+      `/api/order/create?token=${localStorage.getItem("accesstoken")}`,
+      payLoad
+    ).then((res) => {
+      context.openAlertBox("success", "Order Placed");
+      deleteData(
+        `/api/cart/emptyCart/${user?._id}?token=${localStorage.getItem(
+          "accesstoken"
+        )}`
+      ).then((res) => {
+        context?.getCartItem();
+      });
+      // navigate("/");
+    });
   };
 
   return (
@@ -246,13 +297,24 @@ const CheckOut = () => {
                     })}
                 </div>
               </div>
-              <Button
-                type="submit"
-                className="btn-org btn-lg w-full flex gap-2 items-center"
-              >
-                <BsBagCheckFill className="text-[20px]" />
-                Check Out
-              </Button>
+              <div className="flex items-center flex-col gap-3 mb-2">
+                <Button
+                  type="submit"
+                  className="btn-org btn-lg w-full flex gap-2 items-center"
+                >
+                  <BsBagCheckFill className="text-[20px]" />
+                  Check Out
+                </Button>
+
+                <Button
+                  type="button"
+                  className="btn-dark btn-lg w-full flex gap-2 items-center"
+                  onClick={cashOnDelivery}
+                >
+                  <BsFillBagCheckFill className="text-[20px]" />
+                  Cash on Delivery
+                </Button>
+              </div>
             </div>
           </div>
         </div>
