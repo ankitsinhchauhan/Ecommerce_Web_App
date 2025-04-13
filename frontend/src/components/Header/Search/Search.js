@@ -3,11 +3,14 @@ import "../Search/style.css";
 import Button from "@mui/material/Button";
 import { IoSearch } from "react-icons/io5";
 import { MyContext } from "../../../App";
-import { addData } from "../../../api";
+import { postData } from "../../../api";
 import { useNavigate } from "react-router-dom";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const context = useContext(MyContext);
   const navigate = useNavigate();
@@ -17,6 +20,7 @@ const Search = () => {
   };
 
   const search = () => {
+    setIsLoading(true);
     const obj = {
       page: 1,
       limit: 3,
@@ -24,9 +28,12 @@ const Search = () => {
     };
 
     if (searchQuery !== "") {
-      addData(`/api/product/search/get`, obj).then((res) => {
+      postData(`/api/product/search/get`, obj).then((res) => {
         context?.setSearchData(res);
-        navigate("/search");
+        setTimeout(() => {
+          setIsLoading(false);
+          navigate("/search");
+        }, 500);
       });
     }
   };
@@ -44,7 +51,11 @@ const Search = () => {
         className=" !absolute top-[8px] right-[5px] z-50 !w-[37px] !h-[37px] !min-w-[37px] !rounded-full !text-black"
         onClick={search}
       >
-        <IoSearch className="text-[#4e4e4e] text-[24px]" />
+        {isLoading === true ? (
+          <CircularProgress />
+        ) : (
+          <IoSearch className="text-[#4e4e4e] text-[22px]" />
+        )}
       </Button>
     </div>
   );

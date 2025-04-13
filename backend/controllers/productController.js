@@ -962,10 +962,7 @@ export async function searchProductController(req, res) {
         { brand: { $regex: query, $options: "i" } },
         { catName: { $regex: query, $options: "i" } },
       ],
-    })
-      .populate("category")
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
+    }).populate("category");
 
     const total = await products?.length;
 
@@ -975,7 +972,7 @@ export async function searchProductController(req, res) {
       products: products,
       total: total,
       page: parseInt(page),
-      totalPages: Math.ceil(total / limit),
+      totalPages: 1,
     });
   } catch (error) {
     return res.status(500).json({

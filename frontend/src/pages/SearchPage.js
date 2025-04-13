@@ -101,10 +101,13 @@ const SearchPage = () => {
                   <IoGridSharp className="text-[#000]" />
                 </Button>
                 <sapn className="text-[14px] font-[500] pl-3 text-[rgba(0,0,0,0.7)]">
-                  There are{" "}
-                  {productsData?.products?.length !== 0
-                    ? productsData?.products?.length
-                    : 0}{" "}
+                  There are
+                  <sapn>
+                    {" "}
+                    {productsData?.products?.length !== 0
+                      ? productsData?.products?.length
+                      : 0}{" "}
+                  </sapn>
                   products.
                 </sapn>
               </div>
