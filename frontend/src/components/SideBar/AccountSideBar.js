@@ -156,14 +156,14 @@ const AccountSideBar = () => {
             </Button>
           </NavLink>
         </li>
-        <li className="w-full">
+        {/* <li className="w-full">
           <NavLink to="/logout" exact={true} activeClassName="isActive">
             <Button className="w-full !justify-start !text-left !py-2 !px-5 !text-[rgba(0,0,0,0.8)] !capitalize !rounded-none flex items-center gap-2">
               <MdLogout className="text-[20px]" />
               Logout
             </Button>
           </NavLink>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

@@ -23,6 +23,8 @@ import Address from "./pages/Address";
 import OrderFailed from "./pages/OrderFailed";
 import OrderPlaced from "./pages/OrderPlaced";
 import SearchPage from "./pages/SearchPage";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
 
 const MyContext = createContext();
 
@@ -206,6 +208,8 @@ const App = () => {
           <Header />
           <Routes>
             <Route path={"/"} element={<Home />} />
+            <Route path={"/aboutus"} element={<AboutUs />} />
+            <Route path={"/contactus"} element={<ContactUs />} />
             <Route path={"/product"} element={<ProductListing />} />
             <Route path={"/product/:id"} element={<ProductsDetials />} />
             <Route path={"/login"} element={<Login />} />

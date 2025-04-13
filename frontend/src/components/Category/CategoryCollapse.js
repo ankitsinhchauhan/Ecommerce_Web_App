@@ -33,7 +33,7 @@ const CategoryCollapse = (props) => {
             props?.data?.map((cat, index) => {
               return (
                 <li className="list-none flex items-center relative flex-col">
-                  <Link to="/productListing" className="w-full">
+                  <Link to={`/product?catId=${cat?._id}`} className="w-full">
                     <Button className="w-full !text-left !justify-start !px-3  !text-black ">
                       {cat?.name}
                     </Button>

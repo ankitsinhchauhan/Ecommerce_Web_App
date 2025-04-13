@@ -509,7 +509,7 @@ button .MuiCircularProgress-root {
 }
 
 .productDetailsModal .MuiDialog-paper {
-  width: 1200 !important;
+  width: 1200px !important;
   max-width: 1200px !important;
 }
 

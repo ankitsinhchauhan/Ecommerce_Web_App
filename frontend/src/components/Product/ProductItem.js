@@ -187,7 +187,7 @@ const ProductItem = (props) => {
             {props?.item?.name?.substr(0, 30) + "..."}
           </Link>
         </h3>
-        {/* <p>1 Year Standard Warranty on this Product, 10 Year warranty on the compressor</p> */}
+
         <Rating name="size-small" defaultValue={4} size="small" readOnly />
         <div className="flex items-center gap-4">
           <span className="price text-red-500 text-[15px] font-[600]">

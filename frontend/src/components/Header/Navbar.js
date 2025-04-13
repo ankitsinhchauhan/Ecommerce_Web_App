@@ -39,7 +39,7 @@ const Navbar = () => {
           </div>
           {/* navbar */}
           <div className="co1_2 w-[60%]">
-            <ul className="flex items-center  gap-5 ">
+            <ul className="flex items-center gap-5 ">
               <li className="list-none">
                 <Link to="/" className="link transition text-[14px] font-[500]">
                   <Button className="link transition !font-[500] !text-[rgba(0,0,0,0.8)] hover:!text-primary">
@@ -78,7 +78,7 @@ const Navbar = () => {
               </li>
               <li className="list-none">
                 <Link
-                  to="/about"
+                  to="/aboutus"
                   className="link transition text-[14px] font-[500]"
                 >
                   <Button className="link transition !font-[500] !text-[rgba(0,0,0,0.8)] hover:!text-primary">
@@ -86,7 +86,7 @@ const Navbar = () => {
                   </Button>
                 </Link>
               </li>
-              <li className="list-none">
+              {/* <li className="list-none">
                 <Link
                   to="/reviews"
                   className="link transition text-[14px] font-[500]"
@@ -95,10 +95,10 @@ const Navbar = () => {
                     Reviews
                   </Button>
                 </Link>
-              </li>
+              </li> */}
               <li className="list-none">
                 <Link
-                  to="/contact"
+                  to="/contactus"
                   className="link transition text-[14px] font-[500]"
                 >
                   <Button className="link transition !font-[500] !text-[rgba(0,0,0,0.8)] hover:!text-primary">

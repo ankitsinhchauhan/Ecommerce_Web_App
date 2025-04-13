@@ -67,6 +67,12 @@ const ProductDetailComponents = (props) => {
             {props?.item?.brand}
           </span>
         </span>
+        <span className="text-gray-400 text-[13px]">
+          Weight :{" "}
+          <span className="font-[500] text-black opacity-75">
+            {props?.item?.productWeight}
+          </span>
+        </span>
         <Rating name="size-small" defaultValue={4} size="small" />{" "}
         <span
           className="text-[13px] cursor-pointer"
@@ -109,7 +115,7 @@ const ProductDetailComponents = (props) => {
           ) : (
             <>
               <IoCartOutline className="text-[22px]" />
-              Add to Cart 
+              Add to Cart
             </>
           )}
         </Button>

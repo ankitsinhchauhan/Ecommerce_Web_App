@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 import MyListItems from "./MyListItems";
 import AccountSideBar from "../components/SideBar/AccountSideBar";
@@ -8,6 +8,11 @@ import { Button } from "@mui/material";
 
 const MyList = () => {
   const context = useContext(MyContext);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  });
+
   return (
     <section className="py-10 w-full ">
       <div className="container flex gap-5">

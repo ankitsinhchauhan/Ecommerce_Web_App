@@ -94,7 +94,7 @@ const CartPage = () => {
               </span>
             </p>
             <br />
-            <Button className="btn-org btn-lg w-full flex gap-2">
+            <Button type="submit" className="btn-org btn-lg w-full flex gap-2">
               <BsBagCheckFill className="text-[20px]" />
               Check Out
             </Button>
