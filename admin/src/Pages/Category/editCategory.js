@@ -26,7 +26,6 @@ const EditCategory = () => {
     fetchDataFromApi(
       `/api/category/${id}?token=${localStorage.getItem("accesstoken")}`
     ).then((res) => {
-      console.log(res?.category);
       formFields.name = res?.category?.name;
       setPreviews(res?.category?.images);
     });
@@ -62,7 +61,7 @@ const EditCategory = () => {
 
       setTimeout(() => {
         setPreviews(imageArr);
-        // formFields.images = previewsArr;
+        formFields.images = imageArr;
       }, 100);
     });
   };
@@ -89,7 +88,6 @@ const EditCategory = () => {
       `/api/category/${Id}?token=${localStorage.getItem("accesstoken")}`,
       formFields
     ).then((res) => {
-      console.log(res);
       setTimeout(() => {
         setIsLoading(false);
         context.setIsOpenFullScreenPanle({
@@ -111,7 +109,7 @@ const EditCategory = () => {
               <input
                 type="text"
                 name="name"
-                value={formFields.name}
+                value={formFields?.name}
                 onChange={onChangeInput}
                 className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
               />

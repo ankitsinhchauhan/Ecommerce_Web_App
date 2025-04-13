@@ -567,7 +567,6 @@ export async function deleteProduct(req, res) {
 }
 
 // Delete Multiple Products
-
 export async function deleteMultipleProduct(req, res) {
   const { ids } = req.body;
 
@@ -934,6 +933,49 @@ export async function sortBy(req, res) {
       products: sortedItems,
       page: 0,
       totalPages: 0,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// Search Product
+export async function searchProductController(req, res) {
+  try {
+    const { query, page, limit } = req.body;
+
+    if (!query) {
+      return res.status(400).json({
+        message: "Query is required",
+        error: true,
+        success: false,
+      });
+    }
+
+    const products = await ProductModel.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { brand: { $regex: query, $options: "i" } },
+        { catName: { $regex: query, $options: "i" } },
+      ],
+    })
+      .populate("category")
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    const total = await products?.length;
+
+    return res.status(200).json({
+      error: false,
+      success: true,
+      products: products,
+      total: total,
+      page: parseInt(page),
+      totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
     return res.status(500).json({

@@ -23,9 +23,8 @@ import { MyContext } from "../../App";
 import CircularProgress from "@mui/material/CircularProgress";
 import Rating from "@mui/material/Rating";
 import SearchBox from "../../Components/SearchBox";
-import { deleteData, deleteMultipleData, fetchDataFromApi } from "../../Apis";
+import { deleteData, fetchDataFromApi } from "../../Apis";
 
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const columns = [
   { id: "product", label: "PRODUCT", minWidth: 100 },
   { id: "category", label: "CATEGORY", minWidth: 150 },
@@ -56,50 +55,15 @@ const Products = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [productData, setProductData] = useState([]);
-  const [sortedIds, setSortedIds] = useState([]);
+  const [productTotalData, setProductTotalData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const context = useContext(MyContext);
 
   useEffect(() => {
     getProducts();
   }, [context?.isOpenFullScreenPanle]);
-
-  // Handle to toggle all checkboxes
-  const handleSelectAll = (e) => {
-    const isChecked = e.target.checked;
-
-    // update all items checked status
-    const updateItems = productData.map((item) => ({
-      ...item,
-      checked: isChecked,
-    }));
-    setProductData(updateItems);
-
-    //updaate the sorted IDs state
-    if (isChecked) {
-      const ids = updateItems.map((item) => item._id).sort((a, b) => a - b);
-
-      setSortedIds(ids);
-    } else {
-      setSortedIds([]);
-    }
-  };
-
-  // Handler to toggle individual checkboxes
-  const handleCheckboxChange = (e, id, index) => {
-    const updatedItems = productData.map((item) =>
-      item._id === id ? { ...item, checked: !item.checked } : item
-    );
-    setProductData(updatedItems);
-
-    // update the sortedIds state
-    const selectedIds = updatedItems
-      .filter((item) => item.checked)
-      .map((item) => item._id)
-      .sort((a, b) => a - b);
-    setSortedIds(selectedIds);
-  };
 
   const getProducts = async () => {
     setIsLoading(true);
@@ -129,28 +93,6 @@ const Products = () => {
     });
   };
 
-  const deleteMultipleProduct = () => {
-    if (sortedIds.length === 0) {
-      context.openAlertBox("error", "Please seletct items to delete.");
-      return;
-    }
-
-    try {
-      deleteMultipleData(
-        `/api/product/deleteMultiple?token=${localStorage.getItem(
-          "accesstoken"
-        )}`,
-        { data: { ids: sortedIds } }
-      ).then((res) => {
-        console.log(res);
-        getProducts();
-        context.openAlertBox("success", "Product deleted");
-      });
-    } catch (error) {
-      context.openAlertBox("error", "Error deleting items");
-    }
-  };
-
   const handleChangeProductCat = (event) => {
     setProductCat(event.target.value);
     setIsLoading(true);
@@ -178,21 +120,41 @@ const Products = () => {
     setPage(0);
   };
 
+  useEffect(() => {
+    setIsLoading(true);
+    fetchDataFromApi(`/api/product/getAllProducts`).then((res) => {
+      setProductData(res?.data?.products);
+      setProductTotalData(res?.data?.products);
+      setIsLoading(false);
+    });
+  }, []);
+
+  // Search Bar
+  useEffect(() => {
+    if (searchQuery !== "") {
+      const filteredItems = productTotalData?.data?.filter(
+        (product) =>
+          product._id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product?.catName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setProductCat(filteredItems);
+    } else {
+      fetchDataFromApi(`/api/product/getAllProducts`).then((res) => {
+        if (res?.error === false) {
+          setProductData(res?.products);
+          setIsLoading(false);
+        }
+      });
+    }
+  }, [searchQuery]);
+
   return (
     <>
       <div className="flex items-center justify-between px-2 py-0 mt-3">
         <h2 className="text-[20px] font-[600]">Products</h2>
 
         <div className="col w-[35%] ml-auto flex items-center justify-end gap-3">
-          {sortedIds?.length !== 0 && (
-            <Button
-              variant="contained"
-              className="btn !bg-red-600 !text-white btn-sm"
-              onClick={deleteMultipleProduct}
-            >
-              Delete
-            </Button>
-          )}
           <Button className="btn !bg-green-600 !text-white btn-sm">
             Export
           </Button>
@@ -235,28 +197,19 @@ const Products = () => {
 
           {/* Search Box */}
           <div className="col1 w-[20%] ml-auto">
-            <SearchBox />
+            <SearchBox
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
           </div>
         </div>
 
         <br />
 
-        <TableContainer sx={{ maxHeight: 440 }}>
+        <TableContainer sx={{ maxHeight: 440 }} className="px-1">
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell>
-                  <Checkbox
-                    {...label}
-                    size="small"
-                    onChange={handleSelectAll}
-                    checked={
-                      productData?.length > 0
-                        ? productData.every((item) => item.checked)
-                        : false
-                    }
-                  />
-                </TableCell>
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
@@ -277,16 +230,6 @@ const Products = () => {
                   ?.map((product, index) => {
                     return (
                       <TableRow key={index}>
-                        <TableCell style={{ minWidth: columns.minWidth }}>
-                          <Checkbox
-                            {...label}
-                            size="small"
-                            checked={product.checked === true ? true : false}
-                            onChange={(e) =>
-                              handleCheckboxChange(e, product._id, index)
-                            }
-                          />
-                        </TableCell>
                         <TableCell style={{ minWidth: columns.minWidth }}>
                           <div className="flex items-center gap-4 w-[300px]">
                             <div className="img w-[65px] h-[65px] rounded-md overflow-hidden group">

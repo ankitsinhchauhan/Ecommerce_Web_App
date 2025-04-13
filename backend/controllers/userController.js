@@ -817,3 +817,55 @@ export async function getReviews(req, res) {
     });
   }
 }
+
+// Get all users
+
+export async function getAllUsers(req, res) {
+  try {
+    const users = await UserModel.find();
+
+    if (!users) {
+      return res.status(200).json({
+        error: true,
+        success: false,
+      });
+    }
+    return res.status(200).json({
+      error: false,
+      success: true,
+      users: users,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something is wrong",
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// Get all revies
+export async function getAllReviews(req, res) {
+  try {
+    const reviews = await ReviewsModel.find();
+
+    if (!reviews) {
+      return res.status(400).json({
+        error: true,
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      error: false,
+      success: true,
+      reviews: reviews,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something is wrong",
+      error: true,
+      success: false,
+    });
+  }
+}

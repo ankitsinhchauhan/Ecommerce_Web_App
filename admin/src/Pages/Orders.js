@@ -15,7 +15,7 @@ import { MyContext } from "../App";
 const Orders = () => {
   const [isOpenOrderProduct, setIsOpenOrderProduct] = useState(null);
   const [orders, setOrders] = useState([]);
-
+  const [pageOrder, setPageOrder] = useState(1);
   const [orderStatus, setOrderStatus] = useState("");
 
   const context = useContext(MyContext);
@@ -57,14 +57,14 @@ const Orders = () => {
     ).then((res) => {
       setOrders(res?.data);
     });
-  }, [orderStatus]);
+  }, [orderStatus, pageOrder]);
 
   return (
     <div className="card my-4 bg-white shadow-md sm:rounded-lg">
       <div className="flex items-center justify-between px-5 py-5">
         <h2 className="text-[20px] font-[600] ">Recent Order</h2>
         <div className="w-[40%]">
-          <SearchBox />
+          <SearchBox setPageOrder={setPageOrder} />
         </div>
       </div>
       {/* create tabel */}

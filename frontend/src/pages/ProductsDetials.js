@@ -50,7 +50,7 @@ const ProductsDetials = () => {
 
         setTimeout(() => {
           setIsLoading(false);
-        }, 500);
+        }, 300);
       }
     });
 

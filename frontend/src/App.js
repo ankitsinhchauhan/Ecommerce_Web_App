@@ -20,6 +20,9 @@ import MyList from "./pages/MyList";
 import Orders from "./pages/Orders";
 import { addData, fetchDataFromApi } from "./api";
 import Address from "./pages/Address";
+import OrderFailed from "./pages/OrderFailed";
+import OrderPlaced from "./pages/OrderPlaced";
+import SearchPage from "./pages/SearchPage";
 
 const MyContext = createContext();
 
@@ -38,6 +41,7 @@ const App = () => {
   const [cartData, setCartData] = useState([]);
   const [myListData, setMyListData] = useState([]);
   const [addressId, setAddressId] = useState("");
+  const [searchData, setSearchData] = useState([]);
 
   const handleOpenProductDetailModal = (status, item) => {
     setOpenProductDetailsModal({
@@ -191,6 +195,8 @@ const App = () => {
     setAddressMode,
     addressId,
     setAddressId,
+    searchData,
+    setSearchData,
   };
 
   return (
@@ -211,7 +217,10 @@ const App = () => {
             <Route path={"/my-account"} element={<MyAccount />} />
             <Route path={"/my-list"} element={<MyList />} />
             <Route path={"/my-orders"} element={<Orders />} />
+            <Route path={"/orderFailed"} element={<OrderFailed />} />
+            <Route path={"/orderPlaced"} element={<OrderPlaced />} />
             <Route path={"/address"} element={<Address />} />
+            <Route path={"/search"} element={<SearchPage />} />
           </Routes>
           <Footer />
         </MyContext.Provider>

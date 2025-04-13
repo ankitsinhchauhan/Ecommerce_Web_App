@@ -176,9 +176,6 @@ const ProductItem = (props) => {
               <FaRegHeart className="text-[18px] !text-black group-hover:text-white hover:!text-white" />
             )}
           </Button>
-          <Button className="!w-[40px] !h-[40px] !min-w-[40px] !rounded-full !bg-white text-black  hover:!bg-primary hover:text-white group">
-            <IoIosGitCompare className="text-[18px] !text-black group-hover:text-white hover:!text-white" />
-          </Button>
         </div>
       </div>
       <div className="info p-3  py-5 relative bp-[50px] h-[190px]">

@@ -4,6 +4,8 @@ import {
   authWithGoogle,
   changePassowrd,
   forgotPasswordController,
+  getAllReviews,
+  getAllUsers,
   getReviews,
   imageUploadController,
   loginUserController,
@@ -44,5 +46,8 @@ userRouter.get("/userDetails", auth, userDetails);
 
 userRouter.post("/addReview", auth, addReview);
 userRouter.get("/getReview", getReviews);
+
+userRouter.get("/getAllUsers", getAllUsers);
+userRouter.get("/getAllReview", getAllReviews);
 
 export default userRouter;

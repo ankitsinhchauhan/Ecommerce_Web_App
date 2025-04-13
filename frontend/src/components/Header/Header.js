@@ -229,16 +229,6 @@ const Header = () => {
                 </>
               )}
 
-              {/* wishlist , cart, compare */}
-              <li>
-                <Tooltip title="Compare">
-                  <IconButton aria-label="Compare">
-                    <StyledBadge badgeContent={1} color="secondary">
-                      <IoIosGitCompare />
-                    </StyledBadge>
-                  </IconButton>
-                </Tooltip>
-              </li>
               {/* WishList */}
               <li>
                 <Tooltip title="WishList">

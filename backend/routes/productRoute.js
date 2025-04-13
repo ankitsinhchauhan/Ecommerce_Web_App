@@ -21,6 +21,7 @@ import {
   getProductWeight,
   getProductWeightById,
   removeImageFromCloudinary,
+  searchProductController,
   sortBy,
   UpdateProduct,
   UpdateProductWeight,
@@ -53,5 +54,7 @@ productRouter.get("/productWeight/:id", getProductWeightById);
 
 productRouter.post("/filters", filters);
 productRouter.post("/sortBy", sortBy);
+
+productRouter.post("/search/get", searchProductController);
 
 export default productRouter;

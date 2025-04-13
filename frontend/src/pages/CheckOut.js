@@ -6,8 +6,9 @@ import { BsBagCheckFill } from "react-icons/bs";
 import Radio from "@mui/material/Radio";
 import { MyContext } from "../App";
 import { addData, deleteData, fetchDataFromApi } from "../api";
-import { useNavigate } from "react-router-dom";
+
 import { BsFillBagCheckFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 const CheckOut = () => {
   const [userData, setUserData] = useState(null);
@@ -16,7 +17,7 @@ const CheckOut = () => {
   const [totalAmount, setTotalAmount] = useState();
 
   const context = useContext(MyContext);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -69,88 +70,96 @@ const CheckOut = () => {
   const checkout = (e) => {
     e.preventDefault();
 
-    var option = {
-      key: process.env.REACT_APP_RAZORPAY_KEY_ID,
-      key_secret: process.env.REACT_APP_RAZORPAY_KEY_SECRET,
-      amount: parseInt(totalAmount * 100),
-      currency: "INR",
-      order_receipt: context?.userData?.name,
-      name: "ShopNestWebApp",
-      description: "for testing purpose",
-      handler: function (res) {
-        const paymentId = res.razorpay_payment_id;
-        const user = context?.userData;
+    if (userData?.address_details?.length !== 0) {
+      var option = {
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+        key_secret: process.env.REACT_APP_RAZORPAY_KEY_SECRET,
+        amount: parseInt(totalAmount * 100),
+        currency: "INR",
+        order_receipt: context?.userData?.name,
+        name: "ShopNestWebApp",
+        description: "for testing purpose",
+        handler: function (res) {
+          const paymentId = res.razorpay_payment_id;
+          const user = context?.userData;
 
-        const payLoad = {
-          userId: user?._id,
-          products: context?.cartData,
-          paymentId: paymentId,
-          payment_status: "COMPLETED",
-          delivery_address: selectedAddress,
-          totalAmt: totalAmount,
-          date: new Date().toLocaleDateString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          }),
-        };
+          const payLoad = {
+            userId: user?._id,
+            products: context?.cartData,
+            paymentId: paymentId,
+            payment_status: "COMPLETED",
+            delivery_address: selectedAddress,
+            totalAmt: totalAmount,
+            date: new Date().toLocaleDateString("en-US", {
+              month: "short",
+              day: "2-digit",
+              year: "numeric",
+            }),
+          };
 
-        addData(
-          `/api/order/create?token=${localStorage.getItem("accesstoken")}`,
-          payLoad
-        ).then((res) => {
-          context.openAlertBox("success", "Order Placed");
-
-          deleteData(
-            `/api/cart/emptyCart/${user?._id}?token=${localStorage.getItem(
-              "accesstoken"
-            )}`
+          addData(
+            `/api/order/create?token=${localStorage.getItem("accesstoken")}`,
+            payLoad
           ).then((res) => {
-            context?.getCartItem();
+            context.openAlertBox("success", "Order Placed");
+
+            deleteData(
+              `/api/cart/emptyCart/${user?._id}?token=${localStorage.getItem(
+                "accesstoken"
+              )}`
+            ).then((res) => {
+              context?.getCartItem();
+            });
+            // navigate("/");
           });
-          // navigate("/");
-        });
-      },
+        },
 
-      them: {
-        color: "#6c6cff ",
-      },
-    };
+        them: {
+          color: "#6c6cff ",
+        },
+      };
 
-    var pay = new window.Razorpay(option);
-    pay.open();
+      var pay = new window.Razorpay(option);
+      pay.open();
+    } else {
+      context.openAlertBox("error", "Please add address");
+    }
   };
 
   const cashOnDelivery = () => {
     const user = context?.userData;
 
-    const payLoad = {
-      userId: user?._id,
-      products: context?.cartData,
-      paymentId: "",
-      payment_status: "CASH ON DELIVERY",
-      delivery_address: selectedAddress,
-      totalAmt: totalAmount,
-      date: new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      }),
-    };
-    addData(
-      `/api/order/create?token=${localStorage.getItem("accesstoken")}`,
-      payLoad
-    ).then((res) => {
-      context.openAlertBox("success", "Order Placed");
-      deleteData(
-        `/api/cart/emptyCart/${user?._id}?token=${localStorage.getItem(
-          "accesstoken"
-        )}`
+    if (userData?.address_details?.length !== 0) {
+      const payLoad = {
+        userId: user?._id,
+        products: context?.cartData,
+        paymentId: "",
+        payment_status: "CASH ON DELIVERY",
+        delivery_address: selectedAddress,
+        totalAmt: totalAmount,
+        date: new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        }),
+      };
+      addData(
+        `/api/order/create?token=${localStorage.getItem("accesstoken")}`,
+        payLoad
       ).then((res) => {
-        context?.getCartItem();
+        context.openAlertBox("success", "Order Placed");
+        deleteData(
+          `/api/cart/emptyCart/${user?._id}?token=${localStorage.getItem(
+            "accesstoken"
+          )}`
+        ).then((res) => {
+          context?.getCartItem();
+        });
+        // navigate("/");
       });
-      // navigate("/");
-    });
+    } else {
+      context?.openAlertBox("error", "Please add address");
+    }
   };
 
   return (
@@ -314,7 +323,7 @@ const CheckOut = () => {
                   <BsFillBagCheckFill className="text-[20px]" />
                   Cash on Delivery
                 </Button>
-              </div>
+              </div>{" "}
             </div>
           </div>
         </div>

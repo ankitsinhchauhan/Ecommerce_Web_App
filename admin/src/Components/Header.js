@@ -90,12 +90,6 @@ const Header = () => {
         </div>
         {/* part 2 */}
         <div className="part2 w-[40%] flex items-center justify-end gap-5">
-          <IconButton aria-label="cart">
-            <StyledBadge badgeContent={2} color="secondary">
-              <FaRegBell />
-            </StyledBadge>
-          </IconButton>
-
           {/* Login side */}
           {context.isLogin === false ? (
             <li className="list-none ">
@@ -113,11 +107,11 @@ const Header = () => {
                 onClick={handleClickMyAcc}
               >
                 <div
-                  className="rounded-full w-[35px] h-[35px]   overflow-hidden cursor-pointer"
+                  className="rounded-full w-[40px] h-[40px]   overflow-hidden cursor-pointer"
                   onClick={handleClickMyAcc}
                 >
                   <img
-                    src="/profile.jpg"
+                    src={context?.userData?.avatar}
                     alt=""
                     className="w-full h-full object-cover"
                   />
@@ -166,7 +160,7 @@ const Header = () => {
                   <div className="flex items-center gap-3">
                     <div className="rounded-full w-[35px] h-[35px]   overflow-hidden cursor-pointer">
                       <img
-                        src="/profile.jpg"
+                        src={context?.userData?.avatar}
                         alt=""
                         className="w-full h-full object-cover"
                       />
