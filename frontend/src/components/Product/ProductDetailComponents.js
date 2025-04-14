@@ -8,6 +8,7 @@ import QtyBox from "./QtyBox";
 import CircularProgress from "@mui/material/CircularProgress";
 import { MyContext } from "../../App";
 import { addData, fetchDataFromApi } from "../../api";
+import { Link } from "react-router-dom";
 
 const ProductDetailComponents = (props) => {
   const [quantity, setQuantity] = useState(1);
@@ -121,16 +122,13 @@ const ProductDetailComponents = (props) => {
         </Button>
       </div>
       <div className="flex items-center gap-4 mt-4">
-        <span className="flex items-center gap-2 text-[15px] font-[500] link cursor-pointer">
-          {" "}
-          <FaRegHeart className="text-[18px]" />
-          Add to Wishlist
-        </span>
-        <span className="flex items-center gap-2 text-[15px] font-[500] link cursor-pointer">
-          {" "}
-          <IoIosGitCompare className="text-[18px]" />
-          Add to Compare
-        </span>
+        <Link to="/my-list">
+          <span className="flex items-center gap-2 text-[15px] font-[500] link cursor-pointer">
+            {" "}
+            <FaRegHeart className="text-[18px]" />
+            Add to Wishlist
+          </span>
+        </Link>
       </div>
     </>
   );

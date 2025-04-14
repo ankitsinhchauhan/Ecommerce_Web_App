@@ -25,6 +25,7 @@ import OrderPlaced from "./pages/OrderPlaced";
 import SearchPage from "./pages/SearchPage";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
+import Reviews from "./pages/reviews";
 
 const MyContext = createContext();
 
@@ -221,6 +222,7 @@ const App = () => {
             <Route path={"/my-account"} element={<MyAccount />} />
             <Route path={"/my-list"} element={<MyList />} />
             <Route path={"/my-orders"} element={<Orders />} />
+            <Route path={"/reviews"} element={<Reviews />} />
             <Route path={"/orderFailed"} element={<OrderFailed />} />
             <Route path={"/orderPlaced"} element={<OrderPlaced />} />
             <Route path={"/address"} element={<Address />} />

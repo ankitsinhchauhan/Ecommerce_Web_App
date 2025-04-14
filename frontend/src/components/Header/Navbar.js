@@ -27,7 +27,7 @@ const Navbar = () => {
     <>
       <nav className="py-2">
         <div className="container flex items-center justify-end gap-8">
-          <div className="co1_1 w-[20%] border-r  border-[rgba(0,0,0,0.2)]">
+          <div className="co1_1 w-[25%] border-r  border-[rgba(0,0,0,0.2)]">
             <Button
               className="!text-black gap-2 w-full font-bold"
               onClick={openCategoryPanel}
@@ -47,35 +47,17 @@ const Navbar = () => {
                   </Button>
                 </Link>
               </li>
-
-              <li className="list-none relative">
-                <div className="link transition text-[14px] font-[500]">
+              <li className="list-none">
+                <Link
+                  to="/my-orders"
+                  className="link transition text-[14px] font-[500]"
+                >
                   <Button className="link transition !font-[500] !text-[rgba(0,0,0,0.8)] hover:!text-primary">
-                    Categories
+                    Orders
                   </Button>
-                </div>
-                {/* Category Menu */}
-                {catData?.length !== 0 && (
-                  <div className="subMenu absolute top-[120%] left-[0%] min-w-[200px] bg-white shadow-md opacity-0 transition-all">
-                    <ul>
-                      {catData?.map((cat, index) => {
-                        return (
-                          <li className="list-none w-full" key={index}>
-                            <Link
-                              to={`/product?catId=${cat?._id}`}
-                              className="w-full"
-                            >
-                              <Button className="!text-[rgba(0,0,0,0.8)] w-full !text-left !justify-start">
-                                {cat?.name}
-                              </Button>
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                )}
+                </Link>
               </li>
+
               <li className="list-none">
                 <Link
                   to="/aboutus"
@@ -86,16 +68,7 @@ const Navbar = () => {
                   </Button>
                 </Link>
               </li>
-              {/* <li className="list-none">
-                <Link
-                  to="/reviews"
-                  className="link transition text-[14px] font-[500]"
-                >
-                  <Button className="link transition !font-[500] !text-[rgba(0,0,0,0.8)] hover:!text-primary">
-                    Reviews
-                  </Button>
-                </Link>
-              </li> */}
+
               <li className="list-none">
                 <Link
                   to="/contactus"

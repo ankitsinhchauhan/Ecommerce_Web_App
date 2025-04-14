@@ -233,7 +233,7 @@ const Header = () => {
         {context?.isOpenFullScreenPanle?.model === "Add Product" && (
           <AddProduct />
         )}
-        {context?.isOpenFullScreenPanle?.model === "Add Home Slide" && (
+        {context?.isOpenFullScreenPanle?.model === "Add Home Banner" && (
           <AddHomeSlider />
         )}
         {context?.isOpenFullScreenPanle?.model === "Add New Category" && (

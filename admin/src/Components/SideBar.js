@@ -51,20 +51,20 @@ const SideBar = () => {
           <li>
             <Button
               className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-[rgba(0,0,0,0.8)] !font-[500] items-center !py-2 hover:!bg-[#f1f1f1]"
-              onClick={() => isOpenSubMenu(1)}
+              onClick={() => isOpenSubMenu(5)}
             >
               <FaRegImage className="text-[19px]" />
-              <span>Home Slides</span>
+              <span>Home Banner</span>
               <span className="ml-auto w-[30px] h-[30px] flex items-center justify-center">
                 <FaAngleDown
                   className={`transition-all ${
-                    subMenuIndex === 1 ? "rotate-180" : ""
+                    subMenuIndex === 4 ? "rotate-180" : ""
                   }`}
                 />
               </span>
             </Button>
             {/* Homeslides Sub Menu */}
-            <Collapse isOpened={subMenuIndex === 1 ? true : false}>
+            <Collapse isOpened={subMenuIndex === 5 ? true : false}>
               <ul className="w-full">
                 <li className="w-full">
                   <Link to="/homeSlider/list">
@@ -80,12 +80,12 @@ const SideBar = () => {
                     onClick={() =>
                       context.setIsOpenFullScreenPanle({
                         open: true,
-                        model: "Add Home Slide",
+                        model: "Add Home Banner",
                       })
                     }
                   >
                     <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                    Add Home Banner Slide
+                    Add Home Banner
                   </Button>
                 </li>
               </ul>

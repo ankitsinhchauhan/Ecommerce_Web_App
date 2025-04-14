@@ -218,7 +218,7 @@ const ProductListing = () => {
                   showLastButton
                   count={totalPages}
                   page={page}
-                  onChange={(e, value) => setPage(value)}
+                  onChange={(value) => setPage(value)}
                 />
               </div>
             )}

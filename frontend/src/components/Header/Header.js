@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import { IoCartOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa6";
-import { IoIosGitCompare } from "react-icons/io";
+
 import { GoPerson } from "react-icons/go";
 import { MdLogout } from "react-icons/md";
 import { BsBagCheck } from "react-icons/bs";
@@ -79,7 +79,7 @@ const Header = () => {
               <ul className="flex items-center gap-2">
                 <li className="list-none">
                   <Link
-                    to="/help-center"
+                    to="contactUs"
                     className="text-[13px] link font-[500] transition"
                   >
                     Help Center
@@ -87,7 +87,7 @@ const Header = () => {
                 </li>
                 <li className="list-none">
                   <Link
-                    to="/help-center"
+                    to="contactUs"
                     className="text-[13px] link font-[500] transition"
                   >
                     order Tracking
@@ -221,6 +221,17 @@ const Header = () => {
                         <span className="text-[14px]"> Orders</span>
                       </MenuItem>
                     </Link>
+
+                    <Link to="/reviews" className="w-full block">
+                      <MenuItem
+                        onClick={handleClose}
+                        className="flex gap-2 !py-2"
+                      >
+                        <BsBagCheck className="text-[18px]" />
+                        <span className="text-[14px]">Reviews</span>
+                      </MenuItem>
+                    </Link>
+
                     <MenuItem onClick={logout} className="flex gap-2 !py-2">
                       <MdLogout className="text-[18px]" />
                       <span className="text-[14px]"> Logout</span>

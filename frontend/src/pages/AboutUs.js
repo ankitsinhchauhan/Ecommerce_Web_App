@@ -1,6 +1,7 @@
 import React from "react";
 
 const AboutUs = () => {
+  window.scrollTo(0, 0);
   return (
     <div>
       <section className="about-banner">
