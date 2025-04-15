@@ -45,7 +45,7 @@ const HomeSliderV2 = () => {
               <h3 className="text-[18px] font-[500] flex items-center gap-3 w-full text-left mt-3 mb-3 relative -right-[100%] opacity-0">
                 Starting At Only
                 <span className="text-black text-[30px] font-[700]">
-                  &#x20b9; 130.00
+                  &#x20b9; 26000.00
                 </span>
               </h3>
               <div className="w-full  relative -right-[100%] opacity-0 btn_">
@@ -68,7 +68,7 @@ const HomeSliderV2 = () => {
               <h3 className="text-[18px] font-[500] flex items-center gap-3 w-full text-left mt-3 mb-3 relative -right-[100%] opacity-0">
                 Starting At Only
                 <span className="text-black text-[30px] font-[700]">
-                  &#x20b9; 89.00
+                  &#x20b9; 7000.00
                 </span>
               </h3>
               <div className="w-full  relative -right-[100%] opacity-0 btn_">
@@ -91,7 +91,7 @@ const HomeSliderV2 = () => {
               <h3 className="text-[18px] font-[500] flex items-center gap-3 w-full text-left mt-3 mb-3 relative -right-[100%] opacity-0">
                 Starting At Only
                 <span className="text-black text-[30px] font-[700]">
-                  &#x20b9; 60.00
+                  &#x20b9; 5227.00
                 </span>
               </h3>
               <div className="w-full  relative -right-[100%] opacity-0 btn_">
@@ -114,7 +114,7 @@ const HomeSliderV2 = () => {
               <h3 className="text-[18px] font-[500] flex items-center gap-3 w-full text-left mt-3 mb-3 relative -right-[100%] opacity-0">
                 Starting At Only
                 <span className="text-black text-[30px] font-[700]">
-                  &#x20b9; 100.00
+                  &#x20b9; 15000.00
                 </span>
               </h3>
               <div className="w-full  relative -right-[100%] opacity-0 btn_">

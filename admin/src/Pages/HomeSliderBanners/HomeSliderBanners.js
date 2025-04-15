@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
 import { RiEdit2Line } from "react-icons/ri";
@@ -18,6 +18,7 @@ import TableRow from "@mui/material/TableRow";
 import Checkbox from "@mui/material/Checkbox";
 
 import { MyContext } from "../../App";
+import { deleteData, fetchDataFromApi } from "../../Apis";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const columns = [
@@ -26,15 +27,11 @@ const columns = [
 ];
 
 const HomeSliderBanners = () => {
-  const [categoryFilterVal, setCategoryFilterVal] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [slideData, setSlideData] = useState([]);
 
   const context = useContext(MyContext);
-
-  const handleChangeCateFilter = (event) => {
-    setCategoryFilterVal(event.target.value);
-  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -43,6 +40,27 @@ const HomeSliderBanners = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  useEffect(() => {
+    getData();
+  }, [context?.setIsOpenFullScreenPanle]);
+
+  const getData = () => {
+    fetchDataFromApi(
+      `/api/banner?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      setSlideData(res?.data);
+    });
+  };
+
+  const deleteSlide = (id) => {
+    deleteData(
+      `/api/banner/${id}?token=${localStorage.getItem("accesstoken")}`
+    ).then((res) => {
+      context.openAlertBox("success", "Banner Deleted");
+      getData();
+    });
   };
 
   return (
@@ -55,11 +73,11 @@ const HomeSliderBanners = () => {
             onClick={() =>
               context.setIsOpenFullScreenPanle({
                 open: true,
-                model: "Add Home Slide",
+                model: "Add Home Banner",
               })
             }
           >
-            Add Home Slide
+            Add Home Banner
           </Button>
         </div>
       </div>
@@ -84,184 +102,44 @@ const HomeSliderBanners = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell width={300}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-full rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/Banner/Banner1.jpg"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                </TableCell>
+              {slideData?.length !== 0 &&
+                slideData?.map((item, index) => {
+                  return (
+                    <TableRow>
+                      <TableCell>
+                        <Checkbox {...label} size="small" />
+                      </TableCell>
+                      <TableCell width={300}>
+                        <div className="flex items-center gap-4 w-[300px]">
+                          <div className="img w-full rounded-md overflow-hidden group">
+                            <Link to="/product/799574">
+                              <img
+                                src={item?.images[0]}
+                                alt=""
+                                className="w-full group-hover:scale-105 transition-all"
+                              />
+                            </Link>
+                          </div>
+                        </div>
+                      </TableCell>
 
-                <TableCell width={100}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
+                      <TableCell width={100}>
+                        <div className="flex items-center gap-4">
+                          <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                            <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                          </Button>
 
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell width={300}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-full rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/Banner/Banner2.jpg"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                </TableCell>
-
-                <TableCell width={100}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell width={300}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-full rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/Banner/Banner3.jpg"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                </TableCell>
-
-                <TableCell width={100}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell width={300}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-full rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/Banner/Banner4.jpg"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                </TableCell>
-
-                <TableCell width={100}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Checkbox {...label} size="small" />
-                </TableCell>
-                <TableCell width={300}>
-                  <div className="flex items-center gap-4 w-[300px]">
-                    <div className="img w-full rounded-md overflow-hidden group">
-                      <Link to="/product/799574">
-                        <img
-                          src="/Banner/Banner5.jpg"
-                          alt=""
-                          className="w-full group-hover:scale-105 transition-all"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                </TableCell>
-
-                <TableCell width={100}>
-                  <div className="flex items-center gap-4">
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-
-                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
-                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
+                          <Button
+                            className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]"
+                            onClick={() => deleteSlide(item?._id)}
+                          >
+                            <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>

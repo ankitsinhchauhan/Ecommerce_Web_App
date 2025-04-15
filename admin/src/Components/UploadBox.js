@@ -53,11 +53,21 @@ const UploadBox = (props) => {
       ).then((res) => {
         console.log(res);
         setUploading(false);
-
-        // props.setPreviews(res?.data?.images);
+        setPreviews(res?.data?.images);
         props.setPreviewsFun(res?.data?.images);
       });
 
+      uploadImages(
+        `/api/banner/uploadImages?token=${localStorage.getItem("accesstoken")}`,
+        formData
+      ).then((res) => {
+        console.log(res);
+        setUploading(false);
+
+        setPreviews(res?.data?.images);
+        props.setPreviewsFun(res?.data?.images);
+      });
+      
       uploadImages(
         `/api/product/uploadImages?token=${localStorage.getItem(
           "accesstoken"
@@ -67,7 +77,7 @@ const UploadBox = (props) => {
         console.log(res);
         setUploading(false);
 
-        // props.setPreviews(res?.data?.images);
+        setPreviews(res?.data?.images);
         props.setPreviewsFun(res?.data?.images);
       });
     } catch (error) {

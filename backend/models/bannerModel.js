@@ -7,7 +7,11 @@ const bannerSchema = new mongoose.Schema(
       default: "",
       required: true,
     },
-
+    images: [
+      {
+        type: String,
+      },
+    ],
     catId: {
       type: String,
       default: "",
@@ -18,11 +22,6 @@ const bannerSchema = new mongoose.Schema(
       default: "",
       required: true,
     },
-    images: [
-      {
-        type: String,
-      },
-    ],
   },
   {
     timestamps: true,

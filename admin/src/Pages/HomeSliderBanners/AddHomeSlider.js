@@ -106,8 +106,6 @@ const AddHomeSlider = () => {
         withCredentials: true,
       }
     ).then((res) => {
-      console.log(res);
-
       context.openAlertBox("success", "Banner Created");
 
       setTimeout(() => {
@@ -115,7 +113,8 @@ const AddHomeSlider = () => {
         context.setIsOpenFullScreenPanle({
           open: false,
         });
-      }, 2500);
+      }, 500);
+      navigate("/homeSlider/list");
     });
   };
 
@@ -205,7 +204,7 @@ const AddHomeSlider = () => {
             <UploadBox
               multiple={true}
               name="images"
-              url="/api/category/uploadImages"
+              url="/api/banner/uploadImages"
               setPreviewsFun={setPreviewsFun}
             />
           </div>

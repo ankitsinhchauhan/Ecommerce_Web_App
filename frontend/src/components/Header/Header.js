@@ -222,7 +222,7 @@ const Header = () => {
                       </MenuItem>
                     </Link>
 
-                    <Link to="/reviews" className="w-full block">
+                    {/* <Link to="/reviews" className="w-full block">
                       <MenuItem
                         onClick={handleClose}
                         className="flex gap-2 !py-2"
@@ -230,7 +230,7 @@ const Header = () => {
                         <BsBagCheck className="text-[18px]" />
                         <span className="text-[14px]">Reviews</span>
                       </MenuItem>
-                    </Link>
+                    </Link> */}
 
                     <MenuItem onClick={logout} className="flex gap-2 !py-2">
                       <MdLogout className="text-[18px]" />
