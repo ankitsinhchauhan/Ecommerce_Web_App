@@ -10,7 +10,7 @@ This is an e-commerce web application built using the **MERN Stack** (MongoDB, E
 
 - MongoDB & Mongoose
 - Express.js
-- React.js with React Router
+- React.js
 - Node.js
 - JWT Authentication
 - Cloudinary / Multer for image uploads
@@ -18,7 +18,7 @@ This is an e-commerce web application built using the **MERN Stack** (MongoDB, E
 ## 📦 Features
 
 - User Authentication
-- Admin Panel for Product/Order Management
+- Admin Panel for Product Management
 - Cart & Checkout Flow
 - Image Uploads for Products
 - Contact & About Pages
