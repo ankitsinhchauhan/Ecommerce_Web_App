@@ -11,5 +11,3 @@
 *.jpeg binary
 *.webp binary
 
-# Prevent merge conflicts in package-lock
-package-lock.json merge=union
