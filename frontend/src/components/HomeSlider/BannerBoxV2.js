@@ -19,7 +19,7 @@ const BannerBoxV2 = (props) => {
       >
         <h2 className="text-[18px] font-[600]">Samsung Refrigerator</h2>
         <spna className="text-[20px] font-[600] text-black w-full">
-          $9,500.00
+          &#x20b9; 9,500.00
         </spna>
         <div className="w-full">
           <Link to="/" className="text-[16px] font-[600]">

@@ -206,12 +206,12 @@ const SideBar = () => {
               </Button>
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-[rgba(0,0,0,0.8)] !font-[500] items-center !py-2 hover:!bg-[#f1f1f1]">
               <MdLogout className="text-[20px]" />
               <span>Logout</span>
             </Button>
-          </li>
+          </li> */}
         </ul>
       </div>
     </>

@@ -97,7 +97,7 @@ h6 {
   border: 2px solid #6c6cff !important;
   font-weight: 500;
   font-size: 16px;
-  padding: 7px 20px !important;
+  padding: 7px 10px !important;
 }
 
 .btn-org.btn-border:hover {
@@ -604,7 +604,6 @@ header {
 }
 
 /*  Contact us  */
-/* Reset & base styles */
 
 .contact-section {
   padding: 60px 20px;

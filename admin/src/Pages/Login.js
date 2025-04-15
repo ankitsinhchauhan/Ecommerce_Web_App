@@ -176,7 +176,7 @@ const Login = () => {
     <section className=" bg-white w-full">
       <header className="w-full fixed top-0 left-0 px-4 py-3 flex items-center justify-between z-50 bg-gray-100">
         <Link to="/" activeClassName="isActive">
-          <img src="./spLogo.png" alt="" className="w-[180px]" />
+          <img src="./spLogo.png" alt="" className="w-[180px] mx-5" />
         </Link>
         <div className="flex items-center gap-0 ">
           <NavLink to="/login">

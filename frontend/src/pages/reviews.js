@@ -66,7 +66,6 @@ const Reviews = (props) => {
       (res) => {
         if (res?.error === false) {
           setReviewsData(res?.reviews);
-
           props.setReviewsCount(res.reviews.length);
         }
       }

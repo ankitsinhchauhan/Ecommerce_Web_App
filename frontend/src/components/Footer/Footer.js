@@ -29,7 +29,7 @@ const Footer = () => {
   return (
     <>
       <div className="">
-        <footer className="py-6 bg-[#fafafa] mt-2">
+        <footer className="py-5 bg-[#fafafa] mt-2">
           {/* delivey , return, payment, gift, support */}
           <div className="container">
             <div className="flex items-center justify-center gap-2 py-8 pb-8">
@@ -195,7 +195,7 @@ const Footer = () => {
           </div>
         </footer>
         {/* bootsrip */}
-        <div className="bottomStripe border-t border-[rgba(0,0,0,0.2)] py-3 bg-white">
+        <div className="bottomStripe border-t border-[rgba(0,0,0,0.2)] py-2 bg-white">
           <div className="container flex items-center justify-between">
             <p className="text-[16px]">
               Copyright &copy; 2025 ShopNest Of India. All Rights Reserved.
@@ -306,7 +306,7 @@ const Footer = () => {
         className="productDetailsModal"
       >
         <DialogContent>
-          <div className="flex items-center w-full productDetailsModalContainer relative ">
+          <div className="flex items-center w-full productDetailsModalContainer relative">
             <Button
               className="!w-[40px] !h-[40px] !min-w-[40px] !rounded-full !text-black !absolute !top-[0px] !right-[0px] !bg-[#f1f1f1] "
               onClick={context?.handleCloseProductDetailModal}

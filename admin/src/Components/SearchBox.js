@@ -12,7 +12,7 @@ const SearchBox = (props) => {
     props.setSearchQuery(e.target.value);
     if (searchInput.current.value === "") {
       console.log("a");
-      props.setPageOrder(1);
+      // props.setPageOrder(1);
     }
   };
 

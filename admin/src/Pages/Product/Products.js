@@ -155,9 +155,6 @@ const Products = () => {
         <h2 className="text-[20px] font-[600]">Products</h2>
 
         <div className="col w-[35%] ml-auto flex items-center justify-end gap-3">
-          <Button className="btn !bg-green-600 !text-white btn-sm">
-            Export
-          </Button>
           <Button
             className="btn-blue btn-sm"
             onClick={() =>

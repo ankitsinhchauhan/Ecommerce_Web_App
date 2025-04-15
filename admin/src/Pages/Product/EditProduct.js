@@ -202,13 +202,9 @@ const EditProduct = () => {
 
     if (previews?.length === 0) {
       context.openAlertBox("error", "Please select product images");
-
       setIsLoading(false);
-
       return false;
     }
-
-    console.log(formFields);
 
     const Id = context?.isOpenFullScreenPanle?.id;
 

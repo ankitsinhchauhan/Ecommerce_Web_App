@@ -95,9 +95,7 @@ const AddHomeSlider = () => {
 
     if (previews?.length === 0) {
       context.openAlertBox("error", "Please select banner images");
-
       setIsLoading(false);
-
       return false;
     }
 

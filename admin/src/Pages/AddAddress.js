@@ -23,7 +23,7 @@ const AddAddress = () => {
     country: "",
     mobile: "",
     landmark: "",
-    addressType: "",
+
     userId: "",
   });
 
@@ -89,10 +89,6 @@ const AddAddress = () => {
       return false;
     }
 
-    if (formFields.addressType === "") {
-      context.openAlertBox("error", "Please enter your addressType");
-      return false;
-    }
     if (phone === "") {
       context.openAlertBox("error", "Please enter your 10 digit mobile number");
       return false;
@@ -140,6 +136,7 @@ const AddAddress = () => {
                 className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
               />
             </div>
+
             <div className="col w-[100%]">
               <h3 className="text-[16px] font-[500] mb-1 text-black">City</h3>
               <input
@@ -186,6 +183,7 @@ const AddAddress = () => {
                 className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
               />
             </div>
+
             <div className="col w-[100%]">
               <h3 className="text-[16px] font-[500] mb-1 text-black">
                 Mobile No
@@ -216,6 +214,18 @@ const AddAddress = () => {
                 <MenuItem value={true}>True</MenuItem>
                 <MenuItem value={false}>False</MenuItem>
               </Select>
+            </div>
+            <div className="col w-[100%]">
+              <h3 className="text-[16px] font-[500] mb-1 text-black">
+                Landmark
+              </h3>
+              <input
+                type="text"
+                name="landmark"
+                value={formFields.landmark}
+                onChange={onChangeInput}
+                className="w-full h-[40px] p-3 textsm border border-[rgba(0,0,0,0.2)] focus:outline-none focus:border-[rgba(0,0,0,0.5)] rounded-sm "
+              />
             </div>
           </div>
           <br />

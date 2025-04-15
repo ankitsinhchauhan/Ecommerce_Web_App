@@ -50,9 +50,6 @@ const HomeSliderBanners = () => {
       <div className="flex items-center justify-between px-2 py-0 mt-3">
         <h2 className="text-[20px] font-[600]">Home Slider Banner</h2>
         <div className="col w-[25%] ml-auto flex items-center justify-end gap-3">
-          <Button className="btn !bg-green-600 !text-white btn-sm">
-            Export
-          </Button>
           <Button
             className="btn-blue btn-sm"
             onClick={() =>
@@ -104,6 +101,151 @@ const HomeSliderBanners = () => {
                     </div>
                   </div>
                 </TableCell>
+
+                <TableCell width={100}>
+                  <div className="flex items-center gap-4">
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <Checkbox {...label} size="small" />
+                </TableCell>
+                <TableCell width={300}>
+                  <div className="flex items-center gap-4 w-[300px]">
+                    <div className="img w-full rounded-md overflow-hidden group">
+                      <Link to="/product/799574">
+                        <img
+                          src="/Banner/Banner2.jpg"
+                          alt=""
+                          className="w-full group-hover:scale-105 transition-all"
+                        />
+                      </Link>
+                    </div>
+                  </div>
+                </TableCell>
+
+                <TableCell width={100}>
+                  <div className="flex items-center gap-4">
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <Checkbox {...label} size="small" />
+                </TableCell>
+                <TableCell width={300}>
+                  <div className="flex items-center gap-4 w-[300px]">
+                    <div className="img w-full rounded-md overflow-hidden group">
+                      <Link to="/product/799574">
+                        <img
+                          src="/Banner/Banner3.jpg"
+                          alt=""
+                          className="w-full group-hover:scale-105 transition-all"
+                        />
+                      </Link>
+                    </div>
+                  </div>
+                </TableCell>
+
+                <TableCell width={100}>
+                  <div className="flex items-center gap-4">
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <Checkbox {...label} size="small" />
+                </TableCell>
+                <TableCell width={300}>
+                  <div className="flex items-center gap-4 w-[300px]">
+                    <div className="img w-full rounded-md overflow-hidden group">
+                      <Link to="/product/799574">
+                        <img
+                          src="/Banner/Banner4.jpg"
+                          alt=""
+                          className="w-full group-hover:scale-105 transition-all"
+                        />
+                      </Link>
+                    </div>
+                  </div>
+                </TableCell>
+
+                <TableCell width={100}>
+                  <div className="flex items-center gap-4">
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <RiEdit2Line className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <FaRegEye className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+
+                    <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">
+                      <GoTrash className="text-[20px] text-[rgba(0,0,0,0.7)]" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <Checkbox {...label} size="small" />
+                </TableCell>
+                <TableCell width={300}>
+                  <div className="flex items-center gap-4 w-[300px]">
+                    <div className="img w-full rounded-md overflow-hidden group">
+                      <Link to="/product/799574">
+                        <img
+                          src="/Banner/Banner5.jpg"
+                          alt=""
+                          className="w-full group-hover:scale-105 transition-all"
+                        />
+                      </Link>
+                    </div>
+                  </div>
+                </TableCell>
+
                 <TableCell width={100}>
                   <div className="flex items-center gap-4">
                     <Button className="!w-[35px] !h-[35px] !min-w-[35px] !bg-[#f1f1f1] !border !border-[rgba(0,0,0,0.4)] !rounded-full hover:!bg-[#ccc]">

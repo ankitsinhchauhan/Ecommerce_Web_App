@@ -245,7 +245,7 @@ const Profile = () => {
       {" "}
       <div className="card my-4 pt-5 w-[65%] bg-white shadow-md sm:rounded-lg px-5 pb-5">
         <div className="flex items-center justify-between">
-          <h2 className="text-[20px] font-[600]">User Profile</h2>
+          <h2 className="text-[20px] font-[600]">Admin Profile</h2>
 
           <Button
             className="!ml-auto"

@@ -170,13 +170,9 @@ const AddProduct = () => {
 
     if (previews?.length === 0) {
       context.openAlertBox("error", "Please select product images");
-
       setIsLoading(false);
-
       return false;
     }
-
-    console.log(formFields);
 
     addData(
       `/api/product/create?token=${localStorage.getItem("accesstoken")}`,
@@ -186,9 +182,7 @@ const AddProduct = () => {
       }
     ).then((res) => {
       console.log(res);
-
       context.openAlertBox("success", "Product Created");
-
       setTimeout(() => {
         setIsLoading(false);
         context.setIsOpenFullScreenPanle({

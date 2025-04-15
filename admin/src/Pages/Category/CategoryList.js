@@ -70,9 +70,6 @@ const CategoryList = () => {
       <div className="flex items-center justify-between px-2 py-0 mt-3">
         <h2 className="text-[20px] font-[600]"> Category List</h2>
         <div className="col w-[25%] ml-auto flex items-center justify-end gap-3">
-          <Button className="btn !bg-green-600 !text-white btn-sm">
-            Export
-          </Button>
           <Button
             className="btn-blue btn-sm"
             onClick={() =>

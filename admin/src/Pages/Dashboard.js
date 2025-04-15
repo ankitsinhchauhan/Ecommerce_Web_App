@@ -362,10 +362,6 @@ const Dashboard = () => {
               </Select>
             )}
           </div>
-
-          <div className="col1 w-[20%] ml-auto">
-            <SearchBox />
-          </div>
         </div>
 
         <br />
