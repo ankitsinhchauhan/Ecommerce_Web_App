@@ -1,2 +1,16 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Treat JavaScript and JSON files as text
+*.js text
+*.json text
+
+# Image files — binary (don’t diff)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+
+# Prevent merge conflicts in package-lock
+package-lock.json merge=union
+
