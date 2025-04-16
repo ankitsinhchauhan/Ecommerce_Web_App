@@ -1,6 +1,4 @@
-# Project Name
-
-ShopNest WebApp
+# ShopNest WebApp
 
 # 🛒 MERN Stack Ecommerce Website
 
