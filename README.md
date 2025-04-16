@@ -4,7 +4,7 @@ This is an e-commerce web application built using the **MERN Stack** (MongoDB, E
 
 ## 🔧 Technologies Used
 
-- MongoDB & Mongoose
+- MongoDB & Mongoose https://www.mongodb.com
 - Express.js
 - React.js
 - Node.js
