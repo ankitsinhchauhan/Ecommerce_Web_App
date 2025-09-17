@@ -2,6 +2,8 @@
 
 This is an e-commerce web application built using the **MERN Stack** (MongoDB, Express, React, Node.js). It includes user Login, registration, product management, cart system, order processing, and payment process.
 
+Note: This project is developed as part of my BCA Final Year Project.
+
 ## 🔧 Technologies Used
 
 - MongoDB & Mongoose
