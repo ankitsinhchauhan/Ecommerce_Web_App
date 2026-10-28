@@ -27,4 +27,4 @@ Note: This project is developed as part of my BCA Final Year Project.
 ➢ Tutorials from YouTube
 ➢ Material Ui
 ➢ React Icons
-➢ ChatGPT
+
